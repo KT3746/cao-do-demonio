@@ -1,0 +1,46 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Preparar site estático
+        run: |
+          mkdir -p dist
+          cp index.html 404.html .nojekyll dist/
+          cp -r css js assets dist/
+          SHA="${GITHUB_SHA::7}"
+          find dist -type f -name '*.html' -exec sed -i "s/__CACHE__/${SHA}/g" {} +
+          echo "Cache bust: ${SHA}"
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Enviar artefato
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,10 @@
+{
+  "name": "queda-certa",
+  "private": true,
+  "type": "module",
+  "description": "Puzzle de blocos original em português, para GitHub Pages.",
+  "scripts": {
+    "test": "node --test tests/engine.test.js",
+    "start": "python3 -m http.server 4173"
+  }
+}
