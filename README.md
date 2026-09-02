@@ -44,7 +44,7 @@ Jogo de puzzle com peças que caem. É **original**: nomes, cores, textos e sons
 
 ### Celular
 
-Na primeira visita aparece **Como jogar** (2–3 passos, dá para pular). O jeito ensinado é só pelos **botões**:
+Na primeira visita aparece **Como jogar** (passos curtos, dá para pular). O jeito ensinado é só pelos **botões**:
 
 | Botão | Ação |
 | --- | --- |
@@ -53,7 +53,7 @@ Na primeira visita aparece **Como jogar** (2–3 passos, dá para pular). O jeit
 | **▼ suave** | Desce um pouco |
 | **Queda!** | Queda rápida (ação principal) |
 
-**Reserva** fica no cantinho ao lado do tabuleiro (avançado, fora da fileira de movimento). **Próxima** também fica nessa faixa estreita, para o poço ficar grande.
+**Reserva** (o ＋ no canto) guarda a peça para usar depois — o tutorial explica isso. **Próxima** fica na mesma faixa estreita, para o poço ficar grande.
 
 O primeiro toque também liga o som (o navegador exige um gesto seu).
 

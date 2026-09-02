@@ -456,8 +456,23 @@ kbd {
 
 .howto-visual[data-step="0"] .hv-move,
 .howto-visual[data-step="1"] .hv-drop,
-.howto-visual[data-step="2"] .hv-lines {
+.howto-visual[data-step="2"] .hv-lines,
+.howto-visual[data-step="3"] .hv-hold {
   display: flex;
+}
+
+.hv-plus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(18, 26, 48, 0.95);
+  border: 1px dashed rgba(160, 210, 230, 0.35);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--muted);
 }
 
 .hv-move span,

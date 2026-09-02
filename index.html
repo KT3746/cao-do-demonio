@@ -13,11 +13,11 @@
     <meta property="og:description" content="Puzzle de blocos original, em português, para jogar no celular e no computador." />
     <meta property="og:type" content="website" />
     <title>Queda Certa</title>
-    <link rel="icon" href="assets/favicon.svg?v=3-__CACHE__" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.svg?v=4-__CACHE__" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=3-__CACHE__" />
+    <link rel="stylesheet" href="css/styles.css?v=4-__CACHE__" />
   </head>
   <body>
     <div class="aurora" aria-hidden="true"></div>
@@ -89,7 +89,7 @@
                     <span class="rail-label">Próxima</span>
                     <canvas id="next-m" width="80" height="80" aria-label="Próxima peça"></canvas>
                   </div>
-                  <button type="button" id="pad-hold" class="hold-slot is-empty" data-action="hold" aria-label="Reservar peça">
+                  <button type="button" id="pad-hold" class="hold-slot is-empty" data-action="hold" aria-label="Reservar: guarda a peça para usar depois" title="Guarda a peça para usar depois (tecla C)">
                     <span class="rail-label">Reserva</span>
                     <canvas id="hold-m" width="56" height="56" aria-hidden="true"></canvas>
                     <span class="hold-empty">＋</span>
@@ -151,6 +151,9 @@
           <div class="hv hv-lines">
             <i></i><i></i><i></i><i></i>
           </div>
+          <div class="hv hv-hold">
+            <span class="hv-plus">＋</span>
+          </div>
         </div>
         <h2 id="howto-title">Mover e girar</h2>
         <p id="howto-text">Os botões ◀ e ▶ andam com a peça. Girar vira ela no lugar.</p>
@@ -173,6 +176,6 @@
       </div>
     </div>
 
-    <script type="module" src="js/main.js?v=3-__CACHE__"></script>
+    <script type="module" src="js/main.js?v=4-__CACHE__"></script>
   </body>
 </html>

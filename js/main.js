@@ -20,6 +20,10 @@ const HOWTO_STEPS = [
     title: "Limpar linhas",
     text: "Complete uma linha para pontuar. Quatro de uma vez é Queda Certa!",
   },
+  {
+    title: "Reserva",
+    text: "O ＋ no canto guarda a peça para usar depois. No computador, tecla C.",
+  },
 ];
 
 const els = {
