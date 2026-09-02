@@ -75,11 +75,11 @@ npm test
 
 O fluxo em `.github/workflows/pages.yml` publica a pasta do site sempre que alguém envia código para a branch `main`.
 
-**Uma vez no GitHub** (dono do repositório):
+**Uma vez no GitHub** (dono do repositório), se o site ainda não abrir:
 
 1. Abra o repositório → **Settings** → **Pages**.
-2. Em **Source**, escolha **GitHub Actions**.
-3. Junte (merge) este jogo na `main` se ainda não estiver lá. O fluxo roda sozinho.
+2. Em **Build and deployment → Source**, escolha **GitHub Actions**.
+3. O fluxo em `.github/workflows/pages.yml` publica sozinho a cada push na `main`.
 4. O endereço esperado é: `https://kt3746.github.io/queda-certa/`
 
 Cada publicação troca o parâmetro `?v=` dos arquivos (hash do commit), para o navegador não ficar com uma versão velha.
