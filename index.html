@@ -13,11 +13,11 @@
     <meta property="og:description" content="Puzzle de blocos original, em português, para jogar no celular e no computador." />
     <meta property="og:type" content="website" />
     <title>Queda Certa</title>
-    <link rel="icon" href="assets/favicon.svg?v=__CACHE__" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.svg?v=2-__CACHE__" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=__CACHE__" />
+    <link rel="stylesheet" href="css/styles.css?v=2-__CACHE__" />
   </head>
   <body>
     <div class="aurora" aria-hidden="true"></div>
@@ -57,6 +57,17 @@
         </div>
       </section>
 
+      <div class="previews-mobile">
+        <section class="card mini">
+          <h2>Reserva</h2>
+          <canvas id="hold-m" width="96" height="96" aria-label="Peça reservada"></canvas>
+        </section>
+        <section class="card mini">
+          <h2>Próxima</h2>
+          <canvas id="next-m" width="96" height="96" aria-label="Próxima peça"></canvas>
+        </section>
+      </div>
+
       <div class="layout">
         <aside class="panel panel-left">
           <section class="card">
@@ -81,16 +92,6 @@
         </aside>
 
         <main class="stage">
-          <div class="previews-mobile">
-            <section class="card mini">
-              <h2>Reserva</h2>
-              <canvas id="hold-m" width="96" height="96" aria-label="Peça reservada"></canvas>
-            </section>
-            <section class="card mini">
-              <h2>Próxima</h2>
-              <canvas id="next-m" width="96" height="96" aria-label="Próxima peça"></canvas>
-            </section>
-          </div>
           <div id="board-wrap">
             <canvas id="board" width="300" height="600" role="img" aria-label="Tabuleiro do Queda Certa"></canvas>
           </div>
@@ -142,6 +143,6 @@
       </div>
     </div>
 
-    <script type="module" src="js/main.js?v=__CACHE__"></script>
+    <script type="module" src="js/main.js?v=2-__CACHE__"></script>
   </body>
 </html>
