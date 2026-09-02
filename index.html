@@ -82,19 +82,21 @@
         <main class="stage">
           <div class="playfield">
             <div id="board-wrap">
-              <canvas id="board" width="300" height="600" role="img" aria-label="Tabuleiro do Queda Certa"></canvas>
-            </div>
-            <aside class="board-rail">
-              <div class="next-slot">
-                <span class="rail-label">Próxima</span>
-                <canvas id="next-m" width="80" height="80" aria-label="Próxima peça"></canvas>
+              <div class="board-stack">
+                <canvas id="board" width="300" height="600" role="img" aria-label="Tabuleiro do Queda Certa"></canvas>
+                <aside class="board-rail">
+                  <div class="next-slot">
+                    <span class="rail-label">Próxima</span>
+                    <canvas id="next-m" width="80" height="80" aria-label="Próxima peça"></canvas>
+                  </div>
+                  <button type="button" id="pad-hold" class="hold-slot is-empty" data-action="hold" aria-label="Reservar peça">
+                    <span class="rail-label">Reserva</span>
+                    <canvas id="hold-m" width="56" height="56" aria-hidden="true"></canvas>
+                    <span class="hold-empty">＋</span>
+                  </button>
+                </aside>
               </div>
-              <button type="button" id="pad-hold" class="hold-slot is-empty" data-action="hold" aria-label="Reservar peça">
-                <span class="rail-label">Reserva</span>
-                <canvas id="hold-m" width="56" height="56" aria-hidden="true"></canvas>
-                <span class="hold-empty">＋</span>
-              </button>
-            </aside>
+            </div>
           </div>
         </main>
 

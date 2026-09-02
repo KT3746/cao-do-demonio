@@ -308,6 +308,12 @@ kbd {
   align-items: center;
 }
 
+.board-stack {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
 #board {
   display: block;
   border-radius: 18px;
@@ -593,17 +599,21 @@ kbd {
   }
 
   .playfield {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: stretch;
+    display: flex;
+    position: relative;
     justify-content: center;
-    gap: 6px;
+    align-items: center;
+  }
+
+  .board-stack {
+    max-width: 100%;
+    max-height: 100%;
   }
 
   #board-wrap {
     flex: 1 1 0;
     min-height: 0;
-    height: auto;
+    height: 100%;
     width: 100%;
   }
 
@@ -611,35 +621,41 @@ kbd {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 8px;
-    width: 58px;
-    min-height: 0;
-    padding-top: 2px;
+    gap: 6px;
+    width: 50px;
+    position: absolute;
+    top: 8px;
+    right: 6px;
+    z-index: 2;
+    pointer-events: none;
   }
 
   .rail-label {
     display: block;
-    font-size: 0.58rem;
+    font-size: 0.55rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: rgba(210, 222, 255, 0.78);
     text-align: center;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
+    line-height: 1;
   }
 
   .next-slot,
   .hold-slot {
-    background: rgba(12, 18, 34, 0.72);
-    border: 1px solid var(--stroke);
-    border-radius: 12px;
+    pointer-events: auto;
+    background: rgba(8, 12, 24, 0.78);
+    border: 1px solid rgba(160, 210, 230, 0.22);
+    border-radius: 10px;
     padding: 5px 4px 6px;
-    width: 58px;
+    width: 50px;
+    backdrop-filter: blur(10px);
   }
 
   .next-slot canvas {
     display: block;
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     margin: 0 auto;
   }
 
@@ -653,24 +669,26 @@ kbd {
 
   .hold-slot canvas {
     display: block;
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     margin: 0 auto;
   }
 
+  .hold-slot.is-empty {
+    padding: 6px 4px 7px;
+  }
+
   .hold-slot.is-empty canvas {
-    opacity: 0.2;
+    display: none;
   }
 
   .hold-empty {
     display: none;
-    position: absolute;
-    left: 50%;
-    top: 58%;
-    transform: translate(-50%, -50%);
-    font-size: 1.1rem;
+    font-size: 1rem;
     color: var(--muted);
     pointer-events: none;
+    text-align: center;
+    line-height: 1;
   }
 
   .hold-slot.is-empty .hold-empty {
@@ -797,17 +815,18 @@ kbd {
   }
 
   .board-rail {
-    width: 52px;
+    width: 46px;
+    right: 4px;
   }
 
   .next-slot,
   .hold-slot {
-    width: 52px;
+    width: 46px;
   }
 
   .next-slot canvas {
-    width: 42px;
-    height: 42px;
+    width: 36px;
+    height: 36px;
   }
 }
 

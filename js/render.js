@@ -99,7 +99,7 @@ export class Renderer {
     const w = this.board.width;
     const h = this.board.height;
     const dpr = dprOf(this.board);
-    const inset = Math.max(4, dpr * 2.2);
+    const inset = Math.max(10, dpr * 5);
     return {
       w,
       h,
@@ -129,10 +129,6 @@ export class Renderer {
     ctx.fill();
 
     ctx.save();
-    ctx.beginPath();
-    roundRect(ctx, 0, 0, w, h, cw * 0.16);
-    ctx.clip();
-
     ctx.translate(inset, inset);
     const innerW = cw * COLS;
     const innerH = ch * ROWS;
@@ -327,7 +323,7 @@ function drawCell(ctx, x, y, cw, ch, color, deep, alpha = 1, pulse = 1, glow = f
   ctx.globalAlpha = alpha;
   if (glow) {
     ctx.shadowColor = color;
-    ctx.shadowBlur = cw * 0.7;
+    ctx.shadowBlur = cw * 0.28;
   }
   ctx.fillStyle = deep || color;
   roundRect(ctx, px + inset * 0.3, py + inset * 0.3, cw - inset * 0.6, ch - inset * 0.6, r);
