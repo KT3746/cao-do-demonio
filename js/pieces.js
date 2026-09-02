@@ -5,14 +5,14 @@
 
 export const COLS = 10;
 export const ROWS = 20;
-export const HIDDEN = 1;
+export const HIDDEN = 2;
 export const TOTAL_ROWS = ROWS + HIDDEN;
 
 export const LINE_POINTS = [0, 100, 300, 500, 800];
 export const LINES_PER_LEVEL = 10;
 export const LOCK_DELAY_MS = 520;
 export const MAX_LOCK_RESETS = 16;
-export const CLEAR_ANIM_MS = 320;
+export const CLEAR_ANIM_MS = 480;
 export const DAS_MS = 160;
 export const ARR_MS = 33;
 export const SOFT_DROP_MS = 28;
@@ -154,7 +154,10 @@ export const I_KICKS = [
 
 export function gravityMs(level) {
   const lv = Math.max(1, level);
-  return Math.max(48, Math.round(820 * Math.pow(0.84, lv - 1)));
+  // Níveis 1–3 bem calmos; depois a rampa fica mais nítida.
+  const early = [0, 1250, 1050, 880];
+  if (lv <= 3) return early[lv];
+  return Math.max(48, Math.round(680 * Math.pow(0.76, lv - 4)));
 }
 
 export function cellsOf(piece) {
@@ -168,7 +171,7 @@ export function spawnX() {
 }
 
 export function spawnY() {
-  return 0;
+  return HIDDEN;
 }
 
 export function shuffle(list, rng = Math.random) {

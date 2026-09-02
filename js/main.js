@@ -4,6 +4,23 @@ import { Renderer } from "./render.js";
 import { Input } from "./input.js";
 
 const BEST_KEY = "queda-certa-recorde";
+const HOWTO_KEY = "queda-certa-como-jogar";
+const HOWTO_MS = 1800;
+
+const HOWTO_STEPS = [
+  {
+    title: "Mover e girar",
+    text: "Os botões ◀ e ▶ andam com a peça. Girar vira ela no lugar.",
+  },
+  {
+    title: "Descer",
+    text: "▼ suave desce um pouco. Queda! trava a peça no fundo na hora.",
+  },
+  {
+    title: "Limpar linhas",
+    text: "Complete uma linha para pontuar. Quatro de uma vez é Queda Certa!",
+  },
+];
 
 const els = {
   score: document.getElementById("stat-score"),
@@ -17,6 +34,7 @@ const els = {
   next: document.getElementById("next"),
   holdM: document.getElementById("hold-m"),
   nextM: document.getElementById("next-m"),
+  holdSlot: document.getElementById("pad-hold"),
   overlay: document.getElementById("overlay"),
   overlayTitle: document.getElementById("overlay-title"),
   overlayText: document.getElementById("overlay-text"),
@@ -26,6 +44,13 @@ const els = {
   btnPause: document.getElementById("btn-pause"),
   wrap: document.getElementById("board-wrap"),
   app: document.getElementById("app"),
+  howto: document.getElementById("howto"),
+  howtoTitle: document.getElementById("howto-title"),
+  howtoText: document.getElementById("howto-text"),
+  howtoVisual: document.getElementById("howto-visual"),
+  howtoDots: document.getElementById("howto-dots"),
+  btnHowToNext: document.getElementById("btn-howto-next"),
+  btnHowToSkip: document.getElementById("btn-howto-skip"),
 };
 
 const audio = new AudioEngine();
@@ -37,6 +62,10 @@ const renderer = new Renderer(els.board, [
 ]);
 
 let best = readBest();
+let tutorialOpen = false;
+let tutorialStep = 0;
+let tutorialTimer = 0;
+let hidePauseTimer = 0;
 
 const game = new Game({
   onScore: syncHud,
@@ -70,7 +99,7 @@ const game = new Game({
     renderer.showToast(label);
     if (navigator.vibrate) {
       try {
-        navigator.vibrate(count >= 4 ? [18, 30, 18] : 12);
+        navigator.vibrate(count >= 4 ? [24, 40, 24, 40, 36] : count >= 2 ? [16, 20, 16] : 14);
       } catch {
         /* ignore */
       }
@@ -117,6 +146,7 @@ const input = new Input(game, audio, {
   onPause: handlePauseButton,
   boardEl: els.board,
   buttons,
+  isBlocked: () => tutorialOpen,
 });
 
 els.btnPlay.addEventListener("click", () => {
@@ -140,6 +170,16 @@ els.btnPause.addEventListener("click", () => {
   handlePauseButton();
 });
 
+els.btnHowToNext.addEventListener("click", () => {
+  audio.unlock();
+  advanceHowTo();
+});
+
+els.btnHowToSkip.addEventListener("click", () => {
+  audio.unlock();
+  finishHowTo();
+});
+
 document.addEventListener(
   "pointerdown",
   () => {
@@ -159,13 +199,19 @@ if (window.visualViewport) {
 }
 
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden && game.state === STATE.PLAYING) {
-    game.togglePause();
-  }
+  window.clearTimeout(hidePauseTimer);
+  if (!document.hidden) return;
+  if (tutorialOpen) return;
+  if (game.state !== STATE.PLAYING) return;
+  hidePauseTimer = window.setTimeout(() => {
+    if (document.hidden && game.state === STATE.PLAYING && !tutorialOpen) {
+      game.togglePause();
+    }
+  }, 450);
 });
 
 syncSoundButton(audio.muted);
-showStart();
+bootScreen();
 layout();
 syncHud();
 requestAnimationFrame(loop);
@@ -186,6 +232,7 @@ function loop(now) {
 }
 
 function handlePauseButton() {
+  if (tutorialOpen) return;
   if (game.state === STATE.READY) {
     game.start();
     audio.start();
@@ -209,6 +256,9 @@ function syncHud() {
   els.scoreM.textContent = s;
   els.levelM.textContent = lv;
   els.linesM.textContent = ln;
+  if (els.holdSlot) {
+    els.holdSlot.classList.toggle("is-empty", !game.hold);
+  }
 }
 
 function syncSoundButton(muted) {
@@ -217,10 +267,66 @@ function syncSoundButton(muted) {
   els.btnSound.title = muted ? "Ativar som" : "Silenciar";
 }
 
+function bootScreen() {
+  if (!readHowToSeen()) {
+    openHowTo();
+    return;
+  }
+  showStart();
+}
+
+function openHowTo() {
+  tutorialOpen = true;
+  tutorialStep = 0;
+  els.overlay.hidden = true;
+  els.howto.hidden = false;
+  els.app.classList.add("is-overlay");
+  renderHowTo();
+  queueHowToTick();
+}
+
+function renderHowTo() {
+  const step = HOWTO_STEPS[tutorialStep];
+  els.howtoTitle.textContent = step.title;
+  els.howtoText.textContent = step.text;
+  els.howtoVisual.dataset.step = String(tutorialStep);
+  els.howtoDots.innerHTML = HOWTO_STEPS.map(
+    (_, i) => `<span class="${i === tutorialStep ? "is-on" : ""}"></span>`,
+  ).join("");
+  const last = tutorialStep >= HOWTO_STEPS.length - 1;
+  els.btnHowToNext.textContent = last ? "Entendi" : "Próximo";
+}
+
+function queueHowToTick() {
+  window.clearTimeout(tutorialTimer);
+  tutorialTimer = window.setTimeout(() => {
+    if (!tutorialOpen) return;
+    advanceHowTo();
+  }, HOWTO_MS);
+}
+
+function advanceHowTo() {
+  if (tutorialStep >= HOWTO_STEPS.length - 1) {
+    finishHowTo();
+    return;
+  }
+  tutorialStep += 1;
+  renderHowTo();
+  queueHowToTick();
+}
+
+function finishHowTo() {
+  window.clearTimeout(tutorialTimer);
+  tutorialOpen = false;
+  els.howto.hidden = true;
+  writeHowToSeen();
+  showStart();
+}
+
 function showStart() {
   showOverlay(
     "Queda Certa",
-    "Encaixe as peças, complete linhas e suba de nível. Toque ou pressione Enter para começar.",
+    "Encaixe as peças, complete linhas e suba de nível. Use os botões embaixo para jogar.",
     false,
   );
   els.btnPlay.textContent = "Jogar";
@@ -289,6 +395,22 @@ function readBest() {
 function writeBest(value) {
   try {
     localStorage.setItem(BEST_KEY, String(value));
+  } catch {
+    /* ignore */
+  }
+}
+
+function readHowToSeen() {
+  try {
+    return localStorage.getItem(HOWTO_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function writeHowToSeen() {
+  try {
+    localStorage.setItem(HOWTO_KEY, "1");
   } catch {
     /* ignore */
   }

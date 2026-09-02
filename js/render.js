@@ -21,45 +21,48 @@ export class Renderer {
   }
 
   resize(cssWidth, cssHeight) {
-    sizeCanvas(this.board, this.bctx, cssWidth, cssHeight);
-    const mini = Math.max(72, Math.min(120, Math.round(cssWidth * 0.34)));
+    sizeCanvas(this.board, this.bctx, cssWidth, cssHeight, true);
+    this.syncMinis();
+  }
+
+  syncMinis() {
     for (const miniCanvas of this.minis) {
-      sizeCanvas(miniCanvas.canvas, miniCanvas.ctx, mini, mini);
+      const rect = miniCanvas.canvas.getBoundingClientRect();
+      if (rect.width < 8 || rect.height < 8) continue;
+      sizeCanvas(miniCanvas.canvas, miniCanvas.ctx, rect.width, rect.height, false);
     }
   }
 
   spawnClear(rows, board, count) {
-    const cell = this.board.width / COLS / dprOf(this.board);
-    const dpr = dprOf(this.board);
-    const cellPx = this.board.width / COLS;
+    const m = this.metrics();
+    const burst = count >= 4 ? 12 : 7 + count;
     for (const y of rows) {
       const visY = y - HIDDEN;
       if (visY < 0) continue;
       for (let x = 0; x < COLS; x++) {
         const cellData = board[y][x];
         const color = cellData?.color || "#fff";
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < burst; i++) {
           this.particles.push({
-            x: (x + 0.5) * cellPx,
-            y: (visY + 0.5) * (this.board.height / ROWS),
-            vx: (Math.random() - 0.5) * 220 * dpr,
-            vy: (Math.random() - 0.7) * 240 * dpr,
-            life: 420 + Math.random() * 220,
-            max: 520,
-            size: (2.2 + Math.random() * 2.4) * dpr,
+            x: m.inset + (x + 0.5) * m.cw,
+            y: m.inset + (visY + 0.5) * m.ch,
+            vx: (Math.random() - 0.5) * 280 * m.dpr,
+            vy: (Math.random() - 0.75) * 320 * m.dpr,
+            life: 520 + Math.random() * 280,
+            max: 700,
+            size: (2.4 + Math.random() * 3.2) * m.dpr,
             color,
           });
         }
       }
     }
-    this.flash = count >= 4 ? 0.55 : 0.32;
-    this.shake = count >= 4 ? 10 : 5 + count;
-    void cell;
+    this.flash = count >= 4 ? 0.78 : 0.42 + count * 0.08;
+    this.shake = count >= 4 ? 14 : 6 + count * 2;
   }
 
   showToast(text) {
     this.toast = text;
-    this.toastMs = 900;
+    this.toastMs = text === "Queda Certa!" ? 1400 : 1100;
   }
 
   pulseLevel() {
@@ -68,8 +71,8 @@ export class Renderer {
 
   stepFx(dt) {
     const t = dt;
-    this.flash = Math.max(0, this.flash - t / 380);
-    this.shake = Math.max(0, this.shake - t / 40);
+    this.flash = Math.max(0, this.flash - t / 520);
+    this.shake = Math.max(0, this.shake - t / 46);
     this.toastMs = Math.max(0, this.toastMs - t);
     this.levelFlash = Math.max(0, this.levelFlash - t / 700);
     const next = [];
@@ -92,57 +95,73 @@ export class Renderer {
     }
   }
 
-  drawBoard(game) {
-    const ctx = this.bctx;
+  metrics() {
     const w = this.board.width;
     const h = this.board.height;
-    const cw = w / COLS;
-    const ch = h / ROWS;
+    const dpr = dprOf(this.board);
+    const inset = Math.max(4, dpr * 2.2);
+    return {
+      w,
+      h,
+      dpr,
+      inset,
+      cw: (w - inset * 2) / COLS,
+      ch: (h - inset * 2) / ROWS,
+    };
+  }
+
+  drawBoard(game) {
+    const ctx = this.bctx;
+    const { w, h, dpr, inset, cw, ch } = this.metrics();
 
     ctx.save();
     ctx.clearRect(0, 0, w, h);
 
-    const ox = this.shake ? (Math.random() - 0.5) * this.shake * dprOf(this.board) : 0;
-    const oy = this.shake ? (Math.random() - 0.5) * this.shake * dprOf(this.board) : 0;
+    const ox = this.shake ? (Math.random() - 0.5) * this.shake * dpr : 0;
+    const oy = this.shake ? (Math.random() - 0.5) * this.shake * dpr : 0;
     ctx.translate(ox, oy);
 
     const bg = ctx.createLinearGradient(0, 0, 0, h);
-    bg.addColorStop(0, "#1a2744");
-    bg.addColorStop(1, "#10182c");
+    bg.addColorStop(0, "#0c1424");
+    bg.addColorStop(1, "#070b14");
     ctx.fillStyle = bg;
-    roundRect(ctx, 0, 0, w, h, cw * 0.18);
+    roundRect(ctx, 0, 0, w, h, cw * 0.16);
     ctx.fill();
 
     ctx.save();
     ctx.beginPath();
-    roundRect(ctx, 0, 0, w, h, cw * 0.18);
+    roundRect(ctx, 0, 0, w, h, cw * 0.16);
     ctx.clip();
+
+    ctx.translate(inset, inset);
+    const innerW = cw * COLS;
+    const innerH = ch * ROWS;
 
     for (let y = 0; y < ROWS; y++) {
       for (let x = 0; x < COLS; x++) {
-        ctx.fillStyle = (x + y) % 2 === 0 ? "rgba(255,255,255,0.045)" : "rgba(0,0,0,0.12)";
+        ctx.fillStyle = (x + y) % 2 === 0 ? "rgba(255,255,255,0.028)" : "rgba(0,0,0,0.22)";
         ctx.fillRect(x * cw, y * ch, cw, ch);
       }
     }
 
-    ctx.strokeStyle = "rgba(180, 210, 255, 0.06)";
-    ctx.lineWidth = Math.max(1, dprOf(this.board) * 0.7);
+    ctx.strokeStyle = "rgba(140, 180, 230, 0.045)";
+    ctx.lineWidth = Math.max(1, dpr * 0.55);
     for (let x = 1; x < COLS; x++) {
       ctx.beginPath();
       ctx.moveTo(x * cw, 0);
-      ctx.lineTo(x * cw, h);
+      ctx.lineTo(x * cw, innerH);
       ctx.stroke();
     }
     for (let y = 1; y < ROWS; y++) {
       ctx.beginPath();
       ctx.moveTo(0, y * ch);
-      ctx.lineTo(w, y * ch);
+      ctx.lineTo(innerW, y * ch);
       ctx.stroke();
     }
 
     const clearing = new Set(game.clearingRows);
     const pulse = game.state === "clearing"
-      ? 0.55 + 0.45 * Math.sin((game.clearAnimMs / 320) * Math.PI * 6)
+      ? 0.55 + 0.45 * Math.sin((game.clearAnimMs / 280) * Math.PI * 6)
       : 1;
 
     for (let y = HIDDEN; y < HIDDEN + ROWS; y++) {
@@ -183,35 +202,35 @@ export class Renderer {
       ctx.globalAlpha = Math.max(0, p.life / p.max);
       ctx.fillStyle = p.color;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.arc(p.x - inset, p.y - inset, p.size, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.globalAlpha = 1;
 
     if (this.flash > 0) {
       ctx.fillStyle = `rgba(255, 244, 200, ${this.flash})`;
-      ctx.fillRect(0, 0, w, h);
+      ctx.fillRect(0, 0, innerW, innerH);
     }
 
     if (this.toastMs > 0 && this.toast) {
-      const alpha = Math.min(1, this.toastMs / 220);
+      const alpha = Math.min(1, this.toastMs / 240);
       ctx.save();
       ctx.globalAlpha = alpha;
-      ctx.font = `700 ${Math.round(ch * 0.85)}px Sora, Manrope, sans-serif`;
+      ctx.font = `800 ${Math.round(ch * (this.toast === "Queda Certa!" ? 0.92 : 0.78))}px Sora, Manrope, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillStyle = "#fff6d2";
-      ctx.shadowColor = "rgba(244, 201, 93, 0.8)";
-      ctx.shadowBlur = 24;
-      ctx.fillText(this.toast, w / 2, h * 0.42);
+      ctx.shadowColor = "rgba(244, 201, 93, 0.95)";
+      ctx.shadowBlur = 28;
+      ctx.fillText(this.toast, innerW / 2, innerH * 0.42);
       ctx.restore();
     }
 
     ctx.restore();
 
-    ctx.strokeStyle = "rgba(120, 230, 210, 0.28)";
-    ctx.lineWidth = Math.max(2, dprOf(this.board) * 1.4);
-    roundRect(ctx, 1, 1, w - 2, h - 2, cw * 0.18);
+    ctx.strokeStyle = "rgba(150, 245, 225, 0.38)";
+    ctx.lineWidth = Math.max(2, dpr * 1.5);
+    roundRect(ctx, 1, 1, w - 2, h - 2, cw * 0.16);
     ctx.stroke();
 
     ctx.restore();
@@ -268,7 +287,7 @@ export class Renderer {
   }
 }
 
-function sizeCanvas(canvas, ctx, cssW, cssH) {
+function sizeCanvas(canvas, ctx, cssW, cssH, lockCss) {
   const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
   const w = Math.max(1, Math.round(cssW * dpr));
   const h = Math.max(1, Math.round(cssH * dpr));
@@ -276,8 +295,10 @@ function sizeCanvas(canvas, ctx, cssW, cssH) {
     canvas.width = w;
     canvas.height = h;
   }
-  canvas.style.width = `${cssW}px`;
-  canvas.style.height = `${cssH}px`;
+  if (lockCss) {
+    canvas.style.width = `${cssW}px`;
+    canvas.style.height = `${cssH}px`;
+  }
   ctx.setTransform(1, 0, 0, 1, 0, 0);
 }
 
@@ -306,21 +327,34 @@ function drawCell(ctx, x, y, cw, ch, color, deep, alpha = 1, pulse = 1, glow = f
   ctx.globalAlpha = alpha;
   if (glow) {
     ctx.shadowColor = color;
-    ctx.shadowBlur = cw * 0.45;
+    ctx.shadowBlur = cw * 0.7;
   }
   ctx.fillStyle = deep || color;
   roundRect(ctx, px + inset * 0.3, py + inset * 0.3, cw - inset * 0.6, ch - inset * 0.6, r);
   ctx.fill();
 
   const g = ctx.createLinearGradient(px, py, px + cw, py + ch);
-  g.addColorStop(0, shade(color, 0.28 * pulse));
-  g.addColorStop(0.45, color);
-  g.addColorStop(1, deep || shade(color, -0.25));
+  g.addColorStop(0, shade(color, 0.34 * pulse));
+  g.addColorStop(0.45, shade(color, 0.08));
+  g.addColorStop(1, deep || shade(color, -0.22));
   ctx.fillStyle = g;
   roundRect(ctx, px + inset, py + inset, cw - inset * 2, ch - inset * 2, r * 0.8);
   ctx.fill();
 
-  ctx.fillStyle = "rgba(255,255,255,0.28)";
+  ctx.strokeStyle = "rgba(0, 0, 0, 0.55)";
+  ctx.lineWidth = Math.max(1, cw * 0.055);
+  roundRect(ctx, px + inset * 0.35, py + inset * 0.35, cw - inset * 0.7, ch - inset * 0.7, r);
+  ctx.stroke();
+
+  if (glow) {
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = shade(color, 0.45);
+    ctx.lineWidth = Math.max(1.2, cw * 0.07);
+    roundRect(ctx, px + inset * 0.5, py + inset * 0.5, cw - inset, ch - inset, r * 0.85);
+    ctx.stroke();
+  }
+
+  ctx.fillStyle = "rgba(255,255,255,0.32)";
   roundRect(ctx, px + inset * 1.4, py + inset * 1.2, (cw - inset * 2.8) * 0.55, (ch - inset * 2.4) * 0.28, r * 0.4);
   ctx.fill();
   ctx.restore();
@@ -330,13 +364,13 @@ function drawGhost(ctx, x, y, cw, ch, color) {
   const inset = Math.max(1.4, cw * 0.12);
   const r = Math.max(3, cw * 0.18);
   ctx.save();
-  ctx.globalAlpha = 0.28;
+  ctx.globalAlpha = 0.22;
   ctx.fillStyle = color;
   roundRect(ctx, x * cw + inset, y * ch + inset, cw - inset * 2, ch - inset * 2, r);
   ctx.fill();
-  ctx.globalAlpha = 0.85;
-  ctx.strokeStyle = color;
-  ctx.lineWidth = Math.max(1.2, cw * 0.06);
+  ctx.globalAlpha = 0.95;
+  ctx.strokeStyle = shade(color, 0.25);
+  ctx.lineWidth = Math.max(1.4, cw * 0.08);
   roundRect(ctx, x * cw + inset, y * ch + inset, cw - inset * 2, ch - inset * 2, r);
   ctx.stroke();
   ctx.restore();

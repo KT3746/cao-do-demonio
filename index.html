@@ -13,11 +13,11 @@
     <meta property="og:description" content="Puzzle de blocos original, em português, para jogar no celular e no computador." />
     <meta property="og:type" content="website" />
     <title>Queda Certa</title>
-    <link rel="icon" href="assets/favicon.svg?v=2-__CACHE__" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.svg?v=3-__CACHE__" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=2-__CACHE__" />
+    <link rel="stylesheet" href="css/styles.css?v=3-__CACHE__" />
   </head>
   <body>
     <div class="aurora" aria-hidden="true"></div>
@@ -28,6 +28,20 @@
           <div>
             <h1>Queda Certa</h1>
             <p class="tag">Encaixe. Limpe. Suba de nível.</p>
+          </div>
+        </div>
+        <div class="hud-inline" aria-label="Placar">
+          <div class="stat-inline">
+            <span>Pontos</span>
+            <strong id="stat-score-m">0</strong>
+          </div>
+          <div class="stat-inline">
+            <span>Nível</span>
+            <strong id="stat-level-m">1</strong>
+          </div>
+          <div class="stat-inline">
+            <span>Linhas</span>
+            <strong id="stat-lines-m">0</strong>
           </div>
         </div>
         <div class="toolbar">
@@ -41,32 +55,6 @@
           </button>
         </div>
       </header>
-
-      <section class="hud-mobile" aria-label="Placar">
-        <div class="stat">
-          <span>Pontos</span>
-          <strong id="stat-score-m">0</strong>
-        </div>
-        <div class="stat">
-          <span>Nível</span>
-          <strong id="stat-level-m">1</strong>
-        </div>
-        <div class="stat">
-          <span>Linhas</span>
-          <strong id="stat-lines-m">0</strong>
-        </div>
-      </section>
-
-      <div class="previews-mobile">
-        <section class="card mini">
-          <h2>Reserva</h2>
-          <canvas id="hold-m" width="96" height="96" aria-label="Peça reservada"></canvas>
-        </section>
-        <section class="card mini">
-          <h2>Próxima</h2>
-          <canvas id="next-m" width="96" height="96" aria-label="Próxima peça"></canvas>
-        </section>
-      </div>
 
       <div class="layout">
         <aside class="panel panel-left">
@@ -92,8 +80,21 @@
         </aside>
 
         <main class="stage">
-          <div id="board-wrap">
-            <canvas id="board" width="300" height="600" role="img" aria-label="Tabuleiro do Queda Certa"></canvas>
+          <div class="playfield">
+            <div id="board-wrap">
+              <canvas id="board" width="300" height="600" role="img" aria-label="Tabuleiro do Queda Certa"></canvas>
+            </div>
+            <aside class="board-rail">
+              <div class="next-slot">
+                <span class="rail-label">Próxima</span>
+                <canvas id="next-m" width="80" height="80" aria-label="Próxima peça"></canvas>
+              </div>
+              <button type="button" id="pad-hold" class="hold-slot is-empty" data-action="hold" aria-label="Reservar peça">
+                <span class="rail-label">Reserva</span>
+                <canvas id="hold-m" width="56" height="56" aria-hidden="true"></canvas>
+                <span class="hold-empty">＋</span>
+              </button>
+            </aside>
           </div>
         </main>
 
@@ -118,16 +119,43 @@
       </div>
 
       <nav class="touch" aria-label="Controles de toque">
-        <button type="button" id="pad-hold" data-action="hold">Reservar</button>
-        <button type="button" id="pad-left" data-action="left" aria-label="Esquerda">◀</button>
-        <button type="button" id="pad-soft" data-action="soft" aria-label="Queda suave">▼</button>
-        <button type="button" id="pad-right" data-action="right" aria-label="Direita">▶</button>
-        <button type="button" id="pad-rot" data-action="rotR">Girar</button>
-        <button type="button" id="pad-hard" data-action="hard">Queda!</button>
-        <p class="touch-hint">No tabuleiro: deslize para mover, toque para girar, deslize para cima para queda rápida.</p>
+        <div class="pad-row pad-move">
+          <button type="button" id="pad-left" data-action="left" aria-label="Esquerda">◀</button>
+          <button type="button" id="pad-right" data-action="right" aria-label="Direita">▶</button>
+          <button type="button" id="pad-rot" data-action="rotR">Girar</button>
+        </div>
+        <div class="pad-row pad-drop">
+          <button type="button" id="pad-soft" data-action="soft">
+            <span class="pad-icon" aria-hidden="true">▼</span>
+            <span class="pad-caption">suave</span>
+          </button>
+          <button type="button" id="pad-hard" data-action="hard">Queda!</button>
+        </div>
       </nav>
 
       <p class="desk-hint">Computador: setas para mover, espaço para queda rápida, C para reservar, P para pausar.</p>
+    </div>
+
+    <div id="howto" class="overlay howto" hidden role="dialog" aria-modal="true" aria-labelledby="howto-title">
+      <div class="modal howto-modal">
+        <p class="eyebrow">Como jogar</p>
+        <div id="howto-visual" class="howto-visual" data-step="0" aria-hidden="true">
+          <div class="hv hv-move">
+            <span>◀</span><span>▶</span><span>Girar</span>
+          </div>
+          <div class="hv hv-drop">
+            <span class="hv-soft">▼ suave</span><span class="hv-hard">Queda!</span>
+          </div>
+          <div class="hv hv-lines">
+            <i></i><i></i><i></i><i></i>
+          </div>
+        </div>
+        <h2 id="howto-title">Mover e girar</h2>
+        <p id="howto-text">Os botões ◀ e ▶ andam com a peça. Girar vira ela no lugar.</p>
+        <div class="howto-dots" id="howto-dots" aria-hidden="true"></div>
+        <button type="button" id="btn-howto-next" class="cta">Próximo</button>
+        <button type="button" id="btn-howto-skip" class="linkish">Pular</button>
+      </div>
     </div>
 
     <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="overlay-title">
@@ -143,6 +171,6 @@
       </div>
     </div>
 
-    <script type="module" src="js/main.js?v=2-__CACHE__"></script>
+    <script type="module" src="js/main.js?v=3-__CACHE__"></script>
   </body>
 </html>

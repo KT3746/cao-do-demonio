@@ -12,7 +12,17 @@ import {
   ghostY,
   lineLabel,
 } from "../js/engine.js";
-import { emptyBoard, COLS, TOTAL_ROWS, HIDDEN, LINE_POINTS } from "../js/pieces.js";
+import {
+  emptyBoard,
+  COLS,
+  TOTAL_ROWS,
+  HIDDEN,
+  LINE_POINTS,
+  PIECE_KEYS,
+  cellsOf,
+  gravityMs,
+  spawnY,
+} from "../js/pieces.js";
 
 function fillRow(board, y, skip = []) {
   for (let x = 0; x < COLS; x++) {
@@ -192,5 +202,28 @@ describe("partida", () => {
     const next = mergePiece(board, piece);
     assert.ok(next[HIDDEN + 1][4]);
     assert.equal(next[HIDDEN + 1][4].id, "quadro");
+  });
+});
+
+describe("spawn e gravidade", () => {
+  it("nasce com todos os blocos na área visível", () => {
+    assert.equal(spawnY(), HIDDEN);
+    for (const id of PIECE_KEYS) {
+      const piece = createPiece(id);
+      for (const { y } of cellsOf(piece)) {
+        assert.ok(y >= HIDDEN, `${id} cortada no topo (y=${y})`);
+        assert.ok(y < TOTAL_ROWS, `${id} abaixo do poço (y=${y})`);
+      }
+    }
+  });
+
+  it("níveis 1–3 caem devagar e depois aceleram", () => {
+    assert.ok(gravityMs(1) >= 1200);
+    assert.ok(gravityMs(2) >= 1000);
+    assert.ok(gravityMs(3) >= 850);
+    assert.ok(gravityMs(1) > gravityMs(3));
+    assert.ok(gravityMs(3) > gravityMs(6));
+    assert.ok(gravityMs(10) < gravityMs(6));
+    assert.equal(gravityMs(1) > 2 * gravityMs(8), true);
   });
 });

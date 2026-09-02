@@ -5,10 +5,11 @@ import { DAS_MS, ARR_MS } from "./pieces.js";
  * Usa Pointer Events (um único caminho para mouse, caneta e dedo).
  */
 export class Input {
-  constructor(game, audio, { onPause, boardEl, buttons }) {
+  constructor(game, audio, { onPause, boardEl, buttons, isBlocked }) {
     this.game = game;
     this.audio = audio;
     this.onPause = onPause;
+    this.isBlocked = isBlocked || (() => false);
     this.boardEl = boardEl;
     this.held = new Map();
     this.hardDropArmed = true;
@@ -62,6 +63,7 @@ export class Input {
   }
 
   startHold(action) {
+    if (this.isBlocked()) return;
     if (this.held.has(action)) return;
     this.fire(action, true);
     this.held.set(action, { acc: 0, started: false, das: true });
@@ -120,6 +122,7 @@ export class Input {
     if (ev.repeat) return;
     const tag = (ev.target && ev.target.tagName) || "";
     if (tag === "INPUT" || tag === "TEXTAREA") return;
+    if (this.isBlocked()) return;
 
     const key = ev.key;
     const code = ev.code;
@@ -153,6 +156,7 @@ export class Input {
   onPointerDown(ev) {
     if (ev.pointerType === "mouse" && ev.button !== 0) return;
     if (ev.target.closest && ev.target.closest("[data-action]")) return;
+    if (this.isBlocked()) return;
     ev.preventDefault();
     this.audio.unlock();
     if (this.game.state === "ready") {

@@ -44,8 +44,16 @@ Jogo de puzzle com peças que caem. É **original**: nomes, cores, textos e sons
 
 ### Celular
 
-- Botões grandes embaixo do tabuleiro: mover, queda suave, girar, reservar e **Queda!**
-- No tabuleiro: **deslize** esquerda/direita para mover, **para baixo** para queda suave, **toque** para girar, **deslize para cima** para queda rápida.
+Na primeira visita aparece **Como jogar** (2–3 passos, dá para pular). O jeito ensinado é só pelos **botões**:
+
+| Botão | Ação |
+| --- | --- |
+| `◀` `▶` | Mover (mesma fileira, grandes) |
+| **Girar** | Virar a peça |
+| **▼ suave** | Desce um pouco |
+| **Queda!** | Queda rápida (ação principal) |
+
+**Reserva** fica no cantinho ao lado do tabuleiro (avançado, fora da fileira de movimento). **Próxima** também fica nessa faixa estreita, para o poço ficar grande.
 
 O primeiro toque também liga o som (o navegador exige um gesto seu).
 

@@ -140,14 +140,16 @@ export class AudioEngine {
     chord.forEach((freq, i) => {
       this.tone({
         freq,
-        dur: 0.16 + count * 0.02,
+        dur: 0.2 + count * 0.03,
         type: "triangle",
-        vol: 0.11,
-        delay: i * 0.055,
+        vol: 0.16,
+        delay: i * 0.05,
       });
     });
+    this.noise(0.08 + count * 0.02, 0.06 + count * 0.015);
     if (count >= 4) {
-      this.tone({ freq: 1318, dur: 0.22, type: "sine", vol: 0.08, delay: 0.2 });
+      this.tone({ freq: 1318, dur: 0.28, type: "sine", vol: 0.12, delay: 0.18 });
+      this.tone({ freq: 1760, dur: 0.18, type: "sine", vol: 0.07, delay: 0.28 });
     }
   }
 
