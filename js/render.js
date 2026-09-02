@@ -107,8 +107,8 @@ export class Renderer {
     ctx.translate(ox, oy);
 
     const bg = ctx.createLinearGradient(0, 0, 0, h);
-    bg.addColorStop(0, "#10182c");
-    bg.addColorStop(1, "#0a1020");
+    bg.addColorStop(0, "#1a2744");
+    bg.addColorStop(1, "#10182c");
     ctx.fillStyle = bg;
     roundRect(ctx, 0, 0, w, h, cw * 0.18);
     ctx.fill();
@@ -120,7 +120,7 @@ export class Renderer {
 
     for (let y = 0; y < ROWS; y++) {
       for (let x = 0; x < COLS; x++) {
-        ctx.fillStyle = (x + y) % 2 === 0 ? "rgba(255,255,255,0.025)" : "rgba(0,0,0,0.08)";
+        ctx.fillStyle = (x + y) % 2 === 0 ? "rgba(255,255,255,0.045)" : "rgba(0,0,0,0.12)";
         ctx.fillRect(x * cw, y * ch, cw, ch);
       }
     }
@@ -330,11 +330,11 @@ function drawGhost(ctx, x, y, cw, ch, color) {
   const inset = Math.max(1.4, cw * 0.12);
   const r = Math.max(3, cw * 0.18);
   ctx.save();
-  ctx.globalAlpha = 0.22;
+  ctx.globalAlpha = 0.28;
   ctx.fillStyle = color;
   roundRect(ctx, x * cw + inset, y * ch + inset, cw - inset * 2, ch - inset * 2, r);
   ctx.fill();
-  ctx.globalAlpha = 0.7;
+  ctx.globalAlpha = 0.85;
   ctx.strokeStyle = color;
   ctx.lineWidth = Math.max(1.2, cw * 0.06);
   roundRect(ctx, x * cw + inset, y * ch + inset, cw - inset * 2, ch - inset * 2, r);

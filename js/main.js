@@ -148,6 +148,10 @@ document.addEventListener(
   { once: true, capture: true },
 );
 
+let lastWrapW = 0;
+let lastWrapH = 0;
+let last = performance.now();
+
 window.addEventListener("resize", layout);
 window.addEventListener("orientationchange", () => setTimeout(layout, 120));
 if (window.visualViewport) {
@@ -164,19 +168,22 @@ syncSoundButton(audio.muted);
 showStart();
 layout();
 syncHud();
+requestAnimationFrame(loop);
 
-let last = performance.now();
 function loop(now) {
   const dt = Math.min(48, now - last);
   last = now;
-  if (game.state === STATE.PLAYING) input.step(dt);
-  game.tick(dt);
-  renderer.stepFx(dt);
-  layoutIfNeeded();
-  renderer.draw(game);
+  try {
+    if (game.state === STATE.PLAYING) input.step(dt);
+    game.tick(dt);
+    renderer.stepFx(dt);
+    layoutIfNeeded();
+    renderer.draw(game);
+  } catch (err) {
+    console.error(err);
+  }
   requestAnimationFrame(loop);
 }
-requestAnimationFrame(loop);
 
 function handlePauseButton() {
   if (game.state === STATE.READY) {
@@ -239,8 +246,6 @@ function hideOverlay() {
   els.app.classList.remove("is-overlay");
 }
 
-let lastWrapW = 0;
-let lastWrapH = 0;
 function layoutIfNeeded() {
   const box = els.wrap.getBoundingClientRect();
   if (Math.abs(box.height - lastWrapH) > 1 || Math.abs(box.width - lastWrapW) > 1) {
@@ -270,7 +275,6 @@ function layout() {
   }
   w = Math.floor(w);
   h = Math.floor(h);
-  lastBoardH = h;
   renderer.resize(w, h);
 }
 
