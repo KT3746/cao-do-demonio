@@ -1,8 +1,8 @@
-# Queda Certa
+# Cão do Demônio
 
 Jogo de puzzle com peças que caem. É **original**: nomes, cores, textos e sons próprios, em português do Brasil. Dá para jogar no celular (toque) e no computador (teclado), no mesmo endereço.
 
-**Jogar online:** [https://kt3746.github.io/queda-certa/](https://kt3746.github.io/queda-certa/)
+**Jogar online:** [https://kt3746.github.io/cao-do-demonio/](https://kt3746.github.io/cao-do-demonio/)
 
 > Se o link ainda não abrir, veja [Publicar no GitHub Pages](#publicar-no-github-pages) no final deste arquivo.
 
@@ -10,7 +10,7 @@ Jogo de puzzle com peças que caem. É **original**: nomes, cores, textos e sons
 
 1. Peças de quatro blocos caem no poço.
 2. Mova, gire e encaixe para **completar linhas horizontais**.
-3. Linha cheia some e você ganha pontos. Quatro de uma vez é **Queda Certa** — vale mais.
+3. Linha cheia some e você ganha pontos. Quatro de uma vez é **Cão do Demônio** — vale mais.
 4. A cada 10 linhas o **nível** sobe e as peças caem mais rápido.
 5. Se a pilha chega no topo e a próxima peça não cabe, a partida acaba.
 6. A sombra clara mostra onde a peça vai pousar.
@@ -88,7 +88,7 @@ O fluxo em `.github/workflows/pages.yml` publica a pasta do site sempre que algu
 1. Abra o repositório → **Settings** → **Pages**.
 2. Em **Build and deployment → Source**, escolha **GitHub Actions**.
 3. O fluxo em `.github/workflows/pages.yml` publica sozinho a cada push na `main`.
-4. O endereço esperado é: `https://kt3746.github.io/queda-certa/`
+4. O endereço esperado é: `https://kt3746.github.io/cao-do-demonio/`
 
 Cada publicação troca o parâmetro `?v=` dos arquivos (hash do commit), para o navegador não ficar com uma versão velha.
 
