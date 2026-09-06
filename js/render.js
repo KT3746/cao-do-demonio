@@ -152,25 +152,28 @@ export class Renderer {
     const innerW = cw * COLS;
     const innerH = ch * ROWS;
 
-    for (let y = 0; y < ROWS; y++) {
-      for (let x = 0; x < COLS; x++) {
-        ctx.fillStyle = (x + y) % 2 === 0 ? "rgba(255,255,255,0.028)" : "rgba(0,0,0,0.22)";
-        ctx.fillRect(x * cw, y * ch, cw, ch);
-      }
+    // Faixas verticais coloridas (colunas) para mirar onde a peça cai
+    for (let x = 0; x < COLS; x++) {
+      const even = x % 2 === 0;
+      ctx.fillStyle = even ? "rgba(56, 189, 248, 0.10)" : "rgba(167, 139, 250, 0.11)";
+      ctx.fillRect(x * cw, 0, cw, innerH);
     }
-
-    ctx.strokeStyle = "rgba(140, 180, 230, 0.045)";
-    ctx.lineWidth = Math.max(1, dpr * 0.55);
-    for (let x = 1; x < COLS; x++) {
-      ctx.beginPath();
-      ctx.moveTo(x * cw, 0);
-      ctx.lineTo(x * cw, innerH);
-      ctx.stroke();
-    }
+    // linhas horizontais bem suaves
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
+    ctx.lineWidth = Math.max(1, dpr * 0.5);
     for (let y = 1; y < ROWS; y++) {
       ctx.beginPath();
       ctx.moveTo(0, y * ch);
       ctx.lineTo(innerW, y * ch);
+      ctx.stroke();
+    }
+    // divisórias verticais mais marcadas
+    ctx.strokeStyle = "rgba(200, 230, 255, 0.14)";
+    ctx.lineWidth = Math.max(1.2, dpr * 0.7);
+    for (let x = 1; x < COLS; x++) {
+      ctx.beginPath();
+      ctx.moveTo(x * cw, 0);
+      ctx.lineTo(x * cw, innerH);
       ctx.stroke();
     }
 
