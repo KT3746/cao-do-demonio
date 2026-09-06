@@ -468,3 +468,41 @@ body.theme-candy .layout-chip strong { color: #9a3412; }
 body.theme-candy .layout-chip > span { color: #9a6b4f; }
 body.theme-candy .layout-chip.is-on strong { color: #be123c; }
 body.theme-candy .layout-chip.is-on > span { color: #9a3412; }
+
+
+/* === Modo essencial: sem HOLD e sem pad de botões === */
+.hold-slot,
+#pad-hold,
+#pad-hold-float,
+.float-side .hold-slot,
+.rail-right .hold-slot,
+.lbl-hold {
+  display: none !important;
+}
+/* esconde fila HOLD na lateral direita: só NEXT */
+body.layout-micro .rail-right .hold-slot { display: none !important; }
+
+/* controles de toque somem — gestos no tabuleiro */
+.cyber-pad,
+.gesture-hint {
+  display: none !important;
+}
+
+/* tabuleiro ganha o espaço dos botões */
+#app {
+  grid-template-rows: auto 1fr auto !important;
+}
+body.layout-full #app,
+body.layout-gesture #app,
+body.layout-strip #app,
+body.layout-micro #app {
+  gap: 2px;
+}
+
+/* float: só NEXT no canto (sem HOLD) */
+.float-side {
+  /* only next remains */
+}
+.float-side .float-box:not(.hold-slot) {
+  display: block;
+}
