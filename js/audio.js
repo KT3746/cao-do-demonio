@@ -1,9 +1,9 @@
 /**
  * Sons e música sintetizados no navegador (Web Audio).
- * Nada de amostras prontas — só tons originais do Queda Certa.
+ * Nada de amostras prontas — só tons originais do Cão do Demônio.
  */
 
-const STORAGE_KEY = "queda-certa-som";
+const STORAGE_KEY = "cao-do-demonio-som";
 
 export class AudioEngine {
   constructor() {
