@@ -24,7 +24,7 @@ export class AudioEngine {
       if (!Ctx) return;
       this.ctx = new Ctx();
       this.master = this.ctx.createGain();
-      this.master.gain.value = 0.22;
+      this.master.gain.value = 0.28;
       this.master.connect(this.ctx.destination);
 
       this.sfxGain = this.ctx.createGain();
@@ -32,7 +32,7 @@ export class AudioEngine {
       this.sfxGain.connect(this.master);
 
       this.musicGain = this.ctx.createGain();
-      this.musicGain.gain.value = 0.09;
+      this.musicGain.gain.value = 0.16;
       this.musicGain.connect(this.master);
     }
     if (this.ctx.state === "suspended") {
@@ -49,7 +49,7 @@ export class AudioEngine {
       /* ignore */
     }
     if (this.master) {
-      this.master.gain.value = muted ? 0 : 0.22;
+      this.master.gain.value = muted ? 0 : 0.28;
     }
     if (muted) this.stopMusic(true);
     else if (this.musicOn) this.startMusic(true);
@@ -125,7 +125,7 @@ export class AudioEngine {
     src.start(t);
   }
 
-  /** Melodia alegre e macia (sem ruído agudo). */
+  /** Melodia alegre e bem audível (sem chiado). */
   startMusic(resumeOnly = false) {
     this.unlock();
     if (!this.ctx || this.muted) return;
@@ -133,14 +133,14 @@ export class AudioEngine {
     if (this.musicTimer) return;
     if (!resumeOnly) this.step = 0;
 
-    // Notas mais graves/médias — evita chiado tipo choque
+    // Arpejo alegre em C/G — médio, sem agudos secos
     const melody = [
-      261.63, 329.63, 392.0, 329.63,
-      293.66, 349.23, 440.0, 349.23,
-      261.63, 329.63, 392.0, 523.25,
-      392.0, 329.63, 293.66, 261.63,
+      392.0, 493.88, 587.33, 523.25,
+      392.0, 493.88, 659.25, 587.33,
+      349.23, 440.0, 523.25, 493.88,
+      392.0, 523.25, 659.25, 783.99,
     ];
-    const bass = [98.0, 98.0, 110.0, 110.0, 123.47, 123.47, 110.0, 98.0];
+    const bass = [98.0, 98.0, 130.81, 130.81, 87.31, 87.31, 110.0, 98.0];
 
     const tick = () => {
       if (!this.musicOn || this.muted || !this.ctx) return;
@@ -148,39 +148,38 @@ export class AudioEngine {
       const beat = this.step % 4 === 0;
       this.tone({
         freq: melody[i],
-        dur: 0.22,
-        type: "sine",
-        vol: 0.055,
-        dest: this.musicGain,
-        filter: 1800,
-      });
-      // harmônico suave (oitava abaixo), sem noise
-      this.tone({
-        freq: melody[i] / 2,
         dur: 0.2,
         type: "triangle",
-        vol: 0.03,
+        vol: 0.09,
         dest: this.musicGain,
-        filter: 900,
+        filter: 2200,
+      });
+      this.tone({
+        freq: melody[i] * 0.5,
+        dur: 0.18,
+        type: "sine",
+        vol: 0.045,
+        dest: this.musicGain,
+        filter: 1200,
       });
       if (beat) {
         this.tone({
           freq: bass[(this.step / 4) % bass.length | 0],
-          dur: 0.28,
+          dur: 0.26,
           type: "sine",
-          vol: 0.08,
+          vol: 0.11,
           dest: this.musicGain,
-          filter: 400,
+          filter: 450,
         });
       }
       this.step += 1;
     };
 
     tick();
-    this.musicTimer = setInterval(tick, 210);
+    this.musicTimer = setInterval(tick, 195);
   }
 
-  stopMusic(keepFlag = false) {
+  stopMusicstopMusic(keepFlag = false) {
     if (!keepFlag) this.musicOn = false;
     if (this.musicTimer) {
       clearInterval(this.musicTimer);
