@@ -1,5 +1,5 @@
 /**
- * Sons sintetizados no navegador (Web Audio).
+ * Sons e música sintetizados no navegador (Web Audio).
  * Nada de amostras prontas — só tons originais do Queda Certa.
  */
 
@@ -9,8 +9,13 @@ export class AudioEngine {
   constructor() {
     this.ctx = null;
     this.master = null;
+    this.musicGain = null;
+    this.sfxGain = null;
     this.muted = readMuted();
     this.unlocked = false;
+    this.musicOn = false;
+    this.musicTimer = null;
+    this.step = 0;
   }
 
   unlock() {
@@ -19,8 +24,16 @@ export class AudioEngine {
       if (!Ctx) return;
       this.ctx = new Ctx();
       this.master = this.ctx.createGain();
-      this.master.gain.value = 0.2;
+      this.master.gain.value = 0.22;
       this.master.connect(this.ctx.destination);
+
+      this.sfxGain = this.ctx.createGain();
+      this.sfxGain.gain.value = 1;
+      this.sfxGain.connect(this.master);
+
+      this.musicGain = this.ctx.createGain();
+      this.musicGain.gain.value = 0.11;
+      this.musicGain.connect(this.master);
     }
     if (this.ctx.state === "suspended") {
       this.ctx.resume();
@@ -35,6 +48,11 @@ export class AudioEngine {
     } catch {
       /* ignore */
     }
+    if (this.master) {
+      this.master.gain.value = muted ? 0 : 0.22;
+    }
+    if (muted) this.stopMusic(true);
+    else if (this.musicOn) this.startMusic(true);
   }
 
   toggleMute() {
@@ -54,6 +72,7 @@ export class AudioEngine {
     slide = 0,
     delay = 0,
     filter = 0,
+    dest = null,
   }) {
     if (this.muted || !this.ctx || !this.unlocked) return;
     const t = this.now() + delay;
@@ -68,6 +87,7 @@ export class AudioEngine {
     gain.gain.exponentialRampToValueAtTime(vol, t + 0.012);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
 
+    const out = dest || this.sfxGain || this.master;
     if (filter) {
       const filt = this.ctx.createBiquadFilter();
       filt.type = "lowpass";
@@ -77,7 +97,7 @@ export class AudioEngine {
     } else {
       osc.connect(gain);
     }
-    gain.connect(this.master);
+    gain.connect(out);
     osc.start(t);
     osc.stop(t + dur + 0.02);
   }
@@ -101,65 +121,126 @@ export class AudioEngine {
     gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
     src.connect(filt);
     filt.connect(gain);
-    gain.connect(this.master);
+    gain.connect(this.sfxGain || this.master);
     src.start(t);
   }
 
+  /** Melodia alegre original em loop (arpejo C maior + baixo). */
+  startMusic(resumeOnly = false) {
+    this.unlock();
+    if (!this.ctx || this.muted) return;
+    this.musicOn = true;
+    if (this.musicTimer) return;
+    if (!resumeOnly) this.step = 0;
+
+    const melody = [
+      523.25, 659.25, 783.99, 659.25,
+      587.33, 698.46, 880.0, 698.46,
+      523.25, 659.25, 783.99, 1046.5,
+      783.99, 659.25, 587.33, 523.25,
+    ];
+    const bass = [130.81, 130.81, 146.83, 146.83, 164.81, 164.81, 146.83, 130.81];
+
+    const tick = () => {
+      if (!this.musicOn || this.muted || !this.ctx) return;
+      const i = this.step % melody.length;
+      const beat = this.step % 8 === 0;
+      this.tone({
+        freq: melody[i],
+        dur: 0.16,
+        type: "triangle",
+        vol: 0.07,
+        dest: this.musicGain,
+        filter: 3200,
+      });
+      if (beat) {
+        this.tone({
+          freq: bass[(this.step / 2) % bass.length | 0],
+          dur: 0.22,
+          type: "sine",
+          vol: 0.09,
+          dest: this.musicGain,
+          filter: 500,
+        });
+      }
+      // hi-hat leve
+      if (this.step % 2 === 1) this.noise(0.025, 0.012);
+      this.step += 1;
+    };
+
+    tick();
+    this.musicTimer = setInterval(tick, 180);
+  }
+
+  stopMusic(keepFlag = false) {
+    if (!keepFlag) this.musicOn = false;
+    if (this.musicTimer) {
+      clearInterval(this.musicTimer);
+      this.musicTimer = null;
+    }
+  }
+
+  pauseMusic() {
+    this.stopMusic(true);
+  }
+
   move() {
-    this.tone({ freq: 380, dur: 0.035, type: "square", vol: 0.05, filter: 1400 });
+    this.tone({ freq: 400, dur: 0.03, type: "square", vol: 0.045, filter: 1600 });
   }
 
   rotate() {
-    this.tone({ freq: 620, dur: 0.05, type: "triangle", vol: 0.1 });
-    this.tone({ freq: 930, dur: 0.04, type: "sine", vol: 0.06, delay: 0.015 });
+    this.tone({ freq: 660, dur: 0.05, type: "triangle", vol: 0.11 });
+    this.tone({ freq: 990, dur: 0.045, type: "sine", vol: 0.07, delay: 0.015 });
   }
 
   lock() {
-    this.tone({ freq: 160, dur: 0.1, type: "sine", vol: 0.16, slide: -50, filter: 600 });
-    this.noise(0.04, 0.04);
+    this.tone({ freq: 170, dur: 0.1, type: "sine", vol: 0.17, slide: -55, filter: 700 });
+    this.noise(0.05, 0.05);
   }
 
   hardDrop() {
-    this.tone({ freq: 220, dur: 0.08, type: "sine", vol: 0.14, slide: -90 });
-    this.tone({ freq: 90, dur: 0.12, type: "triangle", vol: 0.1, delay: 0.02 });
+    this.tone({ freq: 240, dur: 0.08, type: "sine", vol: 0.15, slide: -100 });
+    this.tone({ freq: 95, dur: 0.14, type: "triangle", vol: 0.11, delay: 0.02 });
+    this.noise(0.06, 0.05);
   }
 
   hold() {
-    this.tone({ freq: 480, dur: 0.09, type: "sine", vol: 0.09, slide: 220 });
+    this.tone({ freq: 500, dur: 0.09, type: "sine", vol: 0.1, slide: 240 });
   }
 
   lineClear(count) {
     const chord =
       count >= 4
-        ? [523, 659, 784, 1046]
+        ? [523, 659, 784, 1046, 1318]
         : count === 3
-          ? [440, 554, 659]
+          ? [440, 554, 659, 880]
           : count === 2
-            ? [392, 523]
-            : [349];
+            ? [392, 523, 659]
+            : [349, 523];
     chord.forEach((freq, i) => {
       this.tone({
         freq,
-        dur: 0.2 + count * 0.03,
+        dur: 0.22 + count * 0.04,
         type: "triangle",
-        vol: 0.16,
-        delay: i * 0.05,
+        vol: 0.17,
+        delay: i * 0.045,
       });
     });
-    this.noise(0.08 + count * 0.02, 0.06 + count * 0.015);
+    this.noise(0.1 + count * 0.025, 0.07 + count * 0.02);
     if (count >= 4) {
-      this.tone({ freq: 1318, dur: 0.28, type: "sine", vol: 0.12, delay: 0.18 });
-      this.tone({ freq: 1760, dur: 0.18, type: "sine", vol: 0.07, delay: 0.28 });
+      this.tone({ freq: 1568, dur: 0.32, type: "sine", vol: 0.13, delay: 0.2 });
+      this.tone({ freq: 2093, dur: 0.2, type: "sine", vol: 0.08, delay: 0.32 });
     }
   }
 
   levelUp() {
-    [523, 659, 784, 988].forEach((freq, i) => {
-      this.tone({ freq, dur: 0.12, type: "sine", vol: 0.1, delay: i * 0.07 });
+    [523, 659, 784, 988, 1175].forEach((freq, i) => {
+      this.tone({ freq, dur: 0.13, type: "sine", vol: 0.11, delay: i * 0.065 });
     });
   }
 
   gameOver() {
+    this.stopMusic();
     [392, 349, 294, 246, 196].forEach((freq, i) => {
       this.tone({
         freq,
@@ -173,6 +254,7 @@ export class AudioEngine {
   }
 
   pause() {
+    this.pauseMusic();
     this.tone({ freq: 330, dur: 0.08, type: "sine", vol: 0.08 });
     this.tone({ freq: 247, dur: 0.1, type: "sine", vol: 0.07, delay: 0.08 });
   }
@@ -180,12 +262,14 @@ export class AudioEngine {
   resume() {
     this.tone({ freq: 247, dur: 0.07, type: "sine", vol: 0.07 });
     this.tone({ freq: 330, dur: 0.09, type: "sine", vol: 0.08, delay: 0.07 });
+    this.startMusic(true);
   }
 
   start() {
     [392, 523, 659].forEach((freq, i) => {
       this.tone({ freq, dur: 0.12, type: "triangle", vol: 0.1, delay: i * 0.06 });
     });
+    this.startMusic();
   }
 }
 
