@@ -141,8 +141,9 @@ export class Renderer {
     ctx.translate(ox, oy);
 
     const bg = ctx.createLinearGradient(0, 0, 0, h);
-    bg.addColorStop(0, "#0c1424");
-    bg.addColorStop(1, "#070b14");
+    bg.addColorStop(0, "#7dd3fc");
+    bg.addColorStop(0.45, "#a78bfa");
+    bg.addColorStop(1, "#fb7185");
     ctx.fillStyle = bg;
     roundRect(ctx, 0, 0, w, h, cw * 0.16);
     ctx.fill();
@@ -152,24 +153,24 @@ export class Renderer {
     const innerW = cw * COLS;
     const innerH = ch * ROWS;
 
-    // Faixas verticais coloridas (colunas) para mirar onde a peça cai
+    // Poço vivo: colunas em cores quentes/frias alternadas
+    const colA = ["rgba(255,255,255,0.22)", "rgba(255, 236, 150, 0.28)"];
+    const colB = ["rgba(255, 180, 220, 0.22)", "rgba(180, 255, 220, 0.22)"];
     for (let x = 0; x < COLS; x++) {
-      const even = x % 2 === 0;
-      ctx.fillStyle = even ? "rgba(56, 189, 248, 0.10)" : "rgba(167, 139, 250, 0.11)";
+      ctx.fillStyle = (x % 2 === 0 ? colA : colB)[x % 2 === 0 ? 0 : 1];
+      ctx.fillStyle = x % 2 === 0 ? "rgba(255,255,255,0.20)" : "rgba(255, 220, 100, 0.22)";
       ctx.fillRect(x * cw, 0, cw, innerH);
     }
-    // linhas horizontais bem suaves
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.04)";
-    ctx.lineWidth = Math.max(1, dpr * 0.5);
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
+    ctx.lineWidth = Math.max(1, dpr * 0.55);
     for (let y = 1; y < ROWS; y++) {
       ctx.beginPath();
       ctx.moveTo(0, y * ch);
       ctx.lineTo(innerW, y * ch);
       ctx.stroke();
     }
-    // divisórias verticais mais marcadas
-    ctx.strokeStyle = "rgba(200, 230, 255, 0.14)";
-    ctx.lineWidth = Math.max(1.2, dpr * 0.7);
+    ctx.strokeStyle = "rgba(60, 20, 80, 0.18)";
+    ctx.lineWidth = Math.max(1.4, dpr * 0.75);
     for (let x = 1; x < COLS; x++) {
       ctx.beginPath();
       ctx.moveTo(x * cw, 0);
@@ -249,8 +250,8 @@ export class Renderer {
     const h = canvas.height;
     ctx.clearRect(0, 0, w, h);
     const bg = ctx.createLinearGradient(0, 0, 0, h);
-    bg.addColorStop(0, "#121a30");
-    bg.addColorStop(1, "#0c1324");
+    bg.addColorStop(0, "#38bdf8");
+    bg.addColorStop(1, "#a78bfa");
     ctx.fillStyle = bg;
     roundRect(ctx, 0, 0, w, h, 14 * dprOf(canvas));
     ctx.fill();
