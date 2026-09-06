@@ -141,36 +141,38 @@ export class Renderer {
     ctx.translate(ox, oy);
 
     const bg = ctx.createLinearGradient(0, 0, 0, h);
-    bg.addColorStop(0, "#7dd3fc");
-    bg.addColorStop(0.45, "#a78bfa");
-    bg.addColorStop(1, "#fb7185");
+    bg.addColorStop(0, "#1a2332");
+    bg.addColorStop(1, "#0d121c");
     ctx.fillStyle = bg;
-    roundRect(ctx, 0, 0, w, h, cw * 0.16);
+    roundRect(ctx, 0, 0, w, h, cw * 0.14);
     ctx.fill();
+
+    // borda neon sutil
+    ctx.strokeStyle = "rgba(34, 211, 238, 0.35)";
+    ctx.lineWidth = Math.max(2, dpr);
+    roundRect(ctx, 1, 1, w - 2, h - 2, cw * 0.14);
+    ctx.stroke();
 
     ctx.save();
     ctx.translate(inset, inset);
     const innerW = cw * COLS;
     const innerH = ch * ROWS;
 
-    // Poço vivo: colunas em cores quentes/frias alternadas
-    const colA = ["rgba(255,255,255,0.22)", "rgba(255, 236, 150, 0.28)"];
-    const colB = ["rgba(255, 180, 220, 0.22)", "rgba(180, 255, 220, 0.22)"];
+    // Grade clássica: colunas só um pouco mais claras pra mirar
     for (let x = 0; x < COLS; x++) {
-      ctx.fillStyle = (x % 2 === 0 ? colA : colB)[x % 2 === 0 ? 0 : 1];
-      ctx.fillStyle = x % 2 === 0 ? "rgba(255,255,255,0.20)" : "rgba(255, 220, 100, 0.22)";
+      ctx.fillStyle = x % 2 === 0 ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.18)";
       ctx.fillRect(x * cw, 0, cw, innerH);
     }
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.18)";
-    ctx.lineWidth = Math.max(1, dpr * 0.55);
+    ctx.strokeStyle = "rgba(148, 163, 184, 0.12)";
+    ctx.lineWidth = Math.max(1, dpr * 0.5);
     for (let y = 1; y < ROWS; y++) {
       ctx.beginPath();
       ctx.moveTo(0, y * ch);
       ctx.lineTo(innerW, y * ch);
       ctx.stroke();
     }
-    ctx.strokeStyle = "rgba(60, 20, 80, 0.18)";
-    ctx.lineWidth = Math.max(1.4, dpr * 0.75);
+    ctx.strokeStyle = "rgba(34, 211, 238, 0.16)";
+    ctx.lineWidth = Math.max(1.2, dpr * 0.65);
     for (let x = 1; x < COLS; x++) {
       ctx.beginPath();
       ctx.moveTo(x * cw, 0);
@@ -250,8 +252,8 @@ export class Renderer {
     const h = canvas.height;
     ctx.clearRect(0, 0, w, h);
     const bg = ctx.createLinearGradient(0, 0, 0, h);
-    bg.addColorStop(0, "#38bdf8");
-    bg.addColorStop(1, "#a78bfa");
+    bg.addColorStop(0, "#1e293b");
+    bg.addColorStop(1, "#0f172a");
     ctx.fillStyle = bg;
     roundRect(ctx, 0, 0, w, h, 14 * dprOf(canvas));
     ctx.fill();
