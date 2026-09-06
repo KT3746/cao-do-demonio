@@ -990,3 +990,24 @@ kbd {
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.35), 0 16px 40px rgba(0,0,0,0.5) !important;
   border-radius: 14px;
 }
+
+
+/* Destaque amarelo no Descer (como o antigo Cair/Queda) */
+.pad-row4 #pad-soft {
+  background: linear-gradient(135deg, #ffe08a 0%, #f4c95d 42%, #f59e0b 100%) !important;
+  border: 0 !important;
+  color: #1a1204 !important;
+  font-weight: 800;
+  box-shadow: 0 6px 22px rgba(244, 201, 93, 0.45);
+}
+.pad-row4 #pad-soft .pad-icon,
+.pad-row4 #pad-soft .pad-caption {
+  color: #1a1204 !important;
+  opacity: 1 !important;
+  font-weight: 800;
+}
+.pad-row4 #pad-soft:active {
+  filter: brightness(0.92);
+  transform: translateY(1px);
+  box-shadow: 0 3px 12px rgba(244, 201, 93, 0.35);
+}
