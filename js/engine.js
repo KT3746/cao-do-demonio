@@ -89,7 +89,7 @@ export function lineLabel(count) {
   if (count === 1) return "Boa!";
   if (count === 2) return "Dupla top!";
   if (count === 3) return "Tripla louca!";
-  if (count >= 4) return "QUEDA CERTA!!!";
+  if (count >= 4) return "CÃO DO DEMÔNIO!!!";
   return "";
 }
 
