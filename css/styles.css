@@ -881,3 +881,20 @@ kbd {
     transition: none !important;
   }
 }
+
+
+/* Mais energia na UI */
+.cta {
+  letter-spacing: 0.02em;
+  box-shadow: 0 10px 28px rgba(62, 232, 197, 0.35);
+}
+.modal .eyebrow {
+  color: #f4c95d;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.tag {
+  color: #7dd3fc !important;
+  font-weight: 700;
+}
