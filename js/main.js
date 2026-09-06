@@ -517,7 +517,13 @@ function showOverlay(title, text, again, score) {
   els.overlayText.textContent = text;
   els.overlayText.hidden = !text;
   if (els.themePicker) els.themePicker.hidden = !!again; // visível no início e na pausa
-  if (els.layoutPicker) els.layoutPicker.hidden = !!again;
+  if (els.layoutPicker) {
+    els.layoutPicker.hidden = !!again;
+    const lab = document.getElementById("layout-label");
+    if (lab) lab.hidden = !!again;
+  }
+  const themeLab = document.getElementById("theme-label-ui");
+  if (themeLab) themeLab.hidden = !!again;
   els.btnPlay.textContent = again ? "Jogar de novo" : game.state === STATE.PAUSED ? "Continuar" : "Jogar";
   if (typeof score === "number") {
     els.overlayScore.hidden = false;
