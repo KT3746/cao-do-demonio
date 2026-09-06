@@ -18,7 +18,7 @@ import { Input } from "./input.js";
     "touchend",
     (e) => {
       const t = e.target;
-      if (t && t.closest && t.closest("button, a, .theme-swatch, .chip, .cta")) {
+      if (t && t.closest && t.closest("button, a, .theme-swatch, .layout-chip, .chip, .cta")) {
         lastTouchEnd = Date.now();
         return;
       }
@@ -235,6 +235,37 @@ if (els.themePicker) {
   };
   els.themePicker.addEventListener("pointerup", pick);
   els.themePicker.addEventListener("click", pick);
+}
+
+function onPickLayout(id) {
+  if (!id) return;
+  audio.unlock();
+  writeLayout(id);
+  applyLayout(id);
+  try { renderer.draw(game); } catch {}
+  try { layout(); } catch {}
+}
+
+if (els.layoutPicker) {
+  const pickL = (ev) => {
+    const btn = ev.target.closest(".layout-chip");
+    if (!btn) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    onPickLayout(btn.dataset.layout);
+  };
+  els.layoutPicker.addEventListener("pointerup", pickL);
+  els.layoutPicker.addEventListener("click", pickL);
+  // fallback: bind each chip directly (mobile-friendly)
+  for (const btn of els.layoutPicker.querySelectorAll(".layout-chip")) {
+    const go = (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      onPickLayout(btn.dataset.layout);
+    };
+    btn.addEventListener("pointerup", go);
+    btn.addEventListener("click", go);
+  }
 }
 
 
