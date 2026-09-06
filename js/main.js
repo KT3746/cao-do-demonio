@@ -34,9 +34,8 @@ const HOWTO_KEY = "tetrok-como-jogar";
 const THEME_KEY = "tetrok-tema";
 const HOWTO_MS = 1800;
 const THEMES = [
-  { id: "aurora", label: "Aurora" },
-  { id: "navy", label: "Neon" },
-  { id: "crimson", label: "Vermelho" },
+  { id: "neon", label: "Neon" },
+  { id: "candy", label: "Doce" },
 ];
 
 const HOWTO_STEPS = [
@@ -129,9 +128,11 @@ renderer.minis.forEach((mini) => {
 function readTheme() {
   try {
     const v = localStorage.getItem(THEME_KEY);
-    if (v === "aurora" || v === "navy" || v === "crimson") return v;
+    if (v === "neon" || v === "candy") return v;
+    // migra temas antigos
+    if (v === "aurora" || v === "navy" || v === "crimson") return "neon";
   } catch {}
-  return "aurora";
+  return "neon";
 }
 
 function writeTheme(id) {
@@ -143,7 +144,7 @@ function writeTheme(id) {
 function applyTheme(id) {
   const t = THEMES.find((x) => x.id === id) || THEMES[0];
   renderer.setTheme(t.id);
-  document.body.classList.remove("theme-aurora", "theme-navy", "theme-crimson");
+  document.body.classList.remove("theme-neon", "theme-candy", "theme-aurora", "theme-navy", "theme-crimson", "skin-cyber");
   document.body.classList.add(`theme-${t.id}`);
   if (els.themeLabel) els.themeLabel.textContent = t.label;
   if (els.themePicker) {
@@ -153,10 +154,7 @@ function applyTheme(id) {
   }
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) {
-    meta.setAttribute(
-      "content",
-      t.id === "crimson" ? "#080406" : t.id === "navy" ? "#070d16" : "#07080f",
-    );
+    meta.setAttribute("content", t.id === "candy" ? "#fff1e0" : "#050814");
   }
   currentTheme = t.id;
 }

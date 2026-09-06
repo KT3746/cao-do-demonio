@@ -13,13 +13,13 @@
     <meta property="og:description" content="Arcade original, em português, para jogar no celular e no computador." />
     <meta property="og:type" content="website" />
     <title>TETROK</title>
-    <link rel="icon" href="assets/favicon.svg?v=25-1d75c9d" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.svg?v=26-neon" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=25-1d75c9d" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Nunito:wght@700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css?v=26-neon" />
   </head>
-  <body class="theme-aurora skin-cyber">
+  <body class="theme-neon">
     <div class="aurora" aria-hidden="true"></div>
     <div id="app">
       <header class="cyber-top">
@@ -28,7 +28,7 @@
         <div class="cyber-top-right">
           <button type="button" id="btn-sound" class="hex-btn" aria-pressed="false" title="Som" aria-label="Som">♪</button>
           <button type="button" id="btn-theme" class="hex-btn" title="Visual" aria-label="Trocar visual">
-            <span id="theme-label" class="sr-only">Aurora</span>◈
+            <span id="theme-label" class="sr-only">Neon</span>◈
           </button>
         </div>
       </header>
@@ -36,22 +36,21 @@
       <div class="cyber-arena">
         <aside class="cyber-rail cyber-rail-left" aria-label="Placar">
           <div class="cyber-stat">
-            <span>SCORE</span>
+            <span class="lbl-score">SCORE</span>
             <strong id="stat-score">0</strong>
           </div>
           <div class="cyber-stat">
-            <span>LINES</span>
+            <span class="lbl-lines">LINES</span>
             <strong id="stat-lines">0</strong>
           </div>
           <div class="cyber-stat">
-            <span>LEVEL</span>
+            <span class="lbl-level">LEVEL</span>
             <strong id="stat-level">1</strong>
           </div>
-          <div class="cyber-mini">
-            <span>NEXT</span>
+          <div class="cyber-mini cyber-next-side">
+            <span class="lbl-next">NEXT</span>
             <canvas id="next-side" width="88" height="88" aria-label="Próxima peça"></canvas>
           </div>
-          <!-- mobile mirror ids -->
           <strong id="stat-score-m" class="sr-only">0</strong>
           <strong id="stat-level-m" class="sr-only">1</strong>
           <strong id="stat-lines-m" class="sr-only">0</strong>
@@ -65,12 +64,12 @@
 
         <aside class="cyber-rail cyber-rail-right" aria-label="Reserva e fila">
           <button type="button" id="pad-hold" class="cyber-mini hold-slot is-empty" data-action="hold" aria-label="HOLD / Reservar" title="Reservar (C)">
-            <span>HOLD</span>
+            <span class="lbl-hold">HOLD</span>
             <canvas id="hold" width="88" height="88" aria-hidden="true"></canvas>
             <span class="hold-empty">＋</span>
           </button>
           <div class="cyber-queue">
-            <span>NEXT</span>
+            <span class="lbl-next">NEXT</span>
             <canvas id="next-0" width="72" height="56" aria-hidden="true"></canvas>
             <canvas id="next-1" width="72" height="56" aria-hidden="true"></canvas>
             <canvas id="next-2" width="72" height="56" aria-hidden="true"></canvas>
@@ -94,11 +93,12 @@
           </button>
           <button type="button" id="pad-rot" class="circle-rot" data-action="rotR" aria-label="Girar">
             <span class="pad-icon" aria-hidden="true">↻</span>
+            <span class="pad-caption candy-only">GIRAR</span>
           </button>
         </div>
       </nav>
 
-      <p class="desk-hint">PC: ← → mover · ↑ girar · ↓ descer · C reserva · P pausa</p>
+      <p class="desk-hint">PC: ← → mover · ↑ girar · ↓ descer · Espaço queda · C reserva · P pausa</p>
     </div>
 
     <div id="howto" class="overlay howto" hidden role="dialog" aria-modal="true" aria-labelledby="howto-title">
@@ -118,23 +118,19 @@
         <p id="overlay-text" hidden></p>
         <div id="overlay-score" class="overlay-score" hidden></div>
         <div id="theme-picker" class="theme-picker" role="group" aria-label="Versão visual">
-          <button type="button" class="theme-swatch is-on" data-theme="aurora" title="Aurora">
-            <span class="swatch swatch-aurora"></span>
-            <span>Aurora</span>
-          </button>
-          <button type="button" class="theme-swatch" data-theme="navy" title="Neon navy">
-            <span class="swatch swatch-navy"></span>
+          <button type="button" class="theme-swatch is-on" data-theme="neon" title="Neon vidro">
+            <span class="swatch swatch-neon"></span>
             <span>Neon</span>
           </button>
-          <button type="button" class="theme-swatch" data-theme="crimson" title="Vermelho profundo">
-            <span class="swatch swatch-crimson"></span>
-            <span>Vermelho</span>
+          <button type="button" class="theme-swatch" data-theme="candy" title="Doce craft">
+            <span class="swatch swatch-candy"></span>
+            <span>Doce</span>
           </button>
         </div>
         <button type="button" id="btn-play" class="cta">Jogar</button>
       </div>
     </div>
 
-    <script type="module" src="js/main.js?v=25-1d75c9d"></script>
+    <script type="module" src="js/main.js?v=26-neon"></script>
   </body>
 </html>

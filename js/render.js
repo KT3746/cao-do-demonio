@@ -19,7 +19,7 @@ export class Renderer {
     this.toast = "";
     this.toastMs = 0;
     this.levelFlash = 0;
-    this.theme = "aurora";
+    this.theme = "neon";
   }
 
   resize(cssWidth, cssHeight) {
@@ -36,8 +36,8 @@ export class Renderer {
   }
 
   setTheme(id) {
-    const ok = id === "aurora" || id === "navy" || id === "crimson";
-    this.theme = ok ? id : "aurora";
+    const ok = id === "neon" || id === "candy";
+    this.theme = ok ? id : "neon";
   }
 
   spawnClear(rows, board, count) {
@@ -194,55 +194,32 @@ export class Renderer {
 
 
   paintWell(ctx, w, h, dpr, cw) {
-    const theme = this.theme || "aurora";
-    const radius = cw * 0.14;
+    const theme = this.theme || "neon";
+    const radius = theme === "candy" ? cw * 0.28 : cw * 0.14;
     roundRect(ctx, 0, 0, w, h, radius);
     ctx.save();
     roundRect(ctx, 0, 0, w, h, radius);
     ctx.clip();
 
-    if (theme === "navy") {
+    if (theme === "candy") {
       const base = ctx.createLinearGradient(0, 0, 0, h);
-      base.addColorStop(0, "#122033");
-      base.addColorStop(1, "#070d16");
+      base.addColorStop(0, "#fff7ed");
+      base.addColorStop(0.5, "#ffedd5");
+      base.addColorStop(1, "#fed7aa");
       ctx.fillStyle = base;
       ctx.fillRect(0, 0, w, h);
-      let g = ctx.createRadialGradient(w * 0.5, h * 0.05, 0, w * 0.5, h * 0.05, h * 0.7);
-      g.addColorStop(0, "rgba(34, 211, 238, 0.22)");
-      g.addColorStop(1, "rgba(34, 211, 238, 0)");
+      let g = ctx.createRadialGradient(w * 0.5, h * 0.15, 0, w * 0.5, h * 0.15, h * 0.55);
+      g.addColorStop(0, "rgba(253, 224, 71, 0.28)");
+      g.addColorStop(1, "rgba(253, 224, 71, 0)");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, w, h);
-      g = ctx.createRadialGradient(w * 0.5, h, 0, w * 0.5, h, h * 0.45);
-      g.addColorStop(0, "rgba(14, 165, 233, 0.12)");
-      g.addColorStop(1, "rgba(14, 165, 233, 0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, w, h);
-    } else if (theme === "crimson") {
-      const base = ctx.createLinearGradient(0, 0, 0, h);
-      base.addColorStop(0, "#1a0c10");
-      base.addColorStop(0.55, "#12080c");
-      base.addColorStop(1, "#080406");
-      ctx.fillStyle = base;
-      ctx.fillRect(0, 0, w, h);
-      let g = ctx.createRadialGradient(w * 0.5, h * 0.35, 0, w * 0.5, h * 0.35, w * 0.95);
-      g.addColorStop(0, "rgba(239, 68, 68, 0.22)");
-      g.addColorStop(0.55, "rgba(127, 29, 29, 0.12)");
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, w, h);
-      g = ctx.createRadialGradient(w * 0.15, h * 0.9, 0, w * 0.15, h * 0.9, w * 0.7);
-      g.addColorStop(0, "rgba(245, 158, 11, 0.08)");
-      g.addColorStop(1, "rgba(245, 158, 11, 0)");
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, w, h);
-      // vignette
-      g = ctx.createRadialGradient(w * 0.5, h * 0.5, w * 0.2, w * 0.5, h * 0.5, w * 0.85);
-      g.addColorStop(0, "rgba(0,0,0,0)");
-      g.addColorStop(1, "rgba(0,0,0,0.45)");
+      g = ctx.createRadialGradient(w * 0.85, h * 0.85, 0, w * 0.85, h * 0.85, w * 0.6);
+      g.addColorStop(0, "rgba(244, 114, 182, 0.16)");
+      g.addColorStop(1, "rgba(244, 114, 182, 0)");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, w, h);
     } else {
-      // aurora (vidro)
+      // neon vidro
       const base = ctx.createLinearGradient(0, 0, 0, h);
       base.addColorStop(0, "#0b1020");
       base.addColorStop(0.45, "#0a0e1a");
@@ -287,31 +264,21 @@ export class Renderer {
     }
     ctx.restore();
 
-    // moldura
-    if (theme === "crimson") {
-      ctx.strokeStyle = "rgba(248, 113, 113, 0.55)";
-      ctx.lineWidth = Math.max(2.2, dpr * 1.2);
-      roundRect(ctx, 1.5, 1.5, w - 3, h - 3, radius);
+    if (theme === "candy") {
+      ctx.strokeStyle = "rgba(251, 146, 60, 0.7)";
+      ctx.lineWidth = Math.max(3, dpr * 1.6);
+      roundRect(ctx, 2, 2, w - 4, h - 4, radius);
       ctx.stroke();
-      ctx.strokeStyle = "rgba(127, 29, 29, 0.45)";
-      ctx.lineWidth = Math.max(1, dpr * 0.7);
-      roundRect(ctx, 4, 4, w - 8, h - 8, cw * 0.12);
-      ctx.stroke();
-    } else if (theme === "navy") {
-      ctx.strokeStyle = "rgba(34, 211, 238, 0.55)";
-      ctx.lineWidth = Math.max(2.2, dpr * 1.2);
-      roundRect(ctx, 1.5, 1.5, w - 3, h - 3, radius);
-      ctx.stroke();
-      ctx.strokeStyle = "rgba(14, 165, 233, 0.28)";
-      ctx.lineWidth = Math.max(1, dpr * 0.7);
-      roundRect(ctx, 4, 4, w - 8, h - 8, cw * 0.12);
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.65)";
+      ctx.lineWidth = Math.max(1.5, dpr * 0.8);
+      roundRect(ctx, 6, 6, w - 12, h - 12, radius * 0.85);
       ctx.stroke();
     } else {
-      ctx.strokeStyle = "rgba(125, 211, 252, 0.55)";
+      ctx.strokeStyle = "rgba(125, 211, 252, 0.6)";
       ctx.lineWidth = Math.max(2.2, dpr * 1.2);
       roundRect(ctx, 1.5, 1.5, w - 3, h - 3, radius);
       ctx.stroke();
-      ctx.strokeStyle = "rgba(167, 139, 250, 0.28)";
+      ctx.strokeStyle = "rgba(167, 139, 250, 0.35)";
       ctx.lineWidth = Math.max(1, dpr * 0.7);
       roundRect(ctx, 4, 4, w - 8, h - 8, cw * 0.12);
       ctx.stroke();
@@ -319,18 +286,13 @@ export class Renderer {
   }
 
   paintGrid(ctx, cw, ch, innerW, innerH, dpr) {
-    const theme = this.theme || "aurora";
+    const theme = this.theme || "neon";
     let even, odd, hLine, vLine;
-    if (theme === "crimson") {
-      even = "rgba(248, 113, 113, 0.05)";
-      odd = "rgba(0, 0, 0, 0.28)";
-      hLine = "rgba(252, 165, 165, 0.12)";
-      vLine = "rgba(248, 113, 113, 0.2)";
-    } else if (theme === "navy") {
-      even = "rgba(255,255,255,0.035)";
-      odd = "rgba(0,0,0,0.2)";
-      hLine = "rgba(148, 163, 184, 0.14)";
-      vLine = "rgba(34, 211, 238, 0.2)";
+    if (theme === "candy") {
+      even = "rgba(251, 146, 60, 0.06)";
+      odd = "rgba(255, 255, 255, 0.35)";
+      hLine = "rgba(251, 146, 60, 0.18)";
+      vLine = "rgba(249, 115, 22, 0.16)";
     } else {
       even = "rgba(125, 211, 252, 0.045)";
       odd = "rgba(15, 23, 42, 0.22)";
@@ -388,10 +350,11 @@ export class Renderer {
         const cell = game.board[y][x];
         if (!cell) continue;
         const visY = y - HIDDEN;
+        const soft = this.theme === "candy";
         if (clearing.has(y)) {
-          drawCell(ctx, x, visY, cw, ch, "#fff7d6", "#f4c95d", 1, pulse);
+          drawCell(ctx, x, visY, cw, ch, soft ? "#fff1f2" : "#fff7d6", soft ? "#fb7185" : "#f4c95d", 1, pulse, false, false, soft);
         } else {
-          drawCell(ctx, x, visY, cw, ch, cell.color, cell.deep, 1, 1);
+          drawCell(ctx, x, visY, cw, ch, cell.color, cell.deep, 1, 1, false, false, soft);
         }
       }
     }
@@ -402,7 +365,7 @@ export class Renderer {
         for (const { x, y } of cellsOf(game.active)) {
           const visY = y - HIDDEN;
           if (visY < 0 || visY >= ROWS) continue;
-          drawCell(ctx, x, visY, cw, ch, def.color, def.deep, 1, 1, true);
+          drawCell(ctx, x, visY, cw, ch, def.color, def.deep, 1, 1, true, false, this.theme === "candy");
         }
       }
     }
@@ -456,8 +419,8 @@ export class Renderer {
       ctx.font = `800 ${Math.round(ch * (this.toast === "TETROK!" ? 0.92 : 0.78))}px Sora, Manrope, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillStyle = "#fff6d2";
-      ctx.shadowColor = "rgba(244, 201, 93, 0.95)";
+      ctx.fillStyle = this.theme === "candy" ? "#9a3412" : "#fff6d2";
+      ctx.shadowColor = this.theme === "candy" ? "rgba(251, 146, 60, 0.85)" : "rgba(244, 201, 93, 0.95)";
       ctx.shadowBlur = 28;
       ctx.fillText(this.toast, innerW / 2, innerH * 0.42);
       ctx.restore();
@@ -465,10 +428,17 @@ export class Renderer {
 
     ctx.restore();
 
-    ctx.strokeStyle = "rgba(150, 245, 225, 0.38)";
-    ctx.lineWidth = Math.max(2, dpr * 1.5);
-    roundRect(ctx, 1, 1, w - 2, h - 2, cw * 0.16);
-    ctx.stroke();
+    if (this.theme === "candy") {
+      ctx.strokeStyle = "rgba(251, 146, 60, 0.45)";
+      ctx.lineWidth = Math.max(2.5, dpr * 1.4);
+      roundRect(ctx, 1, 1, w - 2, h - 2, cw * 0.28);
+      ctx.stroke();
+    } else {
+      ctx.strokeStyle = "rgba(150, 245, 225, 0.38)";
+      ctx.lineWidth = Math.max(2, dpr * 1.5);
+      roundRect(ctx, 1, 1, w - 2, h - 2, cw * 0.16);
+      ctx.stroke();
+    }
 
     ctx.restore();
   }
@@ -477,13 +447,19 @@ export class Renderer {
     const w = canvas.width;
     const h = canvas.height;
     ctx.clearRect(0, 0, w, h);
+    const candy = this.theme === "candy";
     const bg = ctx.createLinearGradient(0, 0, 0, h);
-    bg.addColorStop(0, "#1e293b");
-    bg.addColorStop(1, "#0f172a");
+    if (candy) {
+      bg.addColorStop(0, "#fff7ed");
+      bg.addColorStop(1, "#ffedd5");
+    } else {
+      bg.addColorStop(0, "#1e293b");
+      bg.addColorStop(1, "#0f172a");
+    }
     ctx.fillStyle = bg;
     roundRect(ctx, 0, 0, w, h, 14 * dprOf(canvas));
     ctx.fill();
-    ctx.strokeStyle = "rgba(160, 200, 255, 0.12)";
+    ctx.strokeStyle = candy ? "rgba(251, 146, 60, 0.35)" : "rgba(160, 200, 255, 0.12)";
     ctx.lineWidth = dprOf(canvas);
     roundRect(ctx, 1, 1, w - 2, h - 2, 14 * dprOf(canvas));
     ctx.stroke();
@@ -518,6 +494,7 @@ export class Renderer {
         1,
         false,
         true,
+        this.theme === "candy",
       );
     }
     ctx.globalAlpha = 1;
@@ -555,11 +532,11 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-function drawCell(ctx, x, y, cw, ch, color, deep, alpha = 1, pulse = 1, glow = false, raw = false) {
+function drawCell(ctx, x, y, cw, ch, color, deep, alpha = 1, pulse = 1, glow = false, raw = false, soft = false) {
   const px = raw ? x * cw : x * cw;
   const py = raw ? y * ch : y * ch;
-  const inset = Math.max(1.2, cw * 0.08);
-  const r = Math.max(3, cw * 0.18);
+  const inset = Math.max(1.2, cw * (soft ? 0.1 : 0.08));
+  const r = Math.max(3, cw * (soft ? 0.32 : 0.18));
   ctx.save();
   ctx.globalAlpha = alpha;
   if (glow) {
