@@ -81,7 +81,7 @@ export class Renderer {
 
     showToast(text) {
     this.toast = text;
-    this.toastMs = text === "Queda Certa!" ? 1400 : 1100;
+    this.toastMs = text === "Cão do Demônio!" ? 1400 : 1100;
   }
 
   pulseLevel() {
@@ -227,7 +227,7 @@ export class Renderer {
       const alpha = Math.min(1, this.toastMs / 240);
       ctx.save();
       ctx.globalAlpha = alpha;
-      ctx.font = `800 ${Math.round(ch * (this.toast === "Queda Certa!" ? 0.92 : 0.78))}px Sora, Manrope, sans-serif`;
+      ctx.font = `800 ${Math.round(ch * (this.toast === "Cão do Demônio!" ? 0.92 : 0.78))}px Sora, Manrope, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillStyle = "#fff6d2";
