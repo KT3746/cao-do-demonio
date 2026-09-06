@@ -86,10 +86,10 @@ export function tryRotate(board, piece, dir) {
 }
 
 export function lineLabel(count) {
-  if (count === 1) return "Linha!";
-  if (count === 2) return "Dupla!";
-  if (count === 3) return "Tripla!";
-  if (count >= 4) return "Queda Certa!";
+  if (count === 1) return "Boa!";
+  if (count === 2) return "Dupla top!";
+  if (count === 3) return "Tripla louca!";
+  if (count >= 4) return "QUEDA CERTA!!!";
   return "";
 }
 
