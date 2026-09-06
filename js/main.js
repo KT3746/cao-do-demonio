@@ -14,7 +14,7 @@ const HOWTO_STEPS = [
   },
   {
     title: "Joga pra baixo",
-    text: "▼ suave acelera. Queda! é o slam — trava no fundo!",
+    text: "Segura ▼ pra descer mais rápido. Clássico e simples!",
   },
   {
     title: "Limpa e explode",
@@ -147,7 +147,6 @@ const buttons = [
   [document.getElementById("pad-left"), "left"],
   [document.getElementById("pad-right"), "right"],
   [document.getElementById("pad-soft"), "soft"],
-  [document.getElementById("pad-hard"), "hard"],
   [document.getElementById("pad-rot"), "rotR"],
   [document.getElementById("pad-hold"), "hold"],
 ];
