@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=17-1350f69" />
+    <link rel="stylesheet" href="css/styles.css?v=18-__CACHE__" />
   </head>
   <body>
     <div class="aurora" aria-hidden="true"></div>
@@ -122,11 +122,11 @@
       <nav class="touch" aria-label="Controles de toque">
         <div class="pad-row4">
           <button type="button" id="pad-left" data-action="left" aria-label="Esquerda">◀</button>
-          <button type="button" id="pad-right" data-action="right" aria-label="Direita">▶</button>
           <button type="button" id="pad-soft" data-action="soft" aria-label="Descer">
             <span class="pad-icon" aria-hidden="true">▼</span>
             <span class="pad-caption">Descer</span>
           </button>
+          <button type="button" id="pad-right" data-action="right" aria-label="Direita">▶</button>
           <button type="button" id="pad-rot" data-action="rotR" aria-label="Girar">
             <span class="pad-icon" aria-hidden="true">↻</span>
             <span class="pad-caption">Girar</span>
@@ -142,7 +142,7 @@
         <p class="eyebrow">Rápido assim</p>
         <div id="howto-visual" class="howto-visual" data-step="0" aria-hidden="true">
           <div class="hv hv-move">
-            <span>◀</span><span>▶</span><span>▼</span><span>Girar</span>
+            <span>◀</span><span>▼</span><span>▶</span><span>Girar</span>
           </div>
           <div class="hv hv-drop">
             <span class="hv-soft">Uma fileira</span><span class="hv-hard">fácil no polegar</span>
@@ -164,17 +164,13 @@
 
     <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="overlay-title">
       <div class="modal">
-        <p class="eyebrow">Arcade</p>
-        <h2 id="overlay-title">TETROK</h2>
-        <p id="overlay-text">Cai bloco, limpa linha, sobe o clima.</p>
+                <h2 id="overlay-title">TETROK</h2>
+        <p id="overlay-text" hidden></p>
         <div id="overlay-score" class="overlay-score" hidden></div>
         <button type="button" id="btn-play" class="cta">Jogar</button>
-        <p class="modal-help">
-          Fecha a linha e solta o grito. Quatro de uma vez? <em>TETROK</em>!
-        </p>
       </div>
     </div>
 
-    <script type="module" src="js/main.js?v=17-1350f69"></script>
+    <script type="module" src="js/main.js?v=18-__CACHE__"></script>
   </body>
 </html>
