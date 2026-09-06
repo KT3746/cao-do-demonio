@@ -3,8 +3,8 @@ import { AudioEngine } from "./audio.js";
 import { Renderer } from "./render.js";
 import { Input } from "./input.js";
 
-const BEST_KEY = "cao-do-demonio-recorde";
-const HOWTO_KEY = "cao-do-demonio-como-jogar";
+const BEST_KEY = "tetrok-recorde";
+const HOWTO_KEY = "tetrok-como-jogar";
 const HOWTO_MS = 1800;
 
 const HOWTO_STEPS = [
@@ -18,7 +18,7 @@ const HOWTO_STEPS = [
   },
   {
     title: "Limpa e explode",
-    text: "Fecha a linha e ganha ponto. Quatro de uma vez? CÃO DO DEMÔNIO!!!",
+    text: "Fecha a linha e ganha ponto. Quatro de uma vez? TETROK!!!",
   },
   {
     title: "Guarda na manga",
@@ -118,7 +118,7 @@ const game = new Game({
   onLevelUp: () => {
     audio.levelUp();
     renderer.pulseLevel();
-    if (!String(game.lastClearLabel || "").includes("CÃO DO DEMÔNIO")) {
+    if (!String(game.lastClearLabel || "").includes("TETROK")) {
       renderer.showToast(`Nível ${game.level}! Ficou mais rápido`);
     }
     syncHud();
@@ -334,7 +334,7 @@ function finishHowTo() {
 
 function showStart() {
   showOverlay(
-    "Cão do Demônio",
+    "TETROK",
     "Cai bloco, limpa linha, sobe o clima. Bora jogar!",
     false,
   );
