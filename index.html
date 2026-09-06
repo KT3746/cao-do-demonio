@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <meta name="theme-color" content="#0a0a0c" />
+    <meta name="theme-color" content="#050814" />
     <meta name="google" content="notranslate" />
     <meta name="description" content="TETROK — puzzle de blocos original. Encaixe peças, limpe linhas e suba de nível." />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -13,127 +13,87 @@
     <meta property="og:description" content="Arcade original, em português, para jogar no celular e no computador." />
     <meta property="og:type" content="website" />
     <title>TETROK</title>
-    <link rel="icon" href="assets/favicon.svg?v=24-03af6a9" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.svg?v=25-__CACHE__" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=24-03af6a9" />
+    <link rel="stylesheet" href="css/styles.css?v=25-__CACHE__" />
   </head>
-  <body>
+  <body class="theme-aurora skin-cyber">
     <div class="aurora" aria-hidden="true"></div>
     <div id="app">
-      <header class="top">
-        <div class="brand">
-          <span class="logo" aria-hidden="true"></span>
-          <div>
-            <h1>TETROK</h1>
-            <p class="tag">Arcade clássico</p>
-          </div>
-        </div>
-        <div class="hud-inline" aria-label="Placar">
-          <div class="stat-inline">
-            <span>Pontos</span>
-            <strong id="stat-score-m">0</strong>
-          </div>
-          <div class="stat-inline">
-            <span>Nível</span>
-            <strong id="stat-level-m">1</strong>
-          </div>
-          <div class="stat-inline">
-            <span>Linhas</span>
-            <strong id="stat-lines-m">0</strong>
-          </div>
-        </div>
-        <div class="toolbar">
-          <button type="button" id="btn-theme" class="chip" title="Trocar visual">
-            <span class="icon" aria-hidden="true">◈</span>
-            <span class="btn-label" id="theme-label">Aurora</span>
-          </button>
-          <button type="button" id="btn-sound" class="chip" aria-pressed="false" title="Silenciar">
-            <span class="icon" aria-hidden="true">♪</span>
-            <span class="btn-label">Som</span>
-          </button>
-          <button type="button" id="btn-pause" class="chip" aria-pressed="false" title="Pausar">
-            <span class="icon" aria-hidden="true">❚❚</span>
-            <span class="btn-label">Pausa</span>
+      <header class="cyber-top">
+        <button type="button" id="btn-pause" class="hex-btn" aria-pressed="false" title="Pausar" aria-label="Pausar">❚❚</button>
+        <h1 class="cyber-title">TETROK</h1>
+        <div class="cyber-top-right">
+          <button type="button" id="btn-sound" class="hex-btn" aria-pressed="false" title="Som" aria-label="Som">♪</button>
+          <button type="button" id="btn-theme" class="hex-btn" title="Visual" aria-label="Trocar visual">
+            <span id="theme-label" class="sr-only">Aurora</span>◈
           </button>
         </div>
       </header>
 
-      <div class="layout">
-        <aside class="panel panel-left">
-          <section class="card">
-            <h2>Reserva</h2>
-            <canvas id="hold" width="120" height="120" aria-label="Peça reservada"></canvas>
-            <p class="hint-mini">Tecla C</p>
-          </section>
-          <section class="card stats desktop-only">
-            <div class="stat">
-              <span>Pontos</span>
-              <strong id="stat-score">0</strong>
-            </div>
-            <div class="stat">
-              <span>Nível</span>
-              <strong id="stat-level">1</strong>
-            </div>
-            <div class="stat">
-              <span>Linhas</span>
-              <strong id="stat-lines">0</strong>
-            </div>
-          </section>
+      <div class="cyber-arena">
+        <aside class="cyber-rail cyber-rail-left" aria-label="Placar">
+          <div class="cyber-stat">
+            <span>SCORE</span>
+            <strong id="stat-score">0</strong>
+          </div>
+          <div class="cyber-stat">
+            <span>LINES</span>
+            <strong id="stat-lines">0</strong>
+          </div>
+          <div class="cyber-stat">
+            <span>LEVEL</span>
+            <strong id="stat-level">1</strong>
+          </div>
+          <div class="cyber-mini">
+            <span>NEXT</span>
+            <canvas id="next-side" width="88" height="88" aria-label="Próxima peça"></canvas>
+          </div>
+          <!-- mobile mirror ids -->
+          <strong id="stat-score-m" class="sr-only">0</strong>
+          <strong id="stat-level-m" class="sr-only">1</strong>
+          <strong id="stat-lines-m" class="sr-only">0</strong>
         </aside>
 
-        <main class="stage">
-          <div class="playfield">
-            <div id="board-wrap">
-              <div class="board-stack">
-                <canvas id="board" width="300" height="600" role="img" aria-label="Tabuleiro do TETROK"></canvas>
-                <aside class="board-rail">
-                  <div class="next-slot">
-                    <span class="rail-label">Próxima</span>
-                    <canvas id="next-m" width="80" height="80" aria-label="Próxima peça"></canvas>
-                  </div>
-                  <button type="button" id="pad-hold" class="hold-slot is-empty" data-action="hold" aria-label="Reservar: guarda a peça para usar depois" title="Guarda a peça para usar depois (tecla C)">
-                    <span class="rail-label">Reserva</span>
-                    <canvas id="hold-m" width="56" height="56" aria-hidden="true"></canvas>
-                    <span class="hold-empty">＋</span>
-                  </button>
-                </aside>
-              </div>
-            </div>
+        <main class="cyber-stage">
+          <div id="board-wrap">
+            <canvas id="board" width="300" height="600" role="img" aria-label="Tabuleiro do TETROK"></canvas>
           </div>
         </main>
 
-        <aside class="panel panel-right">
-          <section class="card">
-            <h2>Próxima</h2>
-            <canvas id="next" width="120" height="120" aria-label="Próxima peça"></canvas>
-          </section>
-          <section class="card help desktop-only">
-            <h2>Controles</h2>
-            <ul>
-              <li><kbd>←</kbd><kbd>→</kbd> mover</li>
-              <li><kbd>↓</kbd> queda suave</li>
-              <li><kbd>↑</kbd> <kbd>X</kbd> girar</li>
-              <li><kbd>Z</kbd> girar inverso</li>
-                            <li><kbd>C</kbd> reservar</li>
-              <li><kbd>P</kbd> <kbd>Esc</kbd> pausa</li>
-            </ul>
-          </section>
+        <aside class="cyber-rail cyber-rail-right" aria-label="Reserva e fila">
+          <button type="button" id="pad-hold" class="cyber-mini hold-slot is-empty" data-action="hold" aria-label="HOLD / Reservar" title="Reservar (C)">
+            <span>HOLD</span>
+            <canvas id="hold" width="88" height="88" aria-hidden="true"></canvas>
+            <span class="hold-empty">＋</span>
+          </button>
+          <div class="cyber-queue">
+            <span>NEXT</span>
+            <canvas id="next-0" width="72" height="56" aria-hidden="true"></canvas>
+            <canvas id="next-1" width="72" height="56" aria-hidden="true"></canvas>
+            <canvas id="next-2" width="72" height="56" aria-hidden="true"></canvas>
+            <canvas id="next-3" width="72" height="56" aria-hidden="true"></canvas>
+            <canvas id="next" width="72" height="56" aria-label="Fila de próximas"></canvas>
+          </div>
+          <canvas id="hold-m" class="sr-only" width="1" height="1" aria-hidden="true"></canvas>
+          <canvas id="next-m" class="sr-only" width="1" height="1" aria-hidden="true"></canvas>
         </aside>
       </div>
 
-      <nav class="touch" aria-label="Controles de toque">
-        <div class="pad-row4">
-          <button type="button" id="pad-left" data-action="left" aria-label="Esquerda">◀</button>
-          <button type="button" id="pad-soft" data-action="soft" aria-label="Descer">
+      <nav class="touch cyber-pad" aria-label="Controles de toque">
+        <div class="cyber-pad-inner">
+          <div class="cyber-moves">
+            <button type="button" id="pad-left" class="hex-pad" data-action="left" aria-label="Esquerda">◀</button>
+            <button type="button" id="pad-right" class="hex-pad" data-action="right" aria-label="Direita">▶</button>
+          </div>
+          <button type="button" id="pad-soft" class="circle-drop" data-action="soft" aria-label="Descer">
             <span class="pad-icon" aria-hidden="true">▼</span>
-            <span class="pad-caption">Descer</span>
+            <span class="pad-caption">DESCER</span>
           </button>
-          <button type="button" id="pad-right" data-action="right" aria-label="Direita">▶</button>
-          <button type="button" id="pad-rot" data-action="rotR" aria-label="Girar">
+          <button type="button" id="pad-rot" class="circle-rot" data-action="rotR" aria-label="Girar">
             <span class="pad-icon" aria-hidden="true">↻</span>
-            <span class="pad-caption">Girar</span>
           </button>
         </div>
       </nav>
@@ -143,23 +103,9 @@
 
     <div id="howto" class="overlay howto" hidden role="dialog" aria-modal="true" aria-labelledby="howto-title">
       <div class="modal howto-modal">
-        <p class="eyebrow">Rápido assim</p>
-        <div id="howto-visual" class="howto-visual" data-step="0" aria-hidden="true">
-          <div class="hv hv-move">
-            <span>◀</span><span>▼</span><span>▶</span><span>Girar</span>
-          </div>
-          <div class="hv hv-drop">
-            <span class="hv-soft">Uma fileira</span><span class="hv-hard">fácil no polegar</span>
-          </div>
-          <div class="hv hv-lines">
-            <i></i><i></i><i></i><i></i>
-          </div>
-          <div class="hv hv-hold">
-            <span class="hv-plus">＋</span>
-          </div>
-        </div>
-        <h2 id="howto-title">Mover e girar</h2>
-        <p id="howto-text">Os botões ◀ e ▶ andam com a peça. Girar vira ela no lugar.</p>
+        <h2 id="howto-title">TETROK</h2>
+        <p id="howto-text"></p>
+        <div id="howto-visual" class="howto-visual" hidden aria-hidden="true"></div>
         <div class="howto-dots" id="howto-dots" aria-hidden="true"></div>
         <button type="button" id="btn-howto-next" class="cta">Próximo</button>
         <button type="button" id="btn-howto-skip" class="linkish">Pular</button>
@@ -167,8 +113,8 @@
     </div>
 
     <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="overlay-title">
-      <div class="modal">
-                <h2 id="overlay-title">TETROK</h2>
+      <div class="modal cyber-modal">
+        <h2 id="overlay-title">TETROK</h2>
         <p id="overlay-text" hidden></p>
         <div id="overlay-score" class="overlay-score" hidden></div>
         <div id="theme-picker" class="theme-picker" role="group" aria-label="Versão visual">
@@ -189,6 +135,6 @@
       </div>
     </div>
 
-    <script type="module" src="js/main.js?v=24-03af6a9"></script>
+    <script type="module" src="js/main.js?v=25-__CACHE__"></script>
   </body>
 </html>
