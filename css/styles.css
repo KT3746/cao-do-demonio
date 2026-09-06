@@ -1,20 +1,20 @@
 :root {
-  --bg: #1a0f2e;
-  --panel: rgba(255, 255, 255, 0.12);
-  --stroke: rgba(255, 220, 120, 0.28);
-  --text: #fff8ff;
-  --muted: #ffd6f0;
-  --accent: #5cffb0;
-  --accent-2: #ffd166;
-  --danger: #ff6b9d;
-  --shadow: 0 16px 40px rgba(80, 0, 100, 0.35);
+  --bg: #fff3bf;
+  --panel: rgba(255, 255, 255, 0.55);
+  --stroke: rgba(230, 160, 40, 0.35);
+  --text: #3b2a08;
+  --muted: #8a6a20;
+  --accent: #f59e0b;
+  --accent-2: #fbbf24;
+  --danger: #ef4444;
+  --shadow: 0 16px 40px rgba(200, 140, 20, 0.25);
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-l: env(safe-area-inset-left, 0px);
   --safe-r: env(safe-area-inset-right, 0px);
   --pad-h: 56px;
   --hard-h: 60px;
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 * {
@@ -64,11 +64,11 @@ canvas {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(800px 520px at 10% -5%, rgba(255, 107, 157, 0.45), transparent 55%),
-    radial-gradient(700px 480px at 95% 5%, rgba(92, 255, 176, 0.28), transparent 50%),
-    radial-gradient(650px 420px at 50% 110%, rgba(255, 209, 102, 0.35), transparent 55%),
-    radial-gradient(500px 400px at 70% 40%, rgba(130, 110, 255, 0.25), transparent 50%),
-    #1a0f2e;
+    radial-gradient(900px 560px at 15% -10%, rgba(255, 236, 150, 0.95), transparent 55%),
+    radial-gradient(700px 500px at 90% 0%, rgba(255, 200, 80, 0.55), transparent 50%),
+    radial-gradient(650px 420px at 50% 110%, rgba(255, 170, 60, 0.45), transparent 55%),
+    radial-gradient(480px 360px at 40% 50%, rgba(255, 250, 220, 0.7), transparent 50%),
+    #ffe566;
   z-index: 0;
 }
 
@@ -950,4 +950,50 @@ kbd {
 .board-frame, #board-wrap {
   box-shadow: 0 0 0 2px rgba(255, 209, 102, 0.35), 0 12px 40px rgba(255, 107, 157, 0.2);
   border-radius: 18px;
+}
+
+
+/* Amarelo alegre overrides */
+.brand h1 {
+  background: linear-gradient(90deg, #d97706, #ea580c, #ca8a04);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.chip {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border-color: rgba(217, 119, 6, 0.4) !important;
+  color: #3b2a08 !important;
+}
+.card, .hud-mobile .stat {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border-color: rgba(217, 119, 6, 0.35) !important;
+  color: #3b2a08;
+}
+.card h2, .muted, .tag, .desk-hint, .touch-hint, .hint-mini, .rail-label {
+  color: #8a6a20 !important;
+}
+.modal {
+  background: linear-gradient(160deg, #fff8d6, #ffe08a) !important;
+  border: 2px solid rgba(217, 119, 6, 0.45) !important;
+  color: #3b2a08 !important;
+}
+.modal .eyebrow {
+  color: #c2410c !important;
+}
+.touch button {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border-color: rgba(217, 119, 6, 0.4) !important;
+  color: #3b2a08 !important;
+}
+#pad-hard {
+  background: linear-gradient(180deg, #fbbf24, #f59e0b) !important;
+  color: #3b1d00 !important;
+}
+#pad-rot {
+  background: rgba(34, 197, 94, 0.25) !important;
+  border-color: rgba(22, 163, 74, 0.5) !important;
+}
+.stat strong, .hud-mobile .stat strong {
+  color: #92400e !important;
 }
