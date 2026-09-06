@@ -160,12 +160,8 @@ renderer.minis.forEach((mini) => {
 
 
 function readTheme() {
-  try {
-    const v = localStorage.getItem(THEME_KEY);
-    if (v === "neon" || v === "candy") return v;
-    // migra temas antigos
-    if (v === "aurora" || v === "navy" || v === "crimson") return "neon";
-  } catch {}
+  // Configuração única: Neon
+  try { localStorage.setItem(THEME_KEY, "neon"); } catch {}
   return "neon";
 }
 
@@ -197,10 +193,8 @@ let currentTheme = readTheme();
 applyTheme(currentTheme);
 
 function readLayout() {
-  try {
-    const v = localStorage.getItem(LAYOUT_KEY);
-    if (v === "full" || v === "strip" || v === "gesture" || v === "micro") return v;
-  } catch {}
+  // Configuração única: Tela cheia
+  try { localStorage.setItem(LAYOUT_KEY, "full"); } catch {}
   return "full";
 }
 
@@ -240,14 +234,8 @@ function onPickTheme(id) {
 }
 
 if (els.btnTheme) {
-  const go = (ev) => {
-    ev.preventDefault();
-    audio.unlock();
-    cycleTheme();
-    try { renderer.draw(game); } catch {}
-  };
-  els.btnTheme.addEventListener("pointerup", go);
-  els.btnTheme.addEventListener("click", go);
+  // tema único — botão some (CSS) e não cicla mais
+  els.btnTheme.hidden = true;
 }
 if (els.themePicker) {
   const pick = (ev) => {
