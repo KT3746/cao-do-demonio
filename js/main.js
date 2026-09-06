@@ -17,6 +17,11 @@ import { Input } from "./input.js";
   document.addEventListener(
     "touchend",
     (e) => {
+      const t = e.target;
+      if (t && t.closest && t.closest("button, a, .theme-swatch, .chip, .cta")) {
+        lastTouchEnd = Date.now();
+        return;
+      }
       const now = Date.now();
       if (now - lastTouchEnd <= 320) e.preventDefault();
       lastTouchEnd = now;
@@ -128,7 +133,7 @@ function applyTheme(id) {
       t.id === "crimson" ? "#080406" : t.id === "navy" ? "#070d16" : "#07080f",
     );
   }
-  writeTheme = t.id;
+  currentTheme = t.id;
 }
 
 let currentTheme = readTheme();
@@ -141,20 +146,32 @@ function cycleTheme() {
   applyTheme(next.id);
 }
 
+function onPickTheme(id) {
+  audio.unlock();
+  writeTheme(id);
+  applyTheme(id);
+  try { renderer.draw(game); } catch {}
+}
+
 if (els.btnTheme) {
-  els.btnTheme.addEventListener("click", () => {
+  const go = (ev) => {
+    ev.preventDefault();
     audio.unlock();
     cycleTheme();
-  });
+    try { renderer.draw(game); } catch {}
+  };
+  els.btnTheme.addEventListener("pointerup", go);
+  els.btnTheme.addEventListener("click", go);
 }
 if (els.themePicker) {
-  els.themePicker.addEventListener("click", (ev) => {
+  const pick = (ev) => {
     const btn = ev.target.closest(".theme-swatch");
     if (!btn) return;
-    audio.unlock();
-    writeTheme(btn.dataset.theme);
-    applyTheme(btn.dataset.theme);
-  });
+    ev.preventDefault();
+    onPickTheme(btn.dataset.theme);
+  };
+  els.themePicker.addEventListener("pointerup", pick);
+  els.themePicker.addEventListener("click", pick);
 }
 
 
@@ -434,7 +451,7 @@ function showOverlay(title, text, again, score) {
   els.overlayTitle.textContent = title;
   els.overlayText.textContent = text;
   els.overlayText.hidden = !text;
-  if (els.themePicker) els.themePicker.hidden = !!again || game.state === STATE.PAUSED;
+  if (els.themePicker) els.themePicker.hidden = !!again; // visível no início e na pausa
   els.btnPlay.textContent = again ? "Jogar de novo" : game.state === STATE.PAUSED ? "Continuar" : "Jogar";
   if (typeof score === "number") {
     els.overlayScore.hidden = false;
