@@ -3,6 +3,27 @@ import { AudioEngine } from "./audio.js";
 import { Renderer } from "./render.js";
 import { Input } from "./input.js";
 
+
+// iOS Safari: evita pinch-zoom e double-tap zoom
+(function lockMobileZoom() {
+  const block = (ev) => {
+    if (ev.touches && ev.touches.length > 1) ev.preventDefault();
+  };
+  document.addEventListener("gesturestart", (e) => e.preventDefault(), { passive: false });
+  document.addEventListener("gesturechange", (e) => e.preventDefault(), { passive: false });
+  document.addEventListener("gestureend", (e) => e.preventDefault(), { passive: false });
+  document.addEventListener("touchmove", block, { passive: false });
+  let lastTouchEnd = 0;
+  document.addEventListener(
+    "touchend",
+    (e) => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 320) e.preventDefault();
+      lastTouchEnd = now;
+    },
+    { passive: false },
+  );
+})();
 const BEST_KEY = "tetrok-recorde";
 const HOWTO_KEY = "tetrok-como-jogar";
 const HOWTO_MS = 1800;
