@@ -11,7 +11,10 @@ export class Renderer {
       kind,
     }));
     this.particles = [];
+    this.beams = [];
+    this.rings = [];
     this.flash = 0;
+    this.flashColor = "120, 220, 255";
     this.shake = 0;
     this.toast = "";
     this.toastMs = 0;
@@ -33,29 +36,64 @@ export class Renderer {
 
   spawnClear(rows, board, count) {
     const m = this.metrics();
-    const burst = count >= 4 ? 16 : 9 + count * 2;
+    const hues = count >= 4
+      ? ["#ff4fd8", "#7cf0ff", "#ffe566", "#a78bfa"]
+      : count === 3
+        ? ["#7cf0ff", "#ff7ad9", "#b8f26e"]
+        : count === 2
+          ? ["#5eead4", "#60a5fa"]
+          : ["#38bdf8", "#a5b4fc"];
+    this.flashColor = count >= 4 ? "255, 90, 210" : "90, 210, 255";
+    this.flash = count >= 4 ? 0.55 : 0.28 + count * 0.08;
+    this.shake = count >= 4 ? 10 : 3 + count;
     for (const y of rows) {
       const visY = y - HIDDEN;
       if (visY < 0) continue;
+      const cy = m.inset + (visY + 0.5) * m.ch;
+      const left = m.inset;
+      const right = m.inset + COLS * m.cw;
+      // laser beam across the cleared row
+      this.beams.push({
+        y: cy,
+        life: 420 + count * 40,
+        max: 460 + count * 40,
+        h: Math.max(3, m.ch * (0.55 + count * 0.08)),
+        color: hues[visY % hues.length],
+        left,
+        right,
+      });
+      // expanding ring from center of row
+      this.rings.push({
+        x: (left + right) / 2,
+        y: cy,
+        r: m.cw * 0.2,
+        vr: m.cw * (2.8 + count * 0.5),
+        life: 480 + count * 50,
+        max: 520 + count * 50,
+        color: hues[(visY + 1) % hues.length],
+        lw: Math.max(2, m.dpr * 2.2),
+      });
+      // sideways sparks (no gravity) instead of exploding confetti
       for (let x = 0; x < COLS; x++) {
         const cellData = board[y][x];
-        const color = cellData?.color || "#fff";
-        for (let i = 0; i < burst; i++) {
+        const color = cellData?.color || hues[x % hues.length];
+        const px = m.inset + (x + 0.5) * m.cw;
+        for (let i = 0; i < 2 + count; i++) {
+          const dir = i % 2 === 0 ? -1 : 1;
           this.particles.push({
-            x: m.inset + (x + 0.5) * m.cw,
-            y: m.inset + (visY + 0.5) * m.ch,
-            vx: (Math.random() - 0.5) * 280 * m.dpr,
-            vy: (Math.random() - 0.75) * 320 * m.dpr,
-            life: 520 + Math.random() * 280,
-            max: 700,
-            size: (2.4 + Math.random() * 3.2) * m.dpr,
+            x: px,
+            y: cy,
+            vx: dir * (140 + Math.random() * 220) * m.dpr,
+            vy: (Math.random() - 0.5) * 40 * m.dpr,
+            life: 360 + Math.random() * 220,
+            max: 580,
+            size: (1.8 + Math.random() * 2.6) * m.dpr,
             color,
+            kind: "spark",
           });
         }
       }
     }
-    this.flash = count >= 4 ? 0.92 : 0.5 + count * 0.1;
-    this.shake = count >= 4 ? 18 : 8 + count * 2;
   }
 
   spawnLock(hard) {
@@ -90,8 +128,8 @@ export class Renderer {
 
   stepFx(dt) {
     const t = dt;
-    this.flash = Math.max(0, this.flash - t / 520);
-    this.shake = Math.max(0, this.shake - t / 46);
+    this.flash = Math.max(0, this.flash - t / 380);
+    this.shake = Math.max(0, this.shake - t / 50);
     this.toastMs = Math.max(0, this.toastMs - t);
     this.levelFlash = Math.max(0, this.levelFlash - t / 700);
     const next = [];
@@ -99,10 +137,24 @@ export class Renderer {
       p.life -= t;
       p.x += (p.vx * t) / 1000;
       p.y += (p.vy * t) / 1000;
-      p.vy += (380 * t) / 1000;
+      if (p.kind !== "spark") p.vy += (380 * t) / 1000;
+      else p.vx *= 1 - t / 900;
       if (p.life > 0) next.push(p);
     }
     this.particles = next;
+    const nextBeams = [];
+    for (const b of this.beams) {
+      b.life -= t;
+      if (b.life > 0) nextBeams.push(b);
+    }
+    this.beams = nextBeams;
+    const nextRings = [];
+    for (const r of this.rings) {
+      r.life -= t;
+      r.r += (r.vr * t) / 1000;
+      if (r.life > 0) nextRings.push(r);
+    }
+    this.rings = nextRings;
   }
 
   draw(game) {
@@ -209,17 +261,45 @@ export class Renderer {
       }
     }
 
+    for (const b of this.beams) {
+      const a = Math.max(0, b.life / b.max);
+      const grd = ctx.createLinearGradient(b.left - inset, 0, b.right - inset, 0);
+      grd.addColorStop(0, "rgba(255,255,255,0)");
+      grd.addColorStop(0.15, b.color);
+      grd.addColorStop(0.5, "#ffffff");
+      grd.addColorStop(0.85, b.color);
+      grd.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.globalAlpha = a;
+      ctx.fillStyle = grd;
+      ctx.shadowColor = b.color;
+      ctx.shadowBlur = 18;
+      ctx.fillRect(b.left - inset, b.y - inset - b.h / 2, b.right - b.left, b.h);
+      ctx.shadowBlur = 0;
+    }
+    for (const r of this.rings) {
+      const a = Math.max(0, r.life / r.max);
+      ctx.globalAlpha = a * 0.9;
+      ctx.strokeStyle = r.color;
+      ctx.lineWidth = r.lw;
+      ctx.beginPath();
+      ctx.arc(r.x - inset, r.y - inset, r.r, 0, Math.PI * 2);
+      ctx.stroke();
+    }
     for (const p of this.particles) {
       ctx.globalAlpha = Math.max(0, p.life / p.max);
       ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.arc(p.x - inset, p.y - inset, p.size, 0, Math.PI * 2);
-      ctx.fill();
+      if (p.kind === "spark") {
+        ctx.fillRect(p.x - inset - p.size * 1.6, p.y - inset - p.size * 0.35, p.size * 3.2, p.size * 0.7);
+      } else {
+        ctx.beginPath();
+        ctx.arc(p.x - inset, p.y - inset, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
     ctx.globalAlpha = 1;
 
     if (this.flash > 0) {
-      ctx.fillStyle = `rgba(255, 244, 200, ${this.flash})`;
+      ctx.fillStyle = `rgba(${this.flashColor}, ${this.flash})`;
       ctx.fillRect(0, 0, innerW, innerH);
     }
 
