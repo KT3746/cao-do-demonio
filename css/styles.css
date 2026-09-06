@@ -55,6 +55,16 @@ canvas {
   touch-action: manipulation;
 }
 
+/* iOS: bloquear zoom / pinch / double-tap */
+html, body {
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+}
+.touch, .pad-row4, .pad-row4 button, .chip, .cta, #app, .overlay {
+  touch-action: manipulation;
+}
+
+
 #board {
   touch-action: none;
 }
