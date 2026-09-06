@@ -9,20 +9,20 @@ const HOWTO_MS = 1800;
 
 const HOWTO_STEPS = [
   {
-    title: "Mover e girar",
-    text: "Os botões ◀ e ▶ andam com a peça. Girar vira ela no lugar.",
+    title: "Mexe aí!",
+    text: "◀ ▶ pra dançar a peça. Girar pra virar o jogo.",
   },
   {
-    title: "Descer",
-    text: "▼ suave desce um pouco. Queda! trava a peça no fundo na hora.",
+    title: "Joga pra baixo",
+    text: "▼ suave acelera. Queda! é o slam — trava no fundo!",
   },
   {
-    title: "Limpar linhas",
-    text: "Complete uma linha para pontuar. Quatro de uma vez é Queda Certa!",
+    title: "Limpa e explode",
+    text: "Fecha a linha e ganha ponto. Quatro de uma vez? QUEDA CERTA!!!",
   },
   {
-    title: "Reserva",
-    text: "O ＋ no canto guarda a peça para usar depois. No computador, tecla C.",
+    title: "Guarda na manga",
+    text: "O ＋ guarda a peça pra hora H. No PC: tecla C.",
   },
 ];
 
@@ -79,7 +79,7 @@ const game = new Game({
   },
   onPause: () => {
     audio.pause();
-    showOverlay("Pausa", "O jogo está parado. Continue quando quiser.", false);
+    showOverlay("Pausa", "Cafézinho? Quando quiser, bora de novo.", false);
     els.btnPause.setAttribute("aria-pressed", "true");
     els.btnPause.querySelector(".btn-label").textContent = "Continuar";
   },
@@ -91,7 +91,6 @@ const game = new Game({
   },
   onLock: ({ hard }) => {
     if (!hard) audio.lock();
-    else audio.hardDrop();
     renderer.spawnLock(Boolean(hard));
   },
   onRotate: () => audio.rotate(),
@@ -99,10 +98,14 @@ const game = new Game({
     audio.hold();
     syncHud();
   },
-  onLineClear: ({ count, label, rows }) => {
+  onLineClear: ({ count, label, rows, combo }) => {
     audio.lineClear(count);
     renderer.spawnClear(rows, game.board, count);
-    renderer.showToast(label);
+    const tip =
+      combo > 1
+        ? `${label}  ·  Combo x${combo}!`
+        : label;
+    renderer.showToast(tip);
     if (navigator.vibrate) {
       try {
         navigator.vibrate(count >= 4 ? [24, 40, 24, 40, 36] : count >= 2 ? [16, 20, 16] : 14);
@@ -115,8 +118,8 @@ const game = new Game({
   onLevelUp: () => {
     audio.levelUp();
     renderer.pulseLevel();
-    if (game.lastClearLabel !== "Queda Certa!") {
-      renderer.showToast(`Nível ${game.level}`);
+    if (!String(game.lastClearLabel || "").includes("QUEDA CERTA")) {
+      renderer.showToast(`Nível ${game.level}! Ficou mais rápido`);
     }
     syncHud();
   },
@@ -126,12 +129,13 @@ const game = new Game({
       best = snap.score;
       writeBest(best);
     }
-    showOverlay(
-      "Fim de jogo",
-      "A pilha chegou ao topo. Tente outra partida!",
-      true,
-      snap.score,
-    );
+    const roast =
+      snap.score < 500
+        ? "Quase! A pilha te ganhou dessa vez."
+        : snap.score < 2000
+          ? "Boa luta! Dá pra estourar esse recorde."
+          : "Monstro! Agora tenta bater isso.";
+    showOverlay("Game over!", roast, true, snap.score);
     els.btnPause.querySelector(".btn-label").textContent = "Pausa";
     els.btnPause.setAttribute("aria-pressed", "false");
     syncHud();
@@ -300,7 +304,7 @@ function renderHowTo() {
     (_, i) => `<span class="${i === tutorialStep ? "is-on" : ""}"></span>`,
   ).join("");
   const last = tutorialStep >= HOWTO_STEPS.length - 1;
-  els.btnHowToNext.textContent = last ? "Entendi" : "Próximo";
+  els.btnHowToNext.textContent = last ? "Bora!" : "Próximo";
 }
 
 function queueHowToTick() {
@@ -332,10 +336,10 @@ function finishHowTo() {
 function showStart() {
   showOverlay(
     "Queda Certa",
-    "Encaixe as peças, complete linhas e suba de nível. Use os botões embaixo para jogar.",
+    "Cai bloco, limpa linha, sobe o clima. Bora jogar!",
     false,
   );
-  els.btnPlay.textContent = "Jogar";
+  els.btnPlay.textContent = "Jogar!";
   els.overlayScore.hidden = true;
 }
 
