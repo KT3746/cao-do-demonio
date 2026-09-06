@@ -61,14 +61,14 @@ canvas {
 
 .aurora {
   position: fixed;
-  inset: 0;
+  inset: -20%;
+  z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(800px 480px at 15% -8%, rgba(239, 68, 68, 0.18), transparent 55%),
-    radial-gradient(700px 420px at 90% 5%, rgba(245, 158, 11, 0.08), transparent 50%),
-    radial-gradient(600px 400px at 50% 110%, rgba(0, 0, 0, 0.85), transparent 55%),
-    #0a0a0c;
-  z-index: 0;
+    radial-gradient(ellipse 55% 40% at 20% 15%, rgba(56, 189, 248, 0.22), transparent 60%),
+    radial-gradient(ellipse 50% 45% at 85% 55%, rgba(167, 139, 250, 0.2), transparent 62%),
+    radial-gradient(ellipse 40% 30% at 50% 100%, rgba(45, 212, 191, 0.12), transparent 55%),
+    #07080f;
 }
 
 #app {
