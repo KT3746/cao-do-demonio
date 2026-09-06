@@ -91,6 +91,8 @@ const game = new Game({
   },
   onLock: ({ hard }) => {
     if (!hard) audio.lock();
+    else audio.hardDrop();
+    renderer.spawnLock(Boolean(hard));
   },
   onRotate: () => audio.rotate(),
   onHold: () => {
