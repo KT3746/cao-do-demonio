@@ -13,11 +13,11 @@
     <meta property="og:description" content="Modo diversão original, em português, para jogar no celular e no computador." />
     <meta property="og:type" content="website" />
     <title>Queda Certa</title>
-    <link rel="icon" href="assets/favicon.svg?v=10-__CACHE__" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.svg?v=11-__CACHE__" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=10-__CACHE__" />
+    <link rel="stylesheet" href="css/styles.css?v=11-__CACHE__" />
   </head>
   <body>
     <div class="aurora" aria-hidden="true"></div>
@@ -112,8 +112,7 @@
               <li><kbd>↓</kbd> queda suave</li>
               <li><kbd>↑</kbd> <kbd>X</kbd> girar</li>
               <li><kbd>Z</kbd> girar inverso</li>
-              <li><kbd>Espaço</kbd> queda rápida</li>
-              <li><kbd>C</kbd> reservar</li>
+                            <li><kbd>C</kbd> reservar</li>
               <li><kbd>P</kbd> <kbd>Esc</kbd> pausa</li>
             </ul>
           </section>
@@ -121,21 +120,17 @@
       </div>
 
       <nav class="touch" aria-label="Controles de toque">
-        <div class="pad-row pad-move">
-          <button type="button" id="pad-left" data-action="left" aria-label="Esquerda">◀</button>
-          <button type="button" id="pad-right" data-action="right" aria-label="Direita">▶</button>
-          <button type="button" id="pad-rot" data-action="rotR">Girar</button>
-        </div>
-        <div class="pad-row pad-drop">
-          <button type="button" id="pad-soft" data-action="soft">
-            <span class="pad-icon" aria-hidden="true">▼</span>
-            <span class="pad-caption">suave</span>
-          </button>
-          <button type="button" id="pad-hard" data-action="hard">Queda!</button>
+        <div class="pad-classic">
+          <button type="button" id="pad-rot" class="pad-rot" data-action="rotR" aria-label="Girar">↻ Girar</button>
+          <div class="pad-cross">
+            <button type="button" id="pad-left" data-action="left" aria-label="Esquerda">◀</button>
+            <button type="button" id="pad-soft" data-action="soft" aria-label="Descer">▼</button>
+            <button type="button" id="pad-right" data-action="right" aria-label="Direita">▶</button>
+          </div>
         </div>
       </nav>
 
-      <p class="desk-hint">PC: setas · espaço = Queda! · C = reserva · P = pausa</p>
+      <p class="desk-hint">PC: ← → mover · ↑ girar · ↓ descer · C reserva · P pausa</p>
     </div>
 
     <div id="howto" class="overlay howto" hidden role="dialog" aria-modal="true" aria-labelledby="howto-title">
@@ -146,7 +141,7 @@
             <span>◀</span><span>▶</span><span>Girar</span>
           </div>
           <div class="hv hv-drop">
-            <span class="hv-soft">▼ suave</span><span class="hv-hard">Queda!</span>
+            <span class="hv-soft">▼ desce</span><span class="hv-hard">↻ gira</span>
           </div>
           <div class="hv hv-lines">
             <i></i><i></i><i></i><i></i>
@@ -176,6 +171,6 @@
       </div>
     </div>
 
-    <script type="module" src="js/main.js?v=10-__CACHE__"></script>
+    <script type="module" src="js/main.js?v=11-__CACHE__"></script>
   </body>
 </html>
