@@ -32,10 +32,17 @@ import { Input } from "./input.js";
 const BEST_KEY = "tetrok-recorde";
 const HOWTO_KEY = "tetrok-como-jogar";
 const THEME_KEY = "tetrok-tema";
+const LAYOUT_KEY = "tetrok-layout";
 const HOWTO_MS = 1800;
 const THEMES = [
   { id: "neon", label: "Neon" },
   { id: "candy", label: "Doce" },
+];
+const LAYOUTS = [
+  { id: "full", label: "Tela cheia" },
+  { id: "strip", label: "Faixa" },
+  { id: "gesture", label: "Gestos" },
+  { id: "micro", label: "Micro" },
 ];
 
 const HOWTO_STEPS = [
@@ -64,12 +71,17 @@ const els = {
   scoreM: document.getElementById("stat-score-m"),
   levelM: document.getElementById("stat-level-m"),
   linesM: document.getElementById("stat-lines-m"),
+  scoreRail: document.getElementById("stat-score-rail"),
+  levelRail: document.getElementById("stat-level-rail"),
+  linesRail: document.getElementById("stat-lines-rail"),
+  scoreFloat: document.getElementById("stat-score-float"),
   board: document.getElementById("board"),
   hold: document.getElementById("hold"),
   next: document.getElementById("next"),
   holdM: document.getElementById("hold-m"),
   nextM: document.getElementById("next-m"),
   holdSlot: document.getElementById("pad-hold"),
+  holdSlotFloat: document.getElementById("pad-hold-float"),
   overlay: document.getElementById("overlay"),
   overlayTitle: document.getElementById("overlay-title"),
   overlayText: document.getElementById("overlay-text"),
@@ -80,6 +92,7 @@ const els = {
   btnTheme: document.getElementById("btn-theme"),
   themeLabel: document.getElementById("theme-label"),
   themePicker: document.getElementById("theme-picker"),
+  layoutPicker: document.getElementById("layout-picker"),
   wrap: document.getElementById("board-wrap"),
   app: document.getElementById("app"),
   howto: document.getElementById("howto"),
@@ -100,28 +113,26 @@ const nextCanvases = [
   document.getElementById("next-2"),
   document.getElementById("next-3"),
   document.getElementById("next-m"),
+  document.getElementById("next-float"),
+  document.getElementById("next-strip"),
 ].filter(Boolean);
+
+const holdFloat = document.getElementById("hold-float");
 
 const renderer = new Renderer(els.board, [
   { canvas: els.hold, kind: "hold" },
   { canvas: els.holdM, kind: "hold" },
-  ...nextCanvases.map((canvas, i) => ({
-    canvas,
-    kind: "next",
-    index: canvas.id === "next-side" || canvas.id === "next-m" ? 0 : Math.max(0, ["next","next-0","next-1","next-2","next-3"].indexOf(canvas.id) === 0 ? 0 : ["next-0","next-1","next-2","next-3","next"].indexOf(canvas.id)),
-  })),
+  ...(holdFloat ? [{ canvas: holdFloat, kind: "hold" }] : []),
+  ...nextCanvases.map((canvas) => ({ canvas, kind: "next", index: 0 })),
 ]);
-// normalize next indices: next-side=0, next-0=0, next-1=1, ...
 renderer.minis.forEach((mini) => {
   if (mini.kind !== "next") return;
   const id = mini.canvas.id;
-  if (id === "next-side" || id === "next-m") mini.index = 0;
-  else if (id === "next-0") mini.index = 0;
-  else if (id === "next-1") mini.index = 1;
+  if (id === "next-1") mini.index = 1;
   else if (id === "next-2") mini.index = 2;
   else if (id === "next-3") mini.index = 3;
-  else if (id === "next") mini.index = 4;
-  else mini.index = 0;
+  else if (id === "next") mini.index = 1;
+  else mini.index = 0; // next-side, next-float, next-strip, next-0, next-m
 });
 
 
@@ -161,6 +172,35 @@ function applyTheme(id) {
 
 let currentTheme = readTheme();
 applyTheme(currentTheme);
+
+function readLayout() {
+  try {
+    const v = localStorage.getItem(LAYOUT_KEY);
+    if (v === "full" || v === "strip" || v === "gesture" || v === "micro") return v;
+  } catch {}
+  return "full";
+}
+
+function writeLayout(id) {
+  try { localStorage.setItem(LAYOUT_KEY, id); } catch {}
+}
+
+function applyLayout(id) {
+  const L = LAYOUTS.find((x) => x.id === id) || LAYOUTS[0];
+  document.body.classList.remove("layout-full", "layout-strip", "layout-gesture", "layout-micro");
+  document.body.classList.add(`layout-${L.id}`);
+  if (els.layoutPicker) {
+    for (const btn of els.layoutPicker.querySelectorAll(".layout-chip")) {
+      btn.classList.toggle("is-on", btn.dataset.layout === L.id);
+    }
+  }
+  currentLayout = L.id;
+  requestAnimationFrame(() => layout());
+}
+
+
+let currentLayout = readLayout();
+applyLayout(currentLayout);
 
 function cycleTheme() {
   const i = THEMES.findIndex((x) => x.id === currentTheme);
@@ -283,7 +323,8 @@ const buttons = [
   [document.getElementById("pad-soft"), "soft"],
   [document.getElementById("pad-rot"), "rotR"],
   [document.getElementById("pad-hold"), "hold"],
-];
+  [document.getElementById("pad-hold-float"), "hold"],
+].filter(([el]) => el);
 
 const input = new Input(game, audio, {
   onPause: handlePauseButton,
@@ -393,15 +434,14 @@ function syncHud() {
   const s = String(game.score);
   const lv = String(game.level);
   const ln = String(game.lines);
-  els.score.textContent = s;
-  els.level.textContent = lv;
-  els.lines.textContent = ln;
-  els.scoreM.textContent = s;
-  els.levelM.textContent = lv;
-  els.linesM.textContent = ln;
-  if (els.holdSlot) {
-    els.holdSlot.classList.toggle("is-empty", !game.hold);
-  }
+  const set = (el, v) => { if (el) el.textContent = v; };
+  set(els.score, s); set(els.level, lv); set(els.lines, ln);
+  set(els.scoreM, s); set(els.levelM, lv); set(els.linesM, ln);
+  set(els.scoreRail, s); set(els.levelRail, lv); set(els.linesRail, ln);
+  set(els.scoreFloat, s);
+  const empty = !game.hold;
+  if (els.holdSlot) els.holdSlot.classList.toggle("is-empty", empty);
+  if (els.holdSlotFloat) els.holdSlotFloat.classList.toggle("is-empty", empty);
 }
 
 function syncSoundButton(muted) {
@@ -468,6 +508,7 @@ function showStart() {
   els.btnPlay.textContent = "Jogar!";
   els.overlayScore.hidden = true;
   if (els.themePicker) els.themePicker.hidden = false;
+  if (els.layoutPicker) els.layoutPicker.hidden = false;
 }
 
 function showOverlay(title, text, again, score) {
@@ -476,6 +517,7 @@ function showOverlay(title, text, again, score) {
   els.overlayText.textContent = text;
   els.overlayText.hidden = !text;
   if (els.themePicker) els.themePicker.hidden = !!again; // visível no início e na pausa
+  if (els.layoutPicker) els.layoutPicker.hidden = !!again;
   els.btnPlay.textContent = again ? "Jogar de novo" : game.state === STATE.PAUSED ? "Continuar" : "Jogar";
   if (typeof score === "number") {
     els.overlayScore.hidden = false;
