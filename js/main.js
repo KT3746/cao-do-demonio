@@ -26,7 +26,13 @@ import { Input } from "./input.js";
 })();
 const BEST_KEY = "tetrok-recorde";
 const HOWTO_KEY = "tetrok-como-jogar";
+const THEME_KEY = "tetrok-tema";
 const HOWTO_MS = 1800;
+const THEMES = [
+  { id: "aurora", label: "Aurora" },
+  { id: "navy", label: "Neon" },
+  { id: "crimson", label: "Vermelho" },
+];
 
 const HOWTO_STEPS = [
   {
@@ -67,6 +73,9 @@ const els = {
   btnPlay: document.getElementById("btn-play"),
   btnSound: document.getElementById("btn-sound"),
   btnPause: document.getElementById("btn-pause"),
+  btnTheme: document.getElementById("btn-theme"),
+  themeLabel: document.getElementById("theme-label"),
+  themePicker: document.getElementById("theme-picker"),
   wrap: document.getElementById("board-wrap"),
   app: document.getElementById("app"),
   howto: document.getElementById("howto"),
@@ -85,6 +94,69 @@ const renderer = new Renderer(els.board, [
   { canvas: els.holdM, kind: "hold" },
   { canvas: els.nextM, kind: "next" },
 ]);
+
+
+function readTheme() {
+  try {
+    const v = localStorage.getItem(THEME_KEY);
+    if (v === "aurora" || v === "navy" || v === "crimson") return v;
+  } catch {}
+  return "aurora";
+}
+
+function writeTheme(id) {
+  try {
+    localStorage.setItem(THEME_KEY, id);
+  } catch {}
+}
+
+function applyTheme(id) {
+  const t = THEMES.find((x) => x.id === id) || THEMES[0];
+  renderer.setTheme(t.id);
+  document.body.classList.remove("theme-aurora", "theme-navy", "theme-crimson");
+  document.body.classList.add(`theme-${t.id}`);
+  if (els.themeLabel) els.themeLabel.textContent = t.label;
+  if (els.themePicker) {
+    for (const btn of els.themePicker.querySelectorAll(".theme-swatch")) {
+      btn.classList.toggle("is-on", btn.dataset.theme === t.id);
+    }
+  }
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) {
+    meta.setAttribute(
+      "content",
+      t.id === "crimson" ? "#080406" : t.id === "navy" ? "#070d16" : "#07080f",
+    );
+  }
+  writeTheme = t.id;
+}
+
+let currentTheme = readTheme();
+applyTheme(currentTheme);
+
+function cycleTheme() {
+  const i = THEMES.findIndex((x) => x.id === currentTheme);
+  const next = THEMES[(i + 1) % THEMES.length];
+  writeTheme(next.id);
+  applyTheme(next.id);
+}
+
+if (els.btnTheme) {
+  els.btnTheme.addEventListener("click", () => {
+    audio.unlock();
+    cycleTheme();
+  });
+}
+if (els.themePicker) {
+  els.themePicker.addEventListener("click", (ev) => {
+    const btn = ev.target.closest(".theme-swatch");
+    if (!btn) return;
+    audio.unlock();
+    writeTheme(btn.dataset.theme);
+    applyTheme(btn.dataset.theme);
+  });
+}
+
 
 let best = readBest();
 let tutorialOpen = false;
@@ -354,6 +426,7 @@ function showStart() {
   showOverlay("TETROK", "", false);
   els.btnPlay.textContent = "Jogar!";
   els.overlayScore.hidden = true;
+  if (els.themePicker) els.themePicker.hidden = false;
 }
 
 function showOverlay(title, text, again, score) {
@@ -361,6 +434,7 @@ function showOverlay(title, text, again, score) {
   els.overlayTitle.textContent = title;
   els.overlayText.textContent = text;
   els.overlayText.hidden = !text;
+  if (els.themePicker) els.themePicker.hidden = !!again || game.state === STATE.PAUSED;
   els.btnPlay.textContent = again ? "Jogar de novo" : game.state === STATE.PAUSED ? "Continuar" : "Jogar";
   if (typeof score === "number") {
     els.overlayScore.hidden = false;
