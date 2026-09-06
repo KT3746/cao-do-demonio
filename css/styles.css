@@ -1,20 +1,20 @@
 :root {
-  --bg: #fff3bf;
-  --panel: rgba(255, 255, 255, 0.55);
-  --stroke: rgba(230, 160, 40, 0.35);
-  --text: #3b2a08;
-  --muted: #8a6a20;
-  --accent: #f59e0b;
-  --accent-2: #fbbf24;
-  --danger: #ef4444;
-  --shadow: 0 16px 40px rgba(200, 140, 20, 0.25);
+  --bg: #0b1220;
+  --panel: rgba(15, 23, 42, 0.88);
+  --stroke: rgba(56, 189, 248, 0.22);
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #22d3ee;
+  --accent-2: #f59e0b;
+  --danger: #f43f5e;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-l: env(safe-area-inset-left, 0px);
   --safe-r: env(safe-area-inset-right, 0px);
   --pad-h: 56px;
   --hard-h: 60px;
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 * {
@@ -64,11 +64,10 @@ canvas {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(900px 560px at 15% -10%, rgba(255, 236, 150, 0.95), transparent 55%),
-    radial-gradient(700px 500px at 90% 0%, rgba(255, 200, 80, 0.55), transparent 50%),
-    radial-gradient(650px 420px at 50% 110%, rgba(255, 170, 60, 0.45), transparent 55%),
-    radial-gradient(480px 360px at 40% 50%, rgba(255, 250, 220, 0.7), transparent 50%),
-    #ffe566;
+    radial-gradient(900px 500px at 20% -10%, rgba(34, 211, 238, 0.14), transparent 55%),
+    radial-gradient(700px 480px at 90% 10%, rgba(245, 158, 11, 0.10), transparent 50%),
+    radial-gradient(600px 400px at 50% 120%, rgba(15, 23, 42, 0.9), transparent 55%),
+    #0b1220;
   z-index: 0;
 }
 
@@ -904,101 +903,6 @@ kbd {
 }
 
 
-/* Layout mais alegre / arcade doce */
-.brand h1 {
-  background: linear-gradient(90deg, #ffd166, #ff6b9d, #5cffb0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.logo {
-  background: linear-gradient(135deg, #ff6b9d, #ffd166 45%, #5cffb0) !important;
-  box-shadow: 0 0 28px rgba(255, 107, 157, 0.55) !important;
-}
-.card, .hud-mobile .stat {
-  background: rgba(255, 255, 255, 0.14) !important;
-  border-color: rgba(255, 214, 120, 0.35) !important;
-  box-shadow: 0 10px 30px rgba(40, 0, 60, 0.25);
-}
-.modal {
-  background: linear-gradient(160deg, rgba(60, 20, 90, 0.95), rgba(30, 10, 50, 0.96)) !important;
-  border: 2px solid rgba(255, 209, 102, 0.45) !important;
-  box-shadow: 0 20px 60px rgba(255, 107, 157, 0.25);
-}
-.cta {
-  background: linear-gradient(135deg, #ff6b9d, #ffd166) !important;
-  color: #3b0a2a !important;
-  border: 0 !important;
-  font-weight: 800 !important;
-}
-.touch button {
-  background: rgba(255, 255, 255, 0.14) !important;
-  border-color: rgba(255, 255, 255, 0.28) !important;
-  color: #fff !important;
-  font-weight: 800 !important;
-}
-#pad-hard {
-  background: linear-gradient(180deg, #ffd166, #ff9f1c) !important;
-  color: #3b1d00 !important;
-  border-color: #ffe8a3 !important;
-  box-shadow: 0 8px 22px rgba(255, 209, 102, 0.45);
-}
-#pad-rot {
-  background: rgba(92, 255, 176, 0.22) !important;
-  border-color: rgba(92, 255, 176, 0.5) !important;
-}
-.board-frame, #board-wrap {
-  box-shadow: 0 0 0 2px rgba(255, 209, 102, 0.35), 0 12px 40px rgba(255, 107, 157, 0.2);
-  border-radius: 18px;
-}
-
-
-/* Amarelo alegre overrides */
-.brand h1 {
-  background: linear-gradient(90deg, #d97706, #ea580c, #ca8a04);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.chip {
-  background: rgba(255, 255, 255, 0.65) !important;
-  border-color: rgba(217, 119, 6, 0.4) !important;
-  color: #3b2a08 !important;
-}
-.card, .hud-mobile .stat {
-  background: rgba(255, 255, 255, 0.7) !important;
-  border-color: rgba(217, 119, 6, 0.35) !important;
-  color: #3b2a08;
-}
-.card h2, .muted, .tag, .desk-hint, .touch-hint, .hint-mini, .rail-label {
-  color: #8a6a20 !important;
-}
-.modal {
-  background: linear-gradient(160deg, #fff8d6, #ffe08a) !important;
-  border: 2px solid rgba(217, 119, 6, 0.45) !important;
-  color: #3b2a08 !important;
-}
-.modal .eyebrow {
-  color: #c2410c !important;
-}
-.touch button {
-  background: rgba(255, 255, 255, 0.75) !important;
-  border-color: rgba(217, 119, 6, 0.4) !important;
-  color: #3b2a08 !important;
-}
-#pad-hard {
-  background: linear-gradient(180deg, #fbbf24, #f59e0b) !important;
-  color: #3b1d00 !important;
-}
-#pad-rot {
-  background: rgba(34, 197, 94, 0.25) !important;
-  border-color: rgba(22, 163, 74, 0.5) !important;
-}
-.stat strong, .hud-mobile .stat strong {
-  color: #92400e !important;
-}
-
-
 /* Controles clássicos (sem botão Queda!) */
 .pad-classic {
   display: grid;
@@ -1033,4 +937,72 @@ kbd {
   .pad-classic {
     display: grid;
   }
+}
+
+
+/* Arcade clássico — limpo e sério */
+.brand h1 {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: #f8fafc !important;
+  letter-spacing: -0.03em;
+}
+.logo {
+  background: linear-gradient(135deg, #22d3ee, #0284c7) !important;
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.35) !important;
+}
+.tag {
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
+}
+.chip {
+  background: rgba(30, 41, 59, 0.9) !important;
+  border-color: rgba(56, 189, 248, 0.25) !important;
+  color: #e2e8f0 !important;
+}
+.card, .hud-mobile .stat {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border-color: rgba(56, 189, 248, 0.2) !important;
+  color: #e2e8f0 !important;
+  box-shadow: var(--shadow) !important;
+}
+.card h2, .hint-mini, .rail-label, .desk-hint, .muted {
+  color: #94a3b8 !important;
+}
+.stat strong, .hud-mobile .stat strong {
+  color: #f8fafc !important;
+}
+.modal {
+  background: linear-gradient(165deg, #1e293b, #0f172a) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  color: #e2e8f0 !important;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5) !important;
+}
+.modal .eyebrow {
+  color: #22d3ee !important;
+}
+.cta {
+  background: linear-gradient(135deg, #22d3ee, #0891b2) !important;
+  color: #082f49 !important;
+  border: 0 !important;
+  box-shadow: 0 10px 28px rgba(34, 211, 238, 0.3) !important;
+}
+.touch button, .pad-classic button {
+  background: rgba(30, 41, 59, 0.95) !important;
+  border: 1px solid rgba(148, 163, 184, 0.25) !important;
+  color: #f1f5f9 !important;
+  font-weight: 800 !important;
+}
+#pad-rot {
+  background: rgba(8, 47, 73, 0.95) !important;
+  border-color: rgba(34, 211, 238, 0.4) !important;
+  color: #a5f3fc !important;
+}
+#pad-soft {
+  background: rgba(30, 41, 59, 0.95) !important;
+}
+#board-wrap {
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.25), 0 16px 40px rgba(0,0,0,0.4) !important;
+  border-radius: 16px;
 }
