@@ -247,27 +247,37 @@ export class AudioEngine {
   }
 
   lineClear(count) {
-    const chord =
-      count >= 4
-        ? [523, 659, 784, 1046, 1318]
-        : count === 3
-          ? [440, 554, 659, 880]
-          : count === 2
-            ? [392, 523, 659]
-            : [349, 523];
-    chord.forEach((freq, i) => {
-      this.tone({
-        freq,
-        dur: 0.22 + count * 0.04,
-        type: "triangle",
-        vol: 0.17,
-        delay: i * 0.045,
-      });
+    // zap + whoosh (bem diferente do acorde antigo)
+    this.noise(0.08 + count * 0.03, 0.09 + count * 0.025);
+    const base = 180 + count * 40;
+    this.tone({
+      freq: base,
+      dur: 0.12,
+      type: "sawtooth",
+      vol: 0.11,
+      delay: 0,
     });
-    this.noise(0.1 + count * 0.025, 0.07 + count * 0.02);
+    this.tone({
+      freq: base * 2.2,
+      dur: 0.16,
+      type: "square",
+      vol: 0.07,
+      delay: 0.04,
+    });
+    // sweep ascendente curto
+    for (let i = 0; i < 3 + count; i++) {
+      this.tone({
+        freq: 520 + i * (90 + count * 20),
+        dur: 0.07,
+        type: "sine",
+        vol: 0.09,
+        delay: 0.06 + i * 0.035,
+      });
+    }
     if (count >= 4) {
-      this.tone({ freq: 1568, dur: 0.32, type: "sine", vol: 0.13, delay: 0.2 });
-      this.tone({ freq: 2093, dur: 0.2, type: "sine", vol: 0.08, delay: 0.32 });
+      this.noise(0.18, 0.12);
+      this.tone({ freq: 90, dur: 0.28, type: "triangle", vol: 0.14, delay: 0.05 });
+      this.tone({ freq: 1760, dur: 0.18, type: "sine", vol: 0.08, delay: 0.22 });
     }
   }
 
