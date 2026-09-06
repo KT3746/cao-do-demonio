@@ -13,19 +13,30 @@
     <meta property="og:description" content="Arcade original, em português, para jogar no celular e no computador." />
     <meta property="og:type" content="website" />
     <title>TETROK</title>
-    <link rel="icon" href="assets/favicon.svg?v=26-neon" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.svg?v=27-layouts" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Nunito:wght@700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=26-neon" />
+    <link rel="stylesheet" href="css/styles.css?v=27-layouts" />
   </head>
-  <body class="theme-neon">
+  <body class="theme-neon layout-full">
     <div class="aurora" aria-hidden="true"></div>
     <div id="app">
-      <header class="cyber-top">
+      <header class="topbar">
         <button type="button" id="btn-pause" class="hex-btn" aria-pressed="false" title="Pausar" aria-label="Pausar">❚❚</button>
-        <h1 class="cyber-title">TETROK</h1>
-        <div class="cyber-top-right">
+        <div class="topbar-mid">
+          <h1 class="brand-title">TETROK</h1>
+          <div class="strip-stats" aria-label="Placar">
+            <div class="chip"><span class="lbl-score">PTS</span><strong id="stat-score">0</strong></div>
+            <div class="chip"><span class="lbl-lines">LIN</span><strong id="stat-lines">0</strong></div>
+            <div class="chip"><span class="lbl-level">NV</span><strong id="stat-level">1</strong></div>
+          </div>
+          <div class="strip-next">
+            <span class="lbl-next">NEXT</span>
+            <canvas id="next-strip" width="56" height="56" aria-label="Próxima peça"></canvas>
+          </div>
+        </div>
+        <div class="topbar-right">
           <button type="button" id="btn-sound" class="hex-btn" aria-pressed="false" title="Som" aria-label="Som">♪</button>
           <button type="button" id="btn-theme" class="hex-btn" title="Visual" aria-label="Trocar visual">
             <span id="theme-label" class="sr-only">Neon</span>◈
@@ -33,53 +44,62 @@
         </div>
       </header>
 
-      <div class="cyber-arena">
-        <aside class="cyber-rail cyber-rail-left" aria-label="Placar">
-          <div class="cyber-stat">
-            <span class="lbl-score">SCORE</span>
-            <strong id="stat-score">0</strong>
-          </div>
-          <div class="cyber-stat">
-            <span class="lbl-lines">LINES</span>
-            <strong id="stat-lines">0</strong>
-          </div>
-          <div class="cyber-stat">
-            <span class="lbl-level">LEVEL</span>
-            <strong id="stat-level">1</strong>
-          </div>
-          <div class="cyber-mini cyber-next-side">
-            <span class="lbl-next">NEXT</span>
-            <canvas id="next-side" width="88" height="88" aria-label="Próxima peça"></canvas>
-          </div>
-          <strong id="stat-score-m" class="sr-only">0</strong>
-          <strong id="stat-level-m" class="sr-only">1</strong>
-          <strong id="stat-lines-m" class="sr-only">0</strong>
+      <div class="stage">
+        <aside class="rail rail-left" aria-label="Placar">
+          <div class="rail-stat"><span class="lbl-score">SCORE</span><strong id="stat-score-rail">0</strong></div>
+          <div class="rail-stat"><span class="lbl-lines">LINES</span><strong id="stat-lines-rail">0</strong></div>
+          <div class="rail-stat"><span class="lbl-level">LEVEL</span><strong id="stat-level-rail">1</strong></div>
         </aside>
 
-        <main class="cyber-stage">
+        <main class="board-area">
           <div id="board-wrap">
             <canvas id="board" width="300" height="600" role="img" aria-label="Tabuleiro do TETROK"></canvas>
+            <div class="float-hud" aria-hidden="false">
+              <div class="float-score">
+                <span class="lbl-score">PONTOS</span>
+                <strong id="stat-score-float">0</strong>
+              </div>
+              <div class="float-side">
+                <button type="button" id="pad-hold-float" class="float-box hold-slot is-empty" data-action="hold" aria-label="Reservar" title="Reservar (C)">
+                  <span class="lbl-hold">HOLD</span>
+                  <canvas id="hold-float" width="64" height="64" aria-hidden="true"></canvas>
+                  <span class="hold-empty">＋</span>
+                </button>
+                <div class="float-box">
+                  <span class="lbl-next">NEXT</span>
+                  <canvas id="next-float" width="64" height="64" aria-label="Próxima"></canvas>
+                </div>
+              </div>
+            </div>
           </div>
         </main>
 
-        <aside class="cyber-rail cyber-rail-right" aria-label="Reserva e fila">
-          <button type="button" id="pad-hold" class="cyber-mini hold-slot is-empty" data-action="hold" aria-label="HOLD / Reservar" title="Reservar (C)">
+        <aside class="rail rail-right" aria-label="Reserva e fila">
+          <button type="button" id="pad-hold" class="rail-box hold-slot is-empty" data-action="hold" aria-label="HOLD / Reservar" title="Reservar (C)">
             <span class="lbl-hold">HOLD</span>
-            <canvas id="hold" width="88" height="88" aria-hidden="true"></canvas>
+            <canvas id="hold" width="72" height="72" aria-hidden="true"></canvas>
             <span class="hold-empty">＋</span>
           </button>
-          <div class="cyber-queue">
+          <div class="rail-box rail-queue">
             <span class="lbl-next">NEXT</span>
-            <canvas id="next-0" width="72" height="56" aria-hidden="true"></canvas>
-            <canvas id="next-1" width="72" height="56" aria-hidden="true"></canvas>
-            <canvas id="next-2" width="72" height="56" aria-hidden="true"></canvas>
-            <canvas id="next-3" width="72" height="56" aria-hidden="true"></canvas>
-            <canvas id="next" width="72" height="56" aria-label="Fila de próximas"></canvas>
+            <canvas id="next-0" width="64" height="48" aria-hidden="true"></canvas>
+            <canvas id="next-1" width="64" height="48" aria-hidden="true"></canvas>
+            <canvas id="next-side" width="64" height="64" aria-label="Próxima peça"></canvas>
+            <canvas id="next" width="64" height="48" aria-hidden="true"></canvas>
+            <canvas id="next-2" width="1" height="1" class="sr-only" aria-hidden="true"></canvas>
+            <canvas id="next-3" width="1" height="1" class="sr-only" aria-hidden="true"></canvas>
           </div>
-          <canvas id="hold-m" class="sr-only" width="1" height="1" aria-hidden="true"></canvas>
-          <canvas id="next-m" class="sr-only" width="1" height="1" aria-hidden="true"></canvas>
         </aside>
       </div>
+
+      <!-- mirrors for old ids used by syncHud -->
+      <strong id="stat-score-m" class="sr-only">0</strong>
+      <strong id="stat-level-m" class="sr-only">1</strong>
+      <strong id="stat-lines-m" class="sr-only">0</strong>
+      <canvas id="hold-m" class="sr-only" width="1" height="1" aria-hidden="true"></canvas>
+      <canvas id="next-m" class="sr-only" width="1" height="1" aria-hidden="true"></canvas>
+
+      <p class="gesture-hint" id="gesture-hint">Deslize pra mover · toque pra girar · puxe pra baixo</p>
 
       <nav class="touch cyber-pad" aria-label="Controles de toque">
         <div class="cyber-pad-inner">
@@ -117,7 +137,7 @@
         <h2 id="overlay-title">TETROK</h2>
         <p id="overlay-text" hidden></p>
         <div id="overlay-score" class="overlay-score" hidden></div>
-        <div id="theme-picker" class="theme-picker" role="group" aria-label="Versão visual">
+        <div id="theme-picker" class="theme-picker" role="group" aria-label="Visual">
           <button type="button" class="theme-swatch is-on" data-theme="neon" title="Neon vidro">
             <span class="swatch swatch-neon"></span>
             <span>Neon</span>
@@ -127,10 +147,16 @@
             <span>Doce</span>
           </button>
         </div>
+        <div id="layout-picker" class="layout-picker" role="group" aria-label="Layout da tela">
+          <button type="button" class="layout-chip is-on" data-layout="full">Tela cheia</button>
+          <button type="button" class="layout-chip" data-layout="strip">Faixa</button>
+          <button type="button" class="layout-chip" data-layout="gesture">Gestos</button>
+          <button type="button" class="layout-chip" data-layout="micro">Micro</button>
+        </div>
         <button type="button" id="btn-play" class="cta">Jogar</button>
       </div>
     </div>
 
-    <script type="module" src="js/main.js?v=26-neon"></script>
+    <script type="module" src="js/main.js?v=27-layouts"></script>
   </body>
 </html>
