@@ -277,10 +277,7 @@ function syncSoundButton(muted) {
 }
 
 function bootScreen() {
-  if (!readHowToSeen()) {
-    openHowTo();
-    return;
-  }
+  writeHowToSeen();
   showStart();
 }
 
@@ -333,11 +330,7 @@ function finishHowTo() {
 }
 
 function showStart() {
-  showOverlay(
-    "TETROK",
-    "Cai bloco, limpa linha, sobe o clima. Bora jogar!",
-    false,
-  );
+  showOverlay("TETROK", "", false);
   els.btnPlay.textContent = "Jogar!";
   els.overlayScore.hidden = true;
 }
@@ -346,6 +339,7 @@ function showOverlay(title, text, again, score) {
   els.overlay.hidden = false;
   els.overlayTitle.textContent = title;
   els.overlayText.textContent = text;
+  els.overlayText.hidden = !text;
   els.btnPlay.textContent = again ? "Jogar de novo" : game.state === STATE.PAUSED ? "Continuar" : "Jogar";
   if (typeof score === "number") {
     els.overlayScore.hidden = false;
