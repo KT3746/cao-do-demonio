@@ -4,30 +4,53 @@ import { Renderer } from "./render.js";
 import { Input } from "./input.js";
 
 
-// iOS Safari: evita pinch-zoom e double-tap zoom
+// iOS Safari: trava pinch / double-tap / scale (não dá pra "deszoomar" por JS)
 (function lockMobileZoom() {
-  const block = (ev) => {
-    if (ev.touches && ev.touches.length > 1) ev.preventDefault();
+  const stop = (e) => {
+    if (e.cancelable) e.preventDefault();
   };
-  document.addEventListener("gesturestart", (e) => e.preventDefault(), { passive: false });
-  document.addEventListener("gesturechange", (e) => e.preventDefault(), { passive: false });
-  document.addEventListener("gestureend", (e) => e.preventDefault(), { passive: false });
-  document.addEventListener("touchmove", block, { passive: false });
+  ["gesturestart", "gesturechange", "gestureend"].forEach((type) => {
+    document.addEventListener(type, stop, { passive: false, capture: true });
+  });
+  document.addEventListener(
+    "touchmove",
+    (e) => {
+      if (e.touches && e.touches.length > 1) stop(e);
+      // iOS antigo: e.scale !== 1 durante pinch
+      if (typeof e.scale === "number" && e.scale !== 1) stop(e);
+    },
+    { passive: false, capture: true },
+  );
   let lastTouchEnd = 0;
   document.addEventListener(
     "touchend",
     (e) => {
       const t = e.target;
-      if (t && t.closest && t.closest("button, a, .theme-swatch, .layout-chip, .chip, .cta")) {
+      // botões do menu podem receber toque normal
+      if (t && t.closest && t.closest("button, a, .theme-swatch, .layout-chip, .chip, .cta, .linkish")) {
         lastTouchEnd = Date.now();
         return;
       }
       const now = Date.now();
-      if (now - lastTouchEnd <= 320) e.preventDefault();
+      // bloqueia double-tap zoom em qualquer outro lugar (tabuleiro incluso)
+      if (now - lastTouchEnd <= 350) stop(e);
       lastTouchEnd = now;
     },
-    { passive: false },
+    { passive: false, capture: true },
   );
+  // se o visualViewport já estiver com scale != 1, recentra
+  const recenter = () => {
+    try {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    } catch {}
+  };
+  recenter();
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", recenter);
+    window.visualViewport.addEventListener("scroll", recenter);
+  }
 })();
 const BEST_KEY = "tetrok-recorde";
 const HOWTO_KEY = "tetrok-como-jogar";
@@ -580,15 +603,26 @@ function layoutIfNeeded() {
 function layout() {
   const wrap = els.wrap;
   const rect = wrap.getBoundingClientRect();
-  lastWrapW = rect.width;
-  lastWrapH = rect.height;
+  // Em iOS com zoom grudado, usa a viewport VISÍVEL pra não estourar a tela
+  const vv = window.visualViewport;
+  const scale = vv && vv.scale ? vv.scale : 1;
   let maxW = rect.width || wrap.clientWidth;
   let maxH = rect.height || wrap.clientHeight;
+  if (vv && scale > 1.01) {
+    maxW = Math.min(maxW, vv.width);
+    maxH = Math.min(maxH, vv.height * 0.78);
+  }
+  lastWrapW = maxW;
+  lastWrapH = maxH;
 
   if (!maxW || !maxH) {
-    maxW = Math.min(360, window.innerWidth * 0.92);
-    maxH = Math.min(640, window.innerHeight * 0.6);
+    maxW = Math.min(360, (vv ? vv.width : window.innerWidth) * 0.92);
+    maxH = Math.min(640, (vv ? vv.height : window.innerHeight) * 0.6);
   }
+
+  // margem de segurança pra HUD flutuante não cortar
+  maxW = Math.max(120, maxW - 4);
+  maxH = Math.max(180, maxH - 4);
 
   const ratio = 10 / 20;
   let w = maxW;
