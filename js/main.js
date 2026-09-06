@@ -93,12 +93,37 @@ const els = {
 };
 
 const audio = new AudioEngine();
+const nextCanvases = [
+  document.getElementById("next-side"),
+  document.getElementById("next"),
+  document.getElementById("next-0"),
+  document.getElementById("next-1"),
+  document.getElementById("next-2"),
+  document.getElementById("next-3"),
+  document.getElementById("next-m"),
+].filter(Boolean);
+
 const renderer = new Renderer(els.board, [
   { canvas: els.hold, kind: "hold" },
-  { canvas: els.next, kind: "next" },
   { canvas: els.holdM, kind: "hold" },
-  { canvas: els.nextM, kind: "next" },
+  ...nextCanvases.map((canvas, i) => ({
+    canvas,
+    kind: "next",
+    index: canvas.id === "next-side" || canvas.id === "next-m" ? 0 : Math.max(0, ["next","next-0","next-1","next-2","next-3"].indexOf(canvas.id) === 0 ? 0 : ["next-0","next-1","next-2","next-3","next"].indexOf(canvas.id)),
+  })),
 ]);
+// normalize next indices: next-side=0, next-0=0, next-1=1, ...
+renderer.minis.forEach((mini) => {
+  if (mini.kind !== "next") return;
+  const id = mini.canvas.id;
+  if (id === "next-side" || id === "next-m") mini.index = 0;
+  else if (id === "next-0") mini.index = 0;
+  else if (id === "next-1") mini.index = 1;
+  else if (id === "next-2") mini.index = 2;
+  else if (id === "next-3") mini.index = 3;
+  else if (id === "next") mini.index = 4;
+  else mini.index = 0;
+});
 
 
 function readTheme() {
@@ -191,13 +216,14 @@ const game = new Game({
     audio.pause();
     showOverlay("Pausa", "Cafézinho? Quando quiser, bora de novo.", false);
     els.btnPause.setAttribute("aria-pressed", "true");
-    els.btnPause.querySelector(".btn-label").textContent = "Continuar";
+    const pl = els.btnPause.querySelector(".btn-label");
+    if (pl) pl.textContent = "Continuar";
   },
   onResume: () => {
     audio.resume();
     hideOverlay();
     els.btnPause.setAttribute("aria-pressed", "false");
-    els.btnPause.querySelector(".btn-label").textContent = "Pausa";
+    (function(){const pl=els.btnPause.querySelector(".btn-label"); if(pl) pl.textContent="Pausa";})();
   },
   onLock: ({ hard }) => {
     if (!hard) audio.lock();
@@ -246,7 +272,7 @@ const game = new Game({
           ? "Boa luta! Dá pra estourar esse recorde."
           : "Monstro! Agora tenta bater isso.";
     showOverlay("Game over!", roast, true, snap.score);
-    els.btnPause.querySelector(".btn-label").textContent = "Pausa";
+    (function(){const pl=els.btnPause.querySelector(".btn-label"); if(pl) pl.textContent="Pausa";})();
     els.btnPause.setAttribute("aria-pressed", "false");
     syncHud();
   },
@@ -382,7 +408,7 @@ function syncHud() {
 
 function syncSoundButton(muted) {
   els.btnSound.setAttribute("aria-pressed", muted ? "true" : "false");
-  els.btnSound.querySelector(".btn-label").textContent = muted ? "Som off" : "Som";
+  (function(){const sl=els.btnSound.querySelector(".btn-label"); if(sl) sl.textContent=muted ? "Som off" : "Som";})();
   els.btnSound.title = muted ? "Ativar som" : "Silenciar";
 }
 
