@@ -192,17 +192,73 @@ export class Renderer {
     const oy = this.shake ? (Math.random() - 0.5) * this.shake * dpr : 0;
     ctx.translate(ox, oy);
 
-    const bg = ctx.createLinearGradient(0, 0, 0, h);
-    bg.addColorStop(0, "#1a2332");
-    bg.addColorStop(1, "#0d121c");
-    ctx.fillStyle = bg;
+    // Poço vidro aurora (opção C)
+    const base = ctx.createLinearGradient(0, 0, 0, h);
+    base.addColorStop(0, "#0b1020");
+    base.addColorStop(0.45, "#0a0e1a");
+    base.addColorStop(1, "#07080f");
+    ctx.fillStyle = base;
     roundRect(ctx, 0, 0, w, h, cw * 0.14);
     ctx.fill();
 
-    // borda neon sutil
-    ctx.strokeStyle = "rgba(34, 211, 238, 0.35)";
-    ctx.lineWidth = Math.max(2, dpr);
-    roundRect(ctx, 1, 1, w - 2, h - 2, cw * 0.14);
+    ctx.save();
+    roundRect(ctx, 0, 0, w, h, cw * 0.14);
+    ctx.clip();
+
+    // aurora ciano
+    let aurora = ctx.createRadialGradient(w * 0.22, h * 0.18, 0, w * 0.22, h * 0.18, w * 0.85);
+    aurora.addColorStop(0, "rgba(56, 189, 248, 0.38)");
+    aurora.addColorStop(0.45, "rgba(34, 211, 238, 0.12)");
+    aurora.addColorStop(1, "rgba(34, 211, 238, 0)");
+    ctx.fillStyle = aurora;
+    ctx.fillRect(0, 0, w, h);
+
+    // aurora violeta
+    aurora = ctx.createRadialGradient(w * 0.82, h * 0.55, 0, w * 0.82, h * 0.55, w * 0.9);
+    aurora.addColorStop(0, "rgba(167, 139, 250, 0.34)");
+    aurora.addColorStop(0.5, "rgba(129, 140, 248, 0.12)");
+    aurora.addColorStop(1, "rgba(129, 140, 248, 0)");
+    ctx.fillStyle = aurora;
+    ctx.fillRect(0, 0, w, h);
+
+    // brilho inferior suave
+    aurora = ctx.createRadialGradient(w * 0.5, h * 1.05, 0, w * 0.5, h * 1.05, h * 0.55);
+    aurora.addColorStop(0, "rgba(45, 212, 191, 0.16)");
+    aurora.addColorStop(1, "rgba(45, 212, 191, 0)");
+    ctx.fillStyle = aurora;
+    ctx.fillRect(0, 0, w, h);
+
+    // poeira de estrelas bem sutil (estável por tamanho do canvas)
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    for (let i = 0; i < 28; i++) {
+      const sx = ((i * 97) % 1000) / 1000 * w;
+      const sy = ((i * 53) % 1000) / 1000 * h;
+      const r = (i % 3 === 0 ? 1.1 : 0.7) * dpr;
+      ctx.globalAlpha = 0.18 + (i % 5) * 0.05;
+      ctx.beginPath();
+      ctx.arc(sx, sy, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // vidro: vinheta interna
+    const glass = ctx.createLinearGradient(0, 0, 0, h);
+    glass.addColorStop(0, "rgba(255,255,255,0.06)");
+    glass.addColorStop(0.2, "rgba(255,255,255,0)");
+    glass.addColorStop(0.85, "rgba(0,0,0,0)");
+    glass.addColorStop(1, "rgba(0,0,0,0.35)");
+    ctx.fillStyle = glass;
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+
+    // moldura vidro neon
+    ctx.strokeStyle = "rgba(125, 211, 252, 0.55)";
+    ctx.lineWidth = Math.max(2.2, dpr * 1.2);
+    roundRect(ctx, 1.5, 1.5, w - 3, h - 3, cw * 0.14);
+    ctx.stroke();
+    ctx.strokeStyle = "rgba(167, 139, 250, 0.28)";
+    ctx.lineWidth = Math.max(1, dpr * 0.7);
+    roundRect(ctx, 4, 4, w - 8, h - 8, cw * 0.12);
     ctx.stroke();
 
     ctx.save();
@@ -210,21 +266,22 @@ export class Renderer {
     const innerW = cw * COLS;
     const innerH = ch * ROWS;
 
-    // Grade clássica: colunas só um pouco mais claras pra mirar
+    // faixas suaves pra mirar (vidro)
     for (let x = 0; x < COLS; x++) {
-      ctx.fillStyle = x % 2 === 0 ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.18)";
+      ctx.fillStyle = x % 2 === 0 ? "rgba(125, 211, 252, 0.045)" : "rgba(15, 23, 42, 0.22)";
       ctx.fillRect(x * cw, 0, cw, innerH);
     }
-    ctx.strokeStyle = "rgba(148, 163, 184, 0.12)";
-    ctx.lineWidth = Math.max(1, dpr * 0.5);
+    // grade nítida
+    ctx.strokeStyle = "rgba(226, 232, 240, 0.14)";
+    ctx.lineWidth = Math.max(1, dpr * 0.55);
     for (let y = 1; y < ROWS; y++) {
       ctx.beginPath();
       ctx.moveTo(0, y * ch);
       ctx.lineTo(innerW, y * ch);
       ctx.stroke();
     }
-    ctx.strokeStyle = "rgba(34, 211, 238, 0.16)";
-    ctx.lineWidth = Math.max(1.2, dpr * 0.65);
+    ctx.strokeStyle = "rgba(165, 243, 252, 0.22)";
+    ctx.lineWidth = Math.max(1.15, dpr * 0.7);
     for (let x = 1; x < COLS; x++) {
       ctx.beginPath();
       ctx.moveTo(x * cw, 0);
