@@ -1,13 +1,13 @@
 :root {
-  --bg: #070b16;
-  --panel: rgba(16, 24, 44, 0.72);
-  --stroke: rgba(160, 210, 230, 0.16);
-  --text: #e8eefc;
-  --muted: #93a0c0;
-  --accent: #3ee8c5;
-  --accent-2: #f4c95d;
-  --danger: #fb7185;
-  --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  --bg: #1a0f2e;
+  --panel: rgba(255, 255, 255, 0.12);
+  --stroke: rgba(255, 220, 120, 0.28);
+  --text: #fff8ff;
+  --muted: #ffd6f0;
+  --accent: #5cffb0;
+  --accent-2: #ffd166;
+  --danger: #ff6b9d;
+  --shadow: 0 16px 40px rgba(80, 0, 100, 0.35);
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-l: env(safe-area-inset-left, 0px);
@@ -64,10 +64,11 @@ canvas {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(900px 500px at 15% -10%, rgba(62, 232, 197, 0.2), transparent 50%),
-    radial-gradient(700px 480px at 90% 0%, rgba(167, 139, 250, 0.18), transparent 45%),
-    radial-gradient(600px 400px at 50% 110%, rgba(244, 201, 93, 0.12), transparent 50%),
-    #070b16;
+    radial-gradient(800px 520px at 10% -5%, rgba(255, 107, 157, 0.45), transparent 55%),
+    radial-gradient(700px 480px at 95% 5%, rgba(92, 255, 176, 0.28), transparent 50%),
+    radial-gradient(650px 420px at 50% 110%, rgba(255, 209, 102, 0.35), transparent 55%),
+    radial-gradient(500px 400px at 70% 40%, rgba(130, 110, 255, 0.25), transparent 50%),
+    #1a0f2e;
   z-index: 0;
 }
 
@@ -162,6 +163,9 @@ canvas {
   gap: 6px;
   padding: 8px 14px;
   min-height: 42px;
+  background: rgba(255, 209, 102, 0.18);
+  border-color: rgba(255, 209, 102, 0.45);
+  color: #fff6d0;
 }
 
 .chip[aria-pressed="true"] {
@@ -897,4 +901,53 @@ kbd {
 .tag {
   color: #7dd3fc !important;
   font-weight: 700;
+}
+
+
+/* Layout mais alegre / arcade doce */
+.brand h1 {
+  background: linear-gradient(90deg, #ffd166, #ff6b9d, #5cffb0);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.logo {
+  background: linear-gradient(135deg, #ff6b9d, #ffd166 45%, #5cffb0) !important;
+  box-shadow: 0 0 28px rgba(255, 107, 157, 0.55) !important;
+}
+.card, .hud-mobile .stat {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 214, 120, 0.35) !important;
+  box-shadow: 0 10px 30px rgba(40, 0, 60, 0.25);
+}
+.modal {
+  background: linear-gradient(160deg, rgba(60, 20, 90, 0.95), rgba(30, 10, 50, 0.96)) !important;
+  border: 2px solid rgba(255, 209, 102, 0.45) !important;
+  box-shadow: 0 20px 60px rgba(255, 107, 157, 0.25);
+}
+.cta {
+  background: linear-gradient(135deg, #ff6b9d, #ffd166) !important;
+  color: #3b0a2a !important;
+  border: 0 !important;
+  font-weight: 800 !important;
+}
+.touch button {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 255, 255, 0.28) !important;
+  color: #fff !important;
+  font-weight: 800 !important;
+}
+#pad-hard {
+  background: linear-gradient(180deg, #ffd166, #ff9f1c) !important;
+  color: #3b1d00 !important;
+  border-color: #ffe8a3 !important;
+  box-shadow: 0 8px 22px rgba(255, 209, 102, 0.45);
+}
+#pad-rot {
+  background: rgba(92, 255, 176, 0.22) !important;
+  border-color: rgba(92, 255, 176, 0.5) !important;
+}
+.board-frame, #board-wrap {
+  box-shadow: 0 0 0 2px rgba(255, 209, 102, 0.35), 0 12px 40px rgba(255, 107, 157, 0.2);
+  border-radius: 18px;
 }
