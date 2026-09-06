@@ -167,7 +167,12 @@ export class Renderer {
     this.drawBoard(game);
     const holdDim = !game.canHold && game.state === "playing";
     for (const mini of this.minis) {
-      const id = mini.kind === "hold" ? game.hold : game.queue[0];
+      let id = null;
+      if (mini.kind === "hold") id = game.hold;
+      else {
+        const idx = typeof mini.index === "number" ? mini.index : 0;
+        id = game.queue[idx] || null;
+      }
       this.drawMini(mini.ctx, mini.canvas, id, mini.kind === "hold" && holdDim);
     }
   }
