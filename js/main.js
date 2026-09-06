@@ -3,8 +3,8 @@ import { AudioEngine } from "./audio.js";
 import { Renderer } from "./render.js";
 import { Input } from "./input.js";
 
-const BEST_KEY = "queda-certa-recorde";
-const HOWTO_KEY = "queda-certa-como-jogar";
+const BEST_KEY = "cao-do-demonio-recorde";
+const HOWTO_KEY = "cao-do-demonio-como-jogar";
 const HOWTO_MS = 1800;
 
 const HOWTO_STEPS = [
@@ -18,7 +18,7 @@ const HOWTO_STEPS = [
   },
   {
     title: "Limpa e explode",
-    text: "Fecha a linha e ganha ponto. Quatro de uma vez? QUEDA CERTA!!!",
+    text: "Fecha a linha e ganha ponto. Quatro de uma vez? CÃO DO DEMÔNIO!!!",
   },
   {
     title: "Guarda na manga",
@@ -118,7 +118,7 @@ const game = new Game({
   onLevelUp: () => {
     audio.levelUp();
     renderer.pulseLevel();
-    if (!String(game.lastClearLabel || "").includes("QUEDA CERTA")) {
+    if (!String(game.lastClearLabel || "").includes("CÃO DO DEMÔNIO")) {
       renderer.showToast(`Nível ${game.level}! Ficou mais rápido`);
     }
     syncHud();
@@ -334,7 +334,7 @@ function finishHowTo() {
 
 function showStart() {
   showOverlay(
-    "Queda Certa",
+    "Cão do Demônio",
     "Cai bloco, limpa linha, sobe o clima. Bora jogar!",
     false,
   );
