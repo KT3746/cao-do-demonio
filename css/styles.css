@@ -506,3 +506,8 @@ body.layout-micro #app {
 .float-side .float-box:not(.hold-slot) {
   display: block;
 }
+
+
+/* Configuração única: sem seletor de tema no topo */
+#btn-theme { display: none !important; }
+#theme-picker, #layout-picker, .picker-label { display: none !important; }
