@@ -32,7 +32,7 @@ export class AudioEngine {
       this.sfxGain.connect(this.master);
 
       this.musicGain = this.ctx.createGain();
-      this.musicGain.gain.value = 0.11;
+      this.musicGain.gain.value = 0.09;
       this.musicGain.connect(this.master);
     }
     if (this.ctx.state === "suspended") {
@@ -125,7 +125,7 @@ export class AudioEngine {
     src.start(t);
   }
 
-  /** Melodia alegre original em loop (arpejo C maior + baixo). */
+  /** Melodia alegre e macia (sem ruído agudo). */
   startMusic(resumeOnly = false) {
     this.unlock();
     if (!this.ctx || this.muted) return;
@@ -133,43 +133,51 @@ export class AudioEngine {
     if (this.musicTimer) return;
     if (!resumeOnly) this.step = 0;
 
+    // Notas mais graves/médias — evita chiado tipo choque
     const melody = [
-      523.25, 659.25, 783.99, 659.25,
-      587.33, 698.46, 880.0, 698.46,
-      523.25, 659.25, 783.99, 1046.5,
-      783.99, 659.25, 587.33, 523.25,
+      261.63, 329.63, 392.0, 329.63,
+      293.66, 349.23, 440.0, 349.23,
+      261.63, 329.63, 392.0, 523.25,
+      392.0, 329.63, 293.66, 261.63,
     ];
-    const bass = [130.81, 130.81, 146.83, 146.83, 164.81, 164.81, 146.83, 130.81];
+    const bass = [98.0, 98.0, 110.0, 110.0, 123.47, 123.47, 110.0, 98.0];
 
     const tick = () => {
       if (!this.musicOn || this.muted || !this.ctx) return;
       const i = this.step % melody.length;
-      const beat = this.step % 8 === 0;
+      const beat = this.step % 4 === 0;
       this.tone({
         freq: melody[i],
-        dur: 0.16,
-        type: "triangle",
-        vol: 0.07,
+        dur: 0.22,
+        type: "sine",
+        vol: 0.055,
         dest: this.musicGain,
-        filter: 3200,
+        filter: 1800,
+      });
+      // harmônico suave (oitava abaixo), sem noise
+      this.tone({
+        freq: melody[i] / 2,
+        dur: 0.2,
+        type: "triangle",
+        vol: 0.03,
+        dest: this.musicGain,
+        filter: 900,
       });
       if (beat) {
         this.tone({
-          freq: bass[(this.step / 2) % bass.length | 0],
-          dur: 0.22,
+          freq: bass[(this.step / 4) % bass.length | 0],
+          dur: 0.28,
           type: "sine",
-          vol: 0.09,
+          vol: 0.08,
           dest: this.musicGain,
-          filter: 500,
+          filter: 400,
         });
       }
-      // hi-hat leve
-      if (this.step % 2 === 1) this.noise(0.025, 0.012);
       this.step += 1;
     };
 
     tick();
-    this.musicTimer = setInterval(tick, 180);
+    this.musicTimer = setInterval(tick, 210);
   }
 
   stopMusic(keepFlag = false) {
