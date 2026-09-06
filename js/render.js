@@ -5,10 +5,11 @@ export class Renderer {
   constructor(boardCanvas, minis) {
     this.board = boardCanvas;
     this.bctx = boardCanvas.getContext("2d");
-    this.minis = minis.map(({ canvas, kind }) => ({
+    this.minis = minis.map(({ canvas, kind, index }) => ({
       canvas,
       ctx: canvas.getContext("2d"),
       kind,
+      index: typeof index === "number" ? index : 0,
     }));
     this.particles = [];
     this.beams = [];
