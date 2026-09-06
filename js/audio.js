@@ -1,9 +1,9 @@
 /**
  * Sons e música sintetizados no navegador (Web Audio).
- * Nada de amostras prontas — só tons originais do Cão do Demônio.
+ * Nada de amostras prontas — só tons originais do TETROK.
  */
 
-const STORAGE_KEY = "cao-do-demonio-som";
+const STORAGE_KEY = "tetrok-som";
 
 export class AudioEngine {
   constructor() {
