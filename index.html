@@ -13,11 +13,11 @@
     <meta property="og:description" content="Arcade original, em português, para jogar no celular e no computador." />
     <meta property="og:type" content="website" />
     <title>TETROK</title>
-    <link rel="icon" href="assets/favicon.svg?v=27-layouts" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.svg?v=28-layouts" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Nunito:wght@700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=27-layouts" />
+    <link rel="stylesheet" href="css/styles.css?v=28-layouts" />
   </head>
   <body class="theme-neon layout-full">
     <div class="aurora" aria-hidden="true"></div>
@@ -137,7 +137,27 @@
         <h2 id="overlay-title">TETROK</h2>
         <p id="overlay-text" hidden></p>
         <div id="overlay-score" class="overlay-score" hidden></div>
-        <div id="theme-picker" class="theme-picker" role="group" aria-label="Visual">
+        <p class="picker-label" id="layout-label">Como fica a tela</p>
+        <div id="layout-picker" class="layout-picker" role="group" aria-labelledby="layout-label">
+          <button type="button" class="layout-chip is-on" data-layout="full">
+            <strong>1 · Tela cheia</strong>
+            <span>Tabuleiro no máximo</span>
+          </button>
+          <button type="button" class="layout-chip" data-layout="strip">
+            <strong>2 · Faixa</strong>
+            <span>Placar em cima</span>
+          </button>
+          <button type="button" class="layout-chip" data-layout="gesture">
+            <strong>3 · Gestos</strong>
+            <span>Deslizar / tocar</span>
+          </button>
+          <button type="button" class="layout-chip" data-layout="micro">
+            <strong>4 · Micro</strong>
+            <span>Laterais finas</span>
+          </button>
+        </div>
+        <p class="picker-label" id="theme-label-ui">Cores</p>
+        <div id="theme-picker" class="theme-picker" role="group" aria-labelledby="theme-label-ui">
           <button type="button" class="theme-swatch is-on" data-theme="neon" title="Neon vidro">
             <span class="swatch swatch-neon"></span>
             <span>Neon</span>
@@ -147,16 +167,10 @@
             <span>Doce</span>
           </button>
         </div>
-        <div id="layout-picker" class="layout-picker" role="group" aria-label="Layout da tela">
-          <button type="button" class="layout-chip is-on" data-layout="full">Tela cheia</button>
-          <button type="button" class="layout-chip" data-layout="strip">Faixa</button>
-          <button type="button" class="layout-chip" data-layout="gesture">Gestos</button>
-          <button type="button" class="layout-chip" data-layout="micro">Micro</button>
-        </div>
         <button type="button" id="btn-play" class="cta">Jogar</button>
       </div>
     </div>
 
-    <script type="module" src="js/main.js?v=27-layouts"></script>
+    <script type="module" src="js/main.js?v=28-layouts"></script>
   </body>
 </html>
