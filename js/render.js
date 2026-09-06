@@ -33,7 +33,7 @@ export class Renderer {
 
   spawnClear(rows, board, count) {
     const m = this.metrics();
-    const burst = count >= 4 ? 12 : 7 + count;
+    const burst = count >= 4 ? 16 : 9 + count * 2;
     for (const y of rows) {
       const visY = y - HIDDEN;
       if (visY < 0) continue;
@@ -54,11 +54,32 @@ export class Renderer {
         }
       }
     }
-    this.flash = count >= 4 ? 0.78 : 0.42 + count * 0.08;
-    this.shake = count >= 4 ? 14 : 6 + count * 2;
+    this.flash = count >= 4 ? 0.92 : 0.5 + count * 0.1;
+    this.shake = count >= 4 ? 18 : 8 + count * 2;
   }
 
-  showToast(text) {
+  spawnLock(hard) {
+    const m = this.metrics();
+    const n = hard ? 18 : 10;
+    for (let i = 0; i < n; i++) {
+      this.particles.push({
+        x: m.inset + Math.random() * (this.board.width - m.inset * 2),
+        y: m.inset + this.board.height * (0.55 + Math.random() * 0.4),
+        vx: (Math.random() - 0.5) * 200 * m.dpr,
+        vy: (-80 - Math.random() * 180) * m.dpr,
+        life: 280 + Math.random() * 220,
+        max: 500,
+        size: (1.6 + Math.random() * 2.4) * m.dpr,
+        color: hard ? "#ffe9a8" : "#9ae6ff",
+      });
+    }
+    if (hard) {
+      this.flash = Math.max(this.flash, 0.28);
+      this.shake = Math.max(this.shake, 6);
+    }
+  }
+
+    showToast(text) {
     this.toast = text;
     this.toastMs = text === "Queda Certa!" ? 1400 : 1100;
   }
