@@ -1,13 +1,13 @@
 :root {
-  --bg: #0b1220;
-  --panel: rgba(15, 23, 42, 0.88);
-  --stroke: rgba(56, 189, 248, 0.22);
-  --text: #e2e8f0;
-  --muted: #94a3b8;
-  --accent: #22d3ee;
+  --bg: #0a0a0c;
+  --panel: rgba(20, 16, 18, 0.92);
+  --stroke: rgba(239, 68, 68, 0.35);
+  --text: #f5f5f5;
+  --muted: #a8a29e;
+  --accent: #ef4444;
   --accent-2: #f59e0b;
-  --danger: #f43f5e;
-  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --danger: #fb7185;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-l: env(safe-area-inset-left, 0px);
@@ -64,10 +64,10 @@ canvas {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(900px 500px at 20% -10%, rgba(34, 211, 238, 0.14), transparent 55%),
-    radial-gradient(700px 480px at 90% 10%, rgba(245, 158, 11, 0.10), transparent 50%),
-    radial-gradient(600px 400px at 50% 120%, rgba(15, 23, 42, 0.9), transparent 55%),
-    #0b1220;
+    radial-gradient(800px 480px at 15% -8%, rgba(239, 68, 68, 0.18), transparent 55%),
+    radial-gradient(700px 420px at 90% 5%, rgba(245, 158, 11, 0.08), transparent 50%),
+    radial-gradient(600px 400px at 50% 110%, rgba(0, 0, 0, 0.85), transparent 55%),
+    #0a0a0c;
   z-index: 0;
 }
 
@@ -903,106 +903,90 @@ kbd {
 }
 
 
-/* Controles clássicos (sem botão Queda!) */
-.pad-classic {
+
+
+/* Controles B: uma fileira */
+.pad-row4 {
   display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 8px;
   width: min(520px, 100%);
   margin: 0 auto;
 }
-.pad-classic .pad-rot {
-  width: 100%;
-  min-height: 52px;
-  border-radius: 16px;
-  font-size: 1.05rem;
+.pad-row4 button {
+  min-height: 64px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 1.25rem;
 }
-.pad-cross {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
+.pad-row4 .pad-caption {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.9;
 }
-.pad-cross button {
-  min-height: 58px;
-  border-radius: 16px;
-  font-size: 1.35rem;
-}
-.pad-row.pad-drop,
-#pad-hard {
+.pad-classic, .pad-cross, #pad-hard {
   display: none !important;
 }
 @media (max-width: 860px) {
-  .touch {
-    display: block;
-  }
-  .pad-classic {
-    display: grid;
-  }
+  .touch { display: block; }
 }
 
-
-/* Arcade clássico — limpo e sério */
+/* Visual imagem B: escuro + vermelho, SEM cão, título limpo */
 .brand h1 {
-  background: none;
-  -webkit-background-clip: unset;
-  background-clip: unset;
-  color: #f8fafc !important;
-  letter-spacing: -0.03em;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  background-clip: unset !important;
+  color: #f5f5f5 !important;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 .logo {
-  background: linear-gradient(135deg, #22d3ee, #0284c7) !important;
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.35) !important;
+  background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+  box-shadow: 0 0 18px rgba(239, 68, 68, 0.4) !important;
 }
-.tag {
-  color: #94a3b8 !important;
-  font-weight: 600 !important;
-}
+.tag { color: #a8a29e !important; font-weight: 600 !important; }
 .chip {
-  background: rgba(30, 41, 59, 0.9) !important;
-  border-color: rgba(56, 189, 248, 0.25) !important;
-  color: #e2e8f0 !important;
+  background: rgba(28, 25, 23, 0.95) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  color: #f5f5f5 !important;
 }
 .card, .hud-mobile .stat {
-  background: rgba(15, 23, 42, 0.92) !important;
-  border-color: rgba(56, 189, 248, 0.2) !important;
-  color: #e2e8f0 !important;
-  box-shadow: var(--shadow) !important;
+  background: rgba(20, 16, 18, 0.95) !important;
+  border-color: rgba(239, 68, 68, 0.28) !important;
+  color: #f5f5f5 !important;
 }
 .card h2, .hint-mini, .rail-label, .desk-hint, .muted {
-  color: #94a3b8 !important;
+  color: #a8a29e !important;
 }
-.stat strong, .hud-mobile .stat strong {
-  color: #f8fafc !important;
-}
+.stat strong, .hud-mobile .stat strong { color: #fafaf9 !important; }
 .modal {
-  background: linear-gradient(165deg, #1e293b, #0f172a) !important;
-  border: 1px solid rgba(56, 189, 248, 0.3) !important;
-  color: #e2e8f0 !important;
-  box-shadow: 0 24px 60px rgba(0,0,0,0.5) !important;
+  background: linear-gradient(165deg, #1c1917, #0c0a09) !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  color: #f5f5f5 !important;
 }
-.modal .eyebrow {
-  color: #22d3ee !important;
-}
+.modal .eyebrow { color: #ef4444 !important; }
 .cta {
-  background: linear-gradient(135deg, #22d3ee, #0891b2) !important;
-  color: #082f49 !important;
+  background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+  color: #fff !important;
   border: 0 !important;
-  box-shadow: 0 10px 28px rgba(34, 211, 238, 0.3) !important;
+  box-shadow: 0 10px 28px rgba(239, 68, 68, 0.35) !important;
 }
-.touch button, .pad-classic button {
-  background: rgba(30, 41, 59, 0.95) !important;
-  border: 1px solid rgba(148, 163, 184, 0.25) !important;
-  color: #f1f5f9 !important;
+.touch button, .pad-row4 button {
+  background: rgba(28, 25, 23, 0.98) !important;
+  border: 1px solid rgba(239, 68, 68, 0.45) !important;
+  color: #fecaca !important;
   font-weight: 800 !important;
 }
 #pad-rot {
-  background: rgba(8, 47, 73, 0.95) !important;
-  border-color: rgba(34, 211, 238, 0.4) !important;
-  color: #a5f3fc !important;
-}
-#pad-soft {
-  background: rgba(30, 41, 59, 0.95) !important;
+  border-color: rgba(245, 158, 11, 0.55) !important;
+  color: #fde68a !important;
 }
 #board-wrap {
-  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.25), 0 16px 40px rgba(0,0,0,0.4) !important;
-  border-radius: 16px;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.35), 0 16px 40px rgba(0,0,0,0.5) !important;
+  border-radius: 14px;
 }
