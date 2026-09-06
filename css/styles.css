@@ -997,3 +997,40 @@ kbd {
 .stat strong, .hud-mobile .stat strong {
   color: #92400e !important;
 }
+
+
+/* Controles clássicos (sem botão Queda!) */
+.pad-classic {
+  display: grid;
+  gap: 8px;
+  width: min(520px, 100%);
+  margin: 0 auto;
+}
+.pad-classic .pad-rot {
+  width: 100%;
+  min-height: 52px;
+  border-radius: 16px;
+  font-size: 1.05rem;
+}
+.pad-cross {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+.pad-cross button {
+  min-height: 58px;
+  border-radius: 16px;
+  font-size: 1.35rem;
+}
+.pad-row.pad-drop,
+#pad-hard {
+  display: none !important;
+}
+@media (max-width: 860px) {
+  .touch {
+    display: block;
+  }
+  .pad-classic {
+    display: grid;
+  }
+}
