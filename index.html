@@ -13,11 +13,11 @@
     <meta property="og:description" content="Arcade original, em português, para jogar no celular e no computador." />
     <meta property="og:type" content="website" />
     <title>TETROK</title>
-    <link rel="icon" href="assets/favicon.svg?v=22-540e216" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.svg?v=23-5cf5453" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=22-540e216" />
+    <link rel="stylesheet" href="css/styles.css?v=23-5cf5453" />
   </head>
   <body>
     <div class="aurora" aria-hidden="true"></div>
@@ -45,6 +45,10 @@
           </div>
         </div>
         <div class="toolbar">
+          <button type="button" id="btn-theme" class="chip" title="Trocar visual">
+            <span class="icon" aria-hidden="true">◈</span>
+            <span class="btn-label" id="theme-label">Aurora</span>
+          </button>
           <button type="button" id="btn-sound" class="chip" aria-pressed="false" title="Silenciar">
             <span class="icon" aria-hidden="true">♪</span>
             <span class="btn-label">Som</span>
@@ -167,10 +171,24 @@
                 <h2 id="overlay-title">TETROK</h2>
         <p id="overlay-text" hidden></p>
         <div id="overlay-score" class="overlay-score" hidden></div>
+        <div id="theme-picker" class="theme-picker" role="group" aria-label="Versão visual">
+          <button type="button" class="theme-swatch is-on" data-theme="aurora" title="Aurora">
+            <span class="swatch swatch-aurora"></span>
+            <span>Aurora</span>
+          </button>
+          <button type="button" class="theme-swatch" data-theme="navy" title="Neon navy">
+            <span class="swatch swatch-navy"></span>
+            <span>Neon</span>
+          </button>
+          <button type="button" class="theme-swatch" data-theme="crimson" title="Vermelho profundo">
+            <span class="swatch swatch-crimson"></span>
+            <span>Vermelho</span>
+          </button>
+        </div>
         <button type="button" id="btn-play" class="cta">Jogar</button>
       </div>
     </div>
 
-    <script type="module" src="js/main.js?v=22-540e216"></script>
+    <script type="module" src="js/main.js?v=23-5cf5453"></script>
   </body>
 </html>
