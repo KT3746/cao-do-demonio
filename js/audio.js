@@ -200,15 +200,46 @@ export class AudioEngine {
     this.tone({ freq: 990, dur: 0.045, type: "sine", vol: 0.07, delay: 0.015 });
   }
 
+  /** Fanfarra tipo “GOOOL!” quando a peça trava. */
+  gol(big = false) {
+    const boost = big ? 1.15 : 1;
+    // subida estilo gol
+    [392, 523, 659, 784].forEach((freq, i) => {
+      this.tone({
+        freq,
+        dur: 0.14 + i * 0.02,
+        type: "triangle",
+        vol: 0.14 * boost,
+        delay: i * 0.055,
+      });
+    });
+    // “crowd” curto e grave (não agudo seco)
+    this.noise(0.12, 0.035 * boost);
+    this.tone({
+      freq: 220,
+      dur: 0.28,
+      type: "sine",
+      vol: 0.12 * boost,
+      slide: 180,
+      delay: 0.12,
+      filter: 900,
+    });
+    this.tone({
+      freq: 880,
+      dur: 0.2,
+      type: "sine",
+      vol: 0.08 * boost,
+      delay: 0.22,
+      filter: 2400,
+    });
+  }
+
   lock() {
-    this.tone({ freq: 170, dur: 0.1, type: "sine", vol: 0.17, slide: -55, filter: 700 });
-    this.noise(0.05, 0.05);
+    this.gol(false);
   }
 
   hardDrop() {
-    this.tone({ freq: 240, dur: 0.08, type: "sine", vol: 0.15, slide: -100 });
-    this.tone({ freq: 95, dur: 0.14, type: "triangle", vol: 0.11, delay: 0.02 });
-    this.noise(0.06, 0.05);
+    this.gol(true);
   }
 
   hold() {
