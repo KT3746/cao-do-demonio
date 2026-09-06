@@ -1,6 +1,4 @@
 import { COLS, ROWS, HIDDEN, PIECES, cellsOf } from "./pieces.js";
-import { ghostY } from "./engine.js";
-
 const MAX_DPR = 2.25;
 
 export class Renderer {
@@ -174,16 +172,6 @@ export class Renderer {
     }
 
     if (game.active && game.state !== "over") {
-      const gy = ghostY(game.board, game.active);
-      if (gy !== game.active.y) {
-        const def = PIECES[game.active.id];
-        for (const { x, y } of cellsOf({ ...game.active, y: gy })) {
-          const visY = y - HIDDEN;
-          if (visY < 0 || visY >= ROWS) continue;
-          drawGhost(ctx, x, visY, cw, ch, def.color);
-        }
-      }
-
       if (game.state !== "clearing") {
         const def = PIECES[game.active.id];
         for (const { x, y } of cellsOf(game.active)) {
@@ -356,21 +344,6 @@ function drawCell(ctx, x, y, cw, ch, color, deep, alpha = 1, pulse = 1, glow = f
   ctx.restore();
 }
 
-function drawGhost(ctx, x, y, cw, ch, color) {
-  const inset = Math.max(1.4, cw * 0.12);
-  const r = Math.max(3, cw * 0.18);
-  ctx.save();
-  ctx.globalAlpha = 0.22;
-  ctx.fillStyle = color;
-  roundRect(ctx, x * cw + inset, y * ch + inset, cw - inset * 2, ch - inset * 2, r);
-  ctx.fill();
-  ctx.globalAlpha = 0.95;
-  ctx.strokeStyle = shade(color, 0.25);
-  ctx.lineWidth = Math.max(1.4, cw * 0.08);
-  roundRect(ctx, x * cw + inset, y * ch + inset, cw - inset * 2, ch - inset * 2, r);
-  ctx.stroke();
-  ctx.restore();
-}
 
 function shade(hex, amt) {
   const n = hex.replace("#", "");
