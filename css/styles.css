@@ -71,6 +71,7 @@ html, body {
 
 .aurora {
   position: fixed;
+  /* relative stacking for ::after brick */
   inset: -20%;
   z-index: 0;
   pointer-events: none;
@@ -1074,18 +1075,111 @@ kbd {
   box-shadow: inset 0 0 0 1px rgba(248,113,113,0.45);
 }
 
-/* Página por tema */
+/* Página por tema — visual completo (como as imagens) */
+body.theme-navy {
+  --bg: #070d16;
+  --panel: rgba(10, 22, 38, 0.92);
+  --stroke: rgba(34, 211, 238, 0.45);
+  --text: #e8f7ff;
+  --muted: #8db7c9;
+  --accent: #22d3ee;
+  --accent-2: #38bdf8;
+}
 body.theme-navy .aurora {
   background:
-    radial-gradient(ellipse 55% 40% at 50% 0%, rgba(34, 211, 238, 0.2), transparent 60%),
-    radial-gradient(ellipse 40% 30% at 50% 100%, rgba(14, 165, 233, 0.12), transparent 55%),
-    #070d16 !important;
+    radial-gradient(ellipse 60% 45% at 50% -5%, rgba(34, 211, 238, 0.28), transparent 58%),
+    radial-gradient(ellipse 45% 35% at 50% 110%, rgba(14, 165, 233, 0.14), transparent 55%),
+    #050a12 !important;
+}
+body.theme-navy .brand h1 {
+  color: #f0f9ff;
+  text-shadow: 0 0 18px rgba(34, 211, 238, 0.45);
+}
+body.theme-navy .tag { color: #67e8f9 !important; }
+body.theme-navy .card,
+body.theme-navy .chip,
+body.theme-navy .modal {
+  border-color: rgba(34, 211, 238, 0.35);
+  background: rgba(8, 18, 32, 0.9);
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.12), 0 12px 40px rgba(0,0,0,0.45);
+}
+body.theme-navy .pad-row4 button:not(#pad-soft) {
+  background: rgba(8, 24, 40, 0.95);
+  border: 1px solid rgba(34, 211, 238, 0.4);
+  color: #e0f2fe;
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.12);
+}
+body.theme-navy #board-wrap {
+  filter: drop-shadow(0 0 18px rgba(34, 211, 238, 0.28));
+}
+body.theme-navy .cta {
+  background: linear-gradient(135deg, #22d3ee, #0284c7);
+  color: #041018;
+}
+
+body.theme-crimson {
+  --bg: #080406;
+  --panel: rgba(28, 10, 14, 0.92);
+  --stroke: rgba(239, 68, 68, 0.5);
+  --text: #fff1f2;
+  --muted: #d4a5a8;
+  --accent: #ef4444;
+  --accent-2: #f59e0b;
 }
 body.theme-crimson .aurora {
   background:
-    radial-gradient(ellipse 55% 40% at 20% 10%, rgba(239, 68, 68, 0.28), transparent 58%),
-    radial-gradient(ellipse 45% 35% at 90% 80%, rgba(127, 29, 29, 0.22), transparent 60%),
-    #080406 !important;
+    radial-gradient(ellipse 70% 50% at 50% 40%, rgba(239, 68, 68, 0.2), transparent 62%),
+    radial-gradient(ellipse 50% 40% at 15% 90%, rgba(127, 29, 29, 0.35), transparent 55%),
+    radial-gradient(ellipse 40% 30% at 90% 10%, rgba(245, 158, 11, 0.08), transparent 50%),
+    #0a0406 !important;
+}
+/* “tijolo” sutil atrás — como mockup B */
+body.theme-crimson .aurora::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.14;
+  background-image:
+    linear-gradient(rgba(80, 20, 24, 0.65) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(80, 20, 24, 0.65) 1px, transparent 1px);
+  background-size: 28px 16px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  pointer-events: none;
+}
+body.theme-crimson .brand h1 {
+  color: #fff;
+  text-shadow: 0 0 20px rgba(239, 68, 68, 0.65);
+}
+body.theme-crimson .tag { color: #fb7185 !important; }
+body.theme-crimson .card,
+body.theme-crimson .chip,
+body.theme-crimson .modal {
+  border-color: rgba(248, 113, 113, 0.4);
+  background: rgba(22, 8, 12, 0.92);
+  box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.15), 0 12px 40px rgba(0,0,0,0.5);
+}
+body.theme-crimson .pad-row4 button:not(#pad-soft) {
+  background: rgba(28, 10, 14, 0.95);
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  color: #ffe4e6;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.15);
+}
+body.theme-crimson #board-wrap {
+  filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.35));
+}
+body.theme-crimson .cta {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: #fff;
+}
+
+body.theme-aurora {
+  --bg: #07080f;
+  --panel: rgba(12, 14, 28, 0.92);
+  --stroke: rgba(167, 139, 250, 0.4);
+  --text: #f1f5ff;
+  --muted: #a5b4d4;
+  --accent: #38bdf8;
+  --accent-2: #a78bfa;
 }
 body.theme-aurora .aurora {
   background:
@@ -1094,11 +1188,18 @@ body.theme-aurora .aurora {
     radial-gradient(ellipse 40% 30% at 50% 100%, rgba(45, 212, 191, 0.12), transparent 55%),
     #07080f !important;
 }
-body.theme-crimson {
-  --accent: #ef4444;
-  --stroke: rgba(239, 68, 68, 0.4);
+body.theme-aurora .brand h1 {
+  text-shadow: 0 0 16px rgba(125, 211, 252, 0.35);
 }
-body.theme-navy {
-  --accent: #22d3ee;
-  --stroke: rgba(34, 211, 238, 0.4);
+body.theme-aurora .card,
+body.theme-aurora .chip,
+body.theme-aurora .modal {
+  border-color: rgba(125, 211, 252, 0.28);
+  box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.12), 0 12px 40px rgba(0,0,0,0.45);
 }
+body.theme-aurora #board-wrap {
+  filter: drop-shadow(0 0 16px rgba(125, 211, 252, 0.22));
+}
+
+.theme-swatch { cursor: pointer; -webkit-user-select: none; user-select: none; }
+.theme-swatch:active { transform: scale(0.97); }
