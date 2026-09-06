@@ -82,8 +82,8 @@ const HOWTO_STEPS = [
     text: "Fecha a linha e ganha ponto. Quatro de uma vez? TETROK!!!",
   },
   {
-    title: "Guarda na manga",
-    text: "O ＋ guarda a peça pra hora H. No PC: tecla C.",
+    title: "No celular",
+    text: "Desliza pra mover, toque pra girar, puxa pra baixo pra soltar. Sem botões.",
   },
 ];
 
