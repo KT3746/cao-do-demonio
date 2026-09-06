@@ -19,6 +19,7 @@ export class Renderer {
     this.toast = "";
     this.toastMs = 0;
     this.levelFlash = 0;
+    this.theme = "aurora";
   }
 
   resize(cssWidth, cssHeight) {
@@ -32,6 +33,11 @@ export class Renderer {
       if (rect.width < 8 || rect.height < 8) continue;
       sizeCanvas(miniCanvas.canvas, miniCanvas.ctx, rect.width, rect.height, false);
     }
+  }
+
+  setTheme(id) {
+    const ok = id === "aurora" || id === "navy" || id === "crimson";
+    this.theme = ok ? id : "aurora";
   }
 
   spawnClear(rows, board, count) {
@@ -181,6 +187,173 @@ export class Renderer {
     };
   }
 
+
+  paintWell(ctx, w, h, dpr, cw) {
+    const theme = this.theme || "aurora";
+    const radius = cw * 0.14;
+    roundRect(ctx, 0, 0, w, h, radius);
+    ctx.save();
+    roundRect(ctx, 0, 0, w, h, radius);
+    ctx.clip();
+
+    if (theme === "navy") {
+      const base = ctx.createLinearGradient(0, 0, 0, h);
+      base.addColorStop(0, "#122033");
+      base.addColorStop(1, "#070d16");
+      ctx.fillStyle = base;
+      ctx.fillRect(0, 0, w, h);
+      let g = ctx.createRadialGradient(w * 0.5, h * 0.05, 0, w * 0.5, h * 0.05, h * 0.7);
+      g.addColorStop(0, "rgba(34, 211, 238, 0.22)");
+      g.addColorStop(1, "rgba(34, 211, 238, 0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+      g = ctx.createRadialGradient(w * 0.5, h, 0, w * 0.5, h, h * 0.45);
+      g.addColorStop(0, "rgba(14, 165, 233, 0.12)");
+      g.addColorStop(1, "rgba(14, 165, 233, 0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+    } else if (theme === "crimson") {
+      const base = ctx.createLinearGradient(0, 0, 0, h);
+      base.addColorStop(0, "#1a0c10");
+      base.addColorStop(0.55, "#12080c");
+      base.addColorStop(1, "#080406");
+      ctx.fillStyle = base;
+      ctx.fillRect(0, 0, w, h);
+      let g = ctx.createRadialGradient(w * 0.5, h * 0.35, 0, w * 0.5, h * 0.35, w * 0.95);
+      g.addColorStop(0, "rgba(239, 68, 68, 0.22)");
+      g.addColorStop(0.55, "rgba(127, 29, 29, 0.12)");
+      g.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+      g = ctx.createRadialGradient(w * 0.15, h * 0.9, 0, w * 0.15, h * 0.9, w * 0.7);
+      g.addColorStop(0, "rgba(245, 158, 11, 0.08)");
+      g.addColorStop(1, "rgba(245, 158, 11, 0)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+      // vignette
+      g = ctx.createRadialGradient(w * 0.5, h * 0.5, w * 0.2, w * 0.5, h * 0.5, w * 0.85);
+      g.addColorStop(0, "rgba(0,0,0,0)");
+      g.addColorStop(1, "rgba(0,0,0,0.45)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, w, h);
+    } else {
+      // aurora (vidro)
+      const base = ctx.createLinearGradient(0, 0, 0, h);
+      base.addColorStop(0, "#0b1020");
+      base.addColorStop(0.45, "#0a0e1a");
+      base.addColorStop(1, "#07080f");
+      ctx.fillStyle = base;
+      ctx.fillRect(0, 0, w, h);
+      let aurora = ctx.createRadialGradient(w * 0.22, h * 0.18, 0, w * 0.22, h * 0.18, w * 0.85);
+      aurora.addColorStop(0, "rgba(56, 189, 248, 0.38)");
+      aurora.addColorStop(0.45, "rgba(34, 211, 238, 0.12)");
+      aurora.addColorStop(1, "rgba(34, 211, 238, 0)");
+      ctx.fillStyle = aurora;
+      ctx.fillRect(0, 0, w, h);
+      aurora = ctx.createRadialGradient(w * 0.82, h * 0.55, 0, w * 0.82, h * 0.55, w * 0.9);
+      aurora.addColorStop(0, "rgba(167, 139, 250, 0.34)");
+      aurora.addColorStop(0.5, "rgba(129, 140, 248, 0.12)");
+      aurora.addColorStop(1, "rgba(129, 140, 248, 0)");
+      ctx.fillStyle = aurora;
+      ctx.fillRect(0, 0, w, h);
+      aurora = ctx.createRadialGradient(w * 0.5, h * 1.05, 0, w * 0.5, h * 1.05, h * 0.55);
+      aurora.addColorStop(0, "rgba(45, 212, 191, 0.16)");
+      aurora.addColorStop(1, "rgba(45, 212, 191, 0)");
+      ctx.fillStyle = aurora;
+      ctx.fillRect(0, 0, w, h);
+      ctx.fillStyle = "rgba(255,255,255,0.55)";
+      for (let i = 0; i < 28; i++) {
+        const sx = ((i * 97) % 1000) / 1000 * w;
+        const sy = ((i * 53) % 1000) / 1000 * h;
+        const r = (i % 3 === 0 ? 1.1 : 0.7) * dpr;
+        ctx.globalAlpha = 0.18 + (i % 5) * 0.05;
+        ctx.beginPath();
+        ctx.arc(sx, sy, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      const glass = ctx.createLinearGradient(0, 0, 0, h);
+      glass.addColorStop(0, "rgba(255,255,255,0.06)");
+      glass.addColorStop(0.2, "rgba(255,255,255,0)");
+      glass.addColorStop(0.85, "rgba(0,0,0,0)");
+      glass.addColorStop(1, "rgba(0,0,0,0.35)");
+      ctx.fillStyle = glass;
+      ctx.fillRect(0, 0, w, h);
+    }
+    ctx.restore();
+
+    // moldura
+    if (theme === "crimson") {
+      ctx.strokeStyle = "rgba(248, 113, 113, 0.55)";
+      ctx.lineWidth = Math.max(2.2, dpr * 1.2);
+      roundRect(ctx, 1.5, 1.5, w - 3, h - 3, radius);
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(127, 29, 29, 0.45)";
+      ctx.lineWidth = Math.max(1, dpr * 0.7);
+      roundRect(ctx, 4, 4, w - 8, h - 8, cw * 0.12);
+      ctx.stroke();
+    } else if (theme === "navy") {
+      ctx.strokeStyle = "rgba(34, 211, 238, 0.55)";
+      ctx.lineWidth = Math.max(2.2, dpr * 1.2);
+      roundRect(ctx, 1.5, 1.5, w - 3, h - 3, radius);
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(14, 165, 233, 0.28)";
+      ctx.lineWidth = Math.max(1, dpr * 0.7);
+      roundRect(ctx, 4, 4, w - 8, h - 8, cw * 0.12);
+      ctx.stroke();
+    } else {
+      ctx.strokeStyle = "rgba(125, 211, 252, 0.55)";
+      ctx.lineWidth = Math.max(2.2, dpr * 1.2);
+      roundRect(ctx, 1.5, 1.5, w - 3, h - 3, radius);
+      ctx.stroke();
+      ctx.strokeStyle = "rgba(167, 139, 250, 0.28)";
+      ctx.lineWidth = Math.max(1, dpr * 0.7);
+      roundRect(ctx, 4, 4, w - 8, h - 8, cw * 0.12);
+      ctx.stroke();
+    }
+  }
+
+  paintGrid(ctx, cw, ch, innerW, innerH, dpr) {
+    const theme = this.theme || "aurora";
+    let even, odd, hLine, vLine;
+    if (theme === "crimson") {
+      even = "rgba(248, 113, 113, 0.05)";
+      odd = "rgba(0, 0, 0, 0.28)";
+      hLine = "rgba(252, 165, 165, 0.12)";
+      vLine = "rgba(248, 113, 113, 0.2)";
+    } else if (theme === "navy") {
+      even = "rgba(255,255,255,0.035)";
+      odd = "rgba(0,0,0,0.2)";
+      hLine = "rgba(148, 163, 184, 0.14)";
+      vLine = "rgba(34, 211, 238, 0.2)";
+    } else {
+      even = "rgba(125, 211, 252, 0.045)";
+      odd = "rgba(15, 23, 42, 0.22)";
+      hLine = "rgba(226, 232, 240, 0.14)";
+      vLine = "rgba(165, 243, 252, 0.22)";
+    }
+    for (let x = 0; x < COLS; x++) {
+      ctx.fillStyle = x % 2 === 0 ? even : odd;
+      ctx.fillRect(x * cw, 0, cw, innerH);
+    }
+    ctx.strokeStyle = hLine;
+    ctx.lineWidth = Math.max(1, dpr * 0.55);
+    for (let y = 1; y < ROWS; y++) {
+      ctx.beginPath();
+      ctx.moveTo(0, y * ch);
+      ctx.lineTo(innerW, y * ch);
+      ctx.stroke();
+    }
+    ctx.strokeStyle = vLine;
+    ctx.lineWidth = Math.max(1.15, dpr * 0.7);
+    for (let x = 1; x < COLS; x++) {
+      ctx.beginPath();
+      ctx.moveTo(x * cw, 0);
+      ctx.lineTo(x * cw, innerH);
+      ctx.stroke();
+    }
+  }
+
   drawBoard(game) {
     const ctx = this.bctx;
     const { w, h, dpr, inset, cw, ch } = this.metrics();
@@ -192,102 +365,13 @@ export class Renderer {
     const oy = this.shake ? (Math.random() - 0.5) * this.shake * dpr : 0;
     ctx.translate(ox, oy);
 
-    // Poço vidro aurora (opção C)
-    const base = ctx.createLinearGradient(0, 0, 0, h);
-    base.addColorStop(0, "#0b1020");
-    base.addColorStop(0.45, "#0a0e1a");
-    base.addColorStop(1, "#07080f");
-    ctx.fillStyle = base;
-    roundRect(ctx, 0, 0, w, h, cw * 0.14);
-    ctx.fill();
-
-    ctx.save();
-    roundRect(ctx, 0, 0, w, h, cw * 0.14);
-    ctx.clip();
-
-    // aurora ciano
-    let aurora = ctx.createRadialGradient(w * 0.22, h * 0.18, 0, w * 0.22, h * 0.18, w * 0.85);
-    aurora.addColorStop(0, "rgba(56, 189, 248, 0.38)");
-    aurora.addColorStop(0.45, "rgba(34, 211, 238, 0.12)");
-    aurora.addColorStop(1, "rgba(34, 211, 238, 0)");
-    ctx.fillStyle = aurora;
-    ctx.fillRect(0, 0, w, h);
-
-    // aurora violeta
-    aurora = ctx.createRadialGradient(w * 0.82, h * 0.55, 0, w * 0.82, h * 0.55, w * 0.9);
-    aurora.addColorStop(0, "rgba(167, 139, 250, 0.34)");
-    aurora.addColorStop(0.5, "rgba(129, 140, 248, 0.12)");
-    aurora.addColorStop(1, "rgba(129, 140, 248, 0)");
-    ctx.fillStyle = aurora;
-    ctx.fillRect(0, 0, w, h);
-
-    // brilho inferior suave
-    aurora = ctx.createRadialGradient(w * 0.5, h * 1.05, 0, w * 0.5, h * 1.05, h * 0.55);
-    aurora.addColorStop(0, "rgba(45, 212, 191, 0.16)");
-    aurora.addColorStop(1, "rgba(45, 212, 191, 0)");
-    ctx.fillStyle = aurora;
-    ctx.fillRect(0, 0, w, h);
-
-    // poeira de estrelas bem sutil (estável por tamanho do canvas)
-    ctx.fillStyle = "rgba(255,255,255,0.55)";
-    for (let i = 0; i < 28; i++) {
-      const sx = ((i * 97) % 1000) / 1000 * w;
-      const sy = ((i * 53) % 1000) / 1000 * h;
-      const r = (i % 3 === 0 ? 1.1 : 0.7) * dpr;
-      ctx.globalAlpha = 0.18 + (i % 5) * 0.05;
-      ctx.beginPath();
-      ctx.arc(sx, sy, r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-
-    // vidro: vinheta interna
-    const glass = ctx.createLinearGradient(0, 0, 0, h);
-    glass.addColorStop(0, "rgba(255,255,255,0.06)");
-    glass.addColorStop(0.2, "rgba(255,255,255,0)");
-    glass.addColorStop(0.85, "rgba(0,0,0,0)");
-    glass.addColorStop(1, "rgba(0,0,0,0.35)");
-    ctx.fillStyle = glass;
-    ctx.fillRect(0, 0, w, h);
-    ctx.restore();
-
-    // moldura vidro neon
-    ctx.strokeStyle = "rgba(125, 211, 252, 0.55)";
-    ctx.lineWidth = Math.max(2.2, dpr * 1.2);
-    roundRect(ctx, 1.5, 1.5, w - 3, h - 3, cw * 0.14);
-    ctx.stroke();
-    ctx.strokeStyle = "rgba(167, 139, 250, 0.28)";
-    ctx.lineWidth = Math.max(1, dpr * 0.7);
-    roundRect(ctx, 4, 4, w - 8, h - 8, cw * 0.12);
-    ctx.stroke();
+    this.paintWell(ctx, w, h, dpr, cw);
 
     ctx.save();
     ctx.translate(inset, inset);
     const innerW = cw * COLS;
     const innerH = ch * ROWS;
-
-    // faixas suaves pra mirar (vidro)
-    for (let x = 0; x < COLS; x++) {
-      ctx.fillStyle = x % 2 === 0 ? "rgba(125, 211, 252, 0.045)" : "rgba(15, 23, 42, 0.22)";
-      ctx.fillRect(x * cw, 0, cw, innerH);
-    }
-    // grade nítida
-    ctx.strokeStyle = "rgba(226, 232, 240, 0.14)";
-    ctx.lineWidth = Math.max(1, dpr * 0.55);
-    for (let y = 1; y < ROWS; y++) {
-      ctx.beginPath();
-      ctx.moveTo(0, y * ch);
-      ctx.lineTo(innerW, y * ch);
-      ctx.stroke();
-    }
-    ctx.strokeStyle = "rgba(165, 243, 252, 0.22)";
-    ctx.lineWidth = Math.max(1.15, dpr * 0.7);
-    for (let x = 1; x < COLS; x++) {
-      ctx.beginPath();
-      ctx.moveTo(x * cw, 0);
-      ctx.lineTo(x * cw, innerH);
-      ctx.stroke();
-    }
+    this.paintGrid(ctx, cw, ch, innerW, innerH, dpr);
 
     const clearing = new Set(game.clearingRows);
     const pulse = game.state === "clearing"
