@@ -1,6 +1,7 @@
 import { COLS, ROWS, HIDDEN, PIECES, cellsOf } from "./pieces.js";
+import { ghostY } from "./engine.js";
 import { skinColors, skinStyle } from "./skins.js";
-const MAX_DPR = 2.25;
+const MAX_DPR = 2.75;
 
 export class Renderer {
   constructor(boardCanvas, minis) {
@@ -57,16 +58,38 @@ export class Renderer {
 
   spawnClear(rows, board, count) {
     const m = this.metrics();
-    const hues = count >= 4
-      ? ["#ff4fd8", "#7cf0ff", "#ffe566", "#a78bfa"]
-      : count === 3
-        ? ["#7cf0ff", "#ff7ad9", "#b8f26e"]
-        : count === 2
-          ? ["#5eead4", "#60a5fa"]
-          : ["#38bdf8", "#a5b4fc"];
-    this.flashColor = count >= 4 ? "255, 90, 210" : "90, 210, 255";
-    this.flash = count >= 4 ? 0.55 : 0.28 + count * 0.08;
-    this.shake = count >= 4 ? 10 : 3 + count;
+    const theme = this.theme;
+    let hues, flashColor;
+    if (theme === "magma") {
+      hues = count >= 4
+        ? ["#ff6b2c", "#ffd166", "#ff3d5a", "#ff9f1c"]
+        : count === 3
+          ? ["#ff6b2c", "#ffd166", "#ef4444"]
+          : count === 2
+            ? ["#fb923c", "#fbbf24"]
+            : ["#f97316", "#fdba74"];
+      flashColor = count >= 4 ? "255, 120, 40" : "249, 115, 22";
+    } else if (theme === "crt") {
+      hues = ["#ffb000", "#ffc933", "#ffe08a", "#e09a00"];
+      flashColor = "255, 176, 0";
+    } else if (theme === "pixel") {
+      hues = count >= 4
+        ? ["#ff4d5e", "#2ee6ff", "#ffe14a", "#4dff6a"]
+        : ["#4d7dff", "#d46bff", "#2ee6ff"];
+      flashColor = count >= 4 ? "255, 77, 94" : "46, 230, 255";
+    } else {
+      hues = count >= 4
+        ? ["#ff4fd8", "#7cf0ff", "#ffe566", "#a78bfa"]
+        : count === 3
+          ? ["#7cf0ff", "#ff7ad9", "#b8f26e"]
+          : count === 2
+            ? ["#5eead4", "#60a5fa"]
+            : ["#38bdf8", "#a5b4fc"];
+      flashColor = count >= 4 ? "255, 90, 210" : "90, 210, 255";
+    }
+    this.flashColor = flashColor;
+    this.flash = count >= 4 ? 0.62 : 0.3 + count * 0.08;
+    this.shake = count >= 4 ? 14 : 4 + count * 1.5;
     for (const y of rows) {
       const visY = y - HIDDEN;
       if (visY < 0) continue;
@@ -434,17 +457,27 @@ export class Renderer {
       }
     }
 
-    if (game.active && game.state !== "over") {
-      if (game.state !== "clearing") {
-        const def = PIECES[game.active.id];
-        for (const { x, y } of cellsOf(game.active)) {
+    if (game.active && game.state !== "over" && game.state !== "clearing") {
+      const style = skinStyle(this.theme);
+      const pal = skinColors(this.theme, game.active.id);
+      // Sombra de queda (ghost)
+      const gy = ghostY(game.board, game.active);
+      if (gy !== game.active.y) {
+        const ghost = { ...game.active, y: gy };
+        for (const { x, y } of cellsOf(ghost)) {
           const visY = y - HIDDEN;
           if (visY < 0 || visY >= ROWS) continue;
-          {
-            const pal = skinColors(this.theme, game.active.id);
-            drawCell(ctx, x, visY, cw, ch, pal.color, pal.deep, 1, 1, true, false, skinStyle(this.theme), !!pal.hatch);
-          }
+          drawGhostCell(ctx, x, visY, cw, ch, pal.color, style);
         }
+      }
+      // Peça ativa — pulsa leve quando está travando no chão
+      const lockPulse = game.grounded
+        ? 0.88 + 0.12 * Math.sin((performance.now() / 120) * Math.PI)
+        : 1;
+      for (const { x, y } of cellsOf(game.active)) {
+        const visY = y - HIDDEN;
+        if (visY < 0 || visY >= ROWS) continue;
+        drawCell(ctx, x, visY, cw, ch, pal.color, pal.deep, 1, lockPulse, true, false, style, !!pal.hatch);
       }
     }
 
@@ -687,6 +720,43 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
+
+function drawGhostCell(ctx, x, y, cw, ch, color, style) {
+  const px = x * cw;
+  const py = y * ch;
+  const inset = Math.max(1.2, cw * 0.12);
+  ctx.save();
+  ctx.globalAlpha = style === "pixel" ? 0.45 : 0.38;
+  if (style === "pixel") {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(1.5, cw * 0.1);
+    ctx.strokeRect(px + inset, py + inset, cw - inset * 2, ch - inset * 2);
+    ctx.globalAlpha = 0.12;
+    ctx.fillStyle = color;
+    ctx.fillRect(px + inset, py + inset, cw - inset * 2, ch - inset * 2);
+  } else if (style === "crt") {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(1.2, cw * 0.08);
+    ctx.setLineDash([Math.max(2, cw * 0.18), Math.max(2, cw * 0.12)]);
+    ctx.strokeRect(px + inset, py + inset, cw - inset * 2, ch - inset * 2);
+    ctx.setLineDash([]);
+  } else {
+    const r = Math.max(2, cw * 0.18);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(1.6, cw * 0.1);
+    ctx.shadowColor = color;
+    ctx.shadowBlur = cw * 0.2;
+    roundRect(ctx, px + inset, py + inset, cw - inset * 2, ch - inset * 2, r);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 0.1;
+    ctx.fillStyle = color;
+    roundRect(ctx, px + inset, py + inset, cw - inset * 2, ch - inset * 2, r);
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
 function drawCell(ctx, x, y, cw, ch, color, deep, alpha = 1, pulse = 1, glow = false, raw = false, style = "neon", hatch = false) {
   const px = x * cw;
   const py = y * ch;
@@ -764,10 +834,10 @@ function drawCell(ctx, x, y, cw, ch, color, deep, alpha = 1, pulse = 1, glow = f
     const r = Math.max(3, cw * 0.22);
     // bloom externo (todas as peças, não só a ativa)
     ctx.shadowColor = color;
-    ctx.shadowBlur = glow ? cw * 0.55 : cw * 0.32;
+    ctx.shadowBlur = glow ? cw * 0.62 : cw * 0.28;
     // miolo colorido semi-transparente
     ctx.fillStyle = color;
-    ctx.globalAlpha = alpha * (glow ? 0.42 : 0.32);
+    ctx.globalAlpha = alpha * (glow ? 0.58 : 0.48);
     roundRect(ctx, px + inset, py + inset, cw - inset * 2, ch - inset * 2, r);
     ctx.fill();
     ctx.globalAlpha = alpha;
