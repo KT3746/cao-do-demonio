@@ -470,6 +470,7 @@ body.theme-candy .layout-chip.is-on strong { color: #be123c; }
 body.theme-candy .layout-chip.is-on > span { color: #9a3412; }
 
 
+
 /* === Modo essencial: sem HOLD e sem pad de botões === */
 .hold-slot,
 #pad-hold,
@@ -479,6 +480,21 @@ body.theme-candy .layout-chip.is-on > span { color: #9a3412; }
 .lbl-hold {
   display: none !important;
 }
+/* esconde fila HOLD na lateral direita: só NEXT */
+body.layout-micro .rail-right .hold-slot { display: none !important; }
+
+/* controles de toque somem — gestos no tabuleiro */
+.cyber-pad,
+.gesture-hint {
+  display: none !important;
+}
+
+/* sem botão DESCER / mover peça */
+#pad-left, #pad-right, #pad-soft, #pad-rot, .circle-drop, .hex-pad, .circle-rot {
+  display: none !important;
+}
+
+
 /* esconde fila HOLD na lateral direita: só NEXT */
 body.layout-micro .rail-right .hold-slot { display: none !important; }
 
@@ -686,3 +702,14 @@ body.theme-pixel .desk-hint { font-size: 0.45rem; color: #64748b; }
 
 /* ensure picker label visible again */
 .picker-label { display: block; }
+
+/* Pixel: moldura e tipografia do print; peças 8-bit no canvas */
+body.theme-pixel #board {
+  border-radius: 0 !important;
+  box-shadow: 0 0 0 3px #3b82f6 !important;
+}
+body.theme-pixel .float-score strong { color: #fde047 !important; }
+body.theme-pixel .float-box {
+  border-radius: 0 !important;
+  border-width: 2px !important;
+}
