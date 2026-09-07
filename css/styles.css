@@ -1,4 +1,4 @@
-/* TETROK — Neon/Doce + 4 layouts (full, strip, gesture, micro) */
+/* TETROK — Neon/Magma/CRT/Pixel + layouts */
 :root {
   --safe-t: env(safe-area-inset-top, 0px);
   --safe-b: env(safe-area-inset-bottom, 0px);
@@ -281,7 +281,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     radial-gradient(circle at 30% 30%, rgba(103,232,249,0.9), transparent 55%),
     radial-gradient(circle at 80% 70%, rgba(167,139,250,0.85), transparent 50%), #0b1224;
 }
-.swatch-candy { background: linear-gradient(135deg, #fecdd3, #fde68a 40%, #bbf7d0 70%, #bfdbfe); }
+.swatch-magma { background: linear-gradient(135deg, #450a0a, #ea580c 45%, #fbbf24 75%, #7f1d1d); box-shadow: inset 0 0 10px rgba(251,146,60,0.45); }
 
 .layout-picker {
   display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0 0 14px;
@@ -382,96 +382,74 @@ body.layout-micro .rail-stat strong { font-size: 0.65rem; }
   body.layout-micro .rail { width: 34px; }
 }
 
-/* ========== DOCE CRAFT theme ========== */
-body.theme-candy {
-  --bg: #fff7ed; --text: #3f2a1d; --muted: #9a6b4f;
-  --accent: #fb7185; --accent-dim: rgba(251,113,133,0.35);
-  --panel: #fffaf3; --panel-border: rgba(251,146,160,0.55);
-  --font: Nunito, Manrope, system-ui, sans-serif;
-  --display: Nunito, Manrope, sans-serif;
+/* ========== MAGMA theme (escuro) ========== */
+body.theme-magma {
+  --bg: #0a0402; --text: #ffedd5; --muted: #b45309;
+  --accent: #f97316; --accent-dim: rgba(249,115,22,0.4);
+  --panel: rgba(40, 12, 6, 0.82); --panel-border: rgba(251,146,60,0.35);
+  --font: Manrope, system-ui, sans-serif;
+  --display: Sora, Manrope, sans-serif;
 }
-body.theme-candy .aurora {
+body.theme-magma .aurora {
   background:
-    radial-gradient(ellipse 60% 45% at 15% 10%, rgba(253,224,71,0.45), transparent 55%),
-    radial-gradient(ellipse 55% 40% at 90% 20%, rgba(244,114,182,0.28), transparent 55%),
-    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(134,239,172,0.35), transparent 55%),
-    #fff1e0 !important;
+    radial-gradient(ellipse 55% 40% at 20% 0%, rgba(234,88,12,0.35), transparent 55%),
+    radial-gradient(ellipse 50% 45% at 85% 15%, rgba(220,38,38,0.28), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 50% 110%, rgba(127,29,29,0.55), transparent 50%),
+    #0a0402 !important;
 }
-body.theme-candy .brand-title {
-  background: none; -webkit-background-clip: unset; background-clip: unset;
-  color: #ea580c; text-shadow: 1px 1px 0 #fff;
+body.theme-magma .brand-title {
+  background: linear-gradient(90deg, #fbbf24, #f97316, #ef4444);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent; text-shadow: 0 0 18px rgba(249,115,22,0.45);
 }
-body.theme-candy .hex-btn {
-  clip-path: none; border-radius: 14px; border: 3px solid #fdba74;
-  background: linear-gradient(180deg, #fff7ed, #ffedd5); color: #c2410c;
-  box-shadow: 0 3px 0 #f97316;
+body.theme-magma .hex-btn {
+  border-color: rgba(251,146,60,0.45);
+  background: linear-gradient(180deg, #3b1510, #1a0805); color: #fdba74;
+  box-shadow: 0 0 12px rgba(234,88,12,0.25);
 }
-body.theme-candy .rail-stat, body.theme-candy .rail-box,
-body.theme-candy .float-score, body.theme-candy .float-box,
-body.theme-candy .strip-stats .chip, body.theme-candy .strip-next {
-  border: 2px solid #fdba74; background: #fffaf3; backdrop-filter: none;
-  box-shadow: 0 3px 0 rgba(251,146,60,0.3);
+body.theme-magma .rail-stat, body.theme-magma .rail-box,
+body.theme-magma .float-score, body.theme-magma .float-box,
+body.theme-magma .strip-stats .chip, body.theme-magma .strip-next {
+  border: 1px solid rgba(251,146,60,0.4);
+  background: rgba(30, 10, 6, 0.75);
+  box-shadow: 0 0 14px rgba(234,88,12,0.2);
 }
-body.theme-candy .rail-stat span, body.theme-candy .rail-box > span,
-body.theme-candy .float-score span, body.theme-candy .float-box span,
-body.theme-candy .strip-stats .chip span, body.theme-candy .strip-next span { color: #ea580c; }
-body.theme-candy .rail-stat strong, body.theme-candy .float-score strong,
-body.theme-candy .strip-stats .chip strong { color: #9a3412; text-shadow: none; }
-body.theme-candy .lbl-score { font-size: 0 !important; }
-body.theme-candy .lbl-score::before { content: "PONTOS"; font-size: 0.55rem; letter-spacing: 0.06em; }
-body.theme-candy .lbl-lines { font-size: 0 !important; }
-body.theme-candy .lbl-lines::before { content: "LINHAS"; font-size: 0.5rem; }
-body.theme-candy .lbl-level { font-size: 0 !important; }
-body.theme-candy .lbl-level::before { content: "NÍVEL"; font-size: 0.5rem; }
-body.theme-candy .lbl-next { font-size: 0 !important; }
-body.theme-candy .lbl-next::before { content: "PRÓX."; font-size: 0.5rem; }
-body.theme-candy .lbl-hold { font-size: 0 !important; }
-body.theme-candy .lbl-hold::before { content: "HOLD"; font-size: 0.5rem; }
-body.theme-candy #board { box-shadow: 0 10px 14px rgba(180,83,9,0.16); }
-body.theme-candy .hex-pad {
-  clip-path: none; border-radius: 16px; border: 3px solid #c4b5fd;
-  background: linear-gradient(180deg, #f5f3ff, #ddd6fe); color: #5b21b6; box-shadow: 0 3px 0 #8b5cf6;
+body.theme-magma .rail-stat span, body.theme-magma .rail-box > span,
+body.theme-magma .float-score span, body.theme-magma .float-box span,
+body.theme-magma .strip-stats .chip span, body.theme-magma .strip-next span { color: #fb923c; }
+body.theme-magma .rail-stat strong, body.theme-magma .float-score strong,
+body.theme-magma .strip-stats .chip strong {
+  color: #ffedd5; text-shadow: 0 0 10px rgba(249,115,22,0.5);
 }
-body.theme-candy .circle-drop {
-  background: linear-gradient(180deg, #6ee7b7, #14b8a6) !important;
-  box-shadow: 0 4px 0 #0f766e !important; color: #042f2e !important;
+body.theme-magma #board {
+  box-shadow: 0 0 22px rgba(234,88,12,0.35), 0 0 48px rgba(127,29,29,0.25);
 }
-body.theme-candy .circle-drop .pad-icon, body.theme-candy .circle-drop .pad-caption { color: #042f2e !important; }
-body.theme-candy .circle-rot {
-  border: 3px solid #fde047; background: linear-gradient(180deg, #fef9c3, #facc15);
-  color: #854d0e; box-shadow: 0 4px 0 #ca8a04;
+body.theme-magma .modal {
+  border: 1px solid rgba(251,146,60,0.45);
+  background: linear-gradient(180deg, #1c0c08, #0a0402);
+  color: #ffedd5;
+  box-shadow: 0 0 28px rgba(234,88,12,0.3);
 }
-body.theme-candy.layout-strip .circle-rot,
-body.theme-candy.layout-full .circle-rot,
-body.theme-candy.layout-micro .circle-rot {
-  width: auto; min-width: 58px; height: 58px; border-radius: 18px;
-  display: flex; flex-direction: row; gap: 4px; padding: 0 8px;
+body.theme-magma .modal h2 {
+  background: linear-gradient(90deg, #fbbf24, #f97316);
+  -webkit-background-clip: text; background-clip: text;
+  color: transparent;
 }
-body.theme-candy .circle-rot .candy-only { display: inline; font-size: 0.65rem; font-weight: 900; }
-body.theme-candy .modal {
-  border: 3px solid #fdba74; background: #fffaf3; color: #3f2a1d;
-  box-shadow: 0 8px 0 rgba(251,146,60,0.3);
+body.theme-magma .modal p { color: #c2410c; }
+body.theme-magma .overlay { background: rgba(10,4,2,0.78); }
+body.theme-magma .cta {
+  background: linear-gradient(135deg, #ea580c, #b91c1c);
+  color: #fff7ed; box-shadow: 0 4px 0 #7f1d1d, 0 0 18px rgba(249,115,22,0.4);
 }
-body.theme-candy .modal h2 { color: #ea580c; }
-body.theme-candy .modal p { color: #9a6b4f; }
-body.theme-candy .overlay { background: rgba(255,237,213,0.72); }
-body.theme-candy .cta { background: linear-gradient(135deg, #fb7185, #f97316); color: #fff7ed; box-shadow: 0 5px 0 #c2410c; }
-body.theme-candy .theme-swatch, body.theme-candy .layout-chip {
-  background: #fff7ed; border-color: #fdba74; color: #9a3412;
+body.theme-magma .theme-swatch, body.theme-magma .layout-chip {
+  background: #1a0a06; border-color: rgba(251,146,60,0.4); color: #fdba74;
 }
-body.theme-candy .theme-swatch.is-on, body.theme-candy .layout-chip.is-on {
-  border-color: #fb7185; color: #be123c; box-shadow: 0 0 0 2px #fb7185;
+body.theme-magma .theme-swatch.is-on, body.theme-magma .layout-chip.is-on {
+  border-color: #f97316; color: #ffedd5; box-shadow: 0 0 0 2px rgba(249,115,22,0.55);
 }
-body.theme-candy .gesture-hint { color: #b45309; }
-body.theme-candy .desk-hint { color: #b45309; }
-
-body.theme-candy .picker-label { color: #ea580c; }
-body.theme-candy .layout-chip strong { color: #9a3412; }
-body.theme-candy .layout-chip > span { color: #9a6b4f; }
-body.theme-candy .layout-chip.is-on strong { color: #be123c; }
-body.theme-candy .layout-chip.is-on > span { color: #9a3412; }
-
-
+body.theme-magma .gesture-hint, body.theme-magma .desk-hint { color: #b45309; }
+body.theme-magma .picker-label { color: #fb923c; }
+body.theme-magma .linkish { color: #fdba74; }
 
 /* === Modo essencial: sem HOLD e sem pad de botões === */
 .hold-slot,
