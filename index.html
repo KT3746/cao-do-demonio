@@ -13,11 +13,11 @@
     <meta property="og:description" content="Arcade original, em português, para jogar no celular e no computador." />
     <meta property="og:type" content="website" />
     <title>TETROK</title>
-    <link rel="icon" href="assets/favicon.svg?v=32-locked" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon.svg?v=33-skins" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Nunito:wght@700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css?v=32-locked" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Nunito:wght@700;800;900&family=Press+Start+2P&family=Sora:wght@600;700;800&family=VT323&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css?v=33-skins" />
   </head>
   <body class="theme-neon layout-full">
     <div class="aurora" aria-hidden="true"></div>
@@ -60,7 +60,7 @@
                 <strong id="stat-score-float">0</strong>
               </div>
               <div class="float-side">
-                <button type="button" id="pad-hold-float" class="float-box hold-slot is-empty" data-action="hold" aria-label="Reservar" title="Reservar (C)">
+                <button type="button" id="pad-hold-float" class="float-box hold-slot is-empty" data-action="hold" aria-label="Reservar" title="Reservar (C)" hidden>
                   <span class="lbl-hold">HOLD</span>
                   <canvas id="hold-float" width="64" height="64" aria-hidden="true"></canvas>
                   <span class="hold-empty">＋</span>
@@ -75,7 +75,7 @@
         </main>
 
         <aside class="rail rail-right" aria-label="Reserva e fila">
-          <button type="button" id="pad-hold" class="rail-box hold-slot is-empty" data-action="hold" aria-label="HOLD / Reservar" title="Reservar (C)">
+          <button type="button" id="pad-hold" class="rail-box hold-slot is-empty" data-action="hold" aria-label="HOLD / Reservar" title="Reservar (C)" hidden>
             <span class="lbl-hold">HOLD</span>
             <canvas id="hold" width="72" height="72" aria-hidden="true"></canvas>
             <span class="hold-empty">＋</span>
@@ -92,7 +92,6 @@
         </aside>
       </div>
 
-      <!-- mirrors for old ids used by syncHud -->
       <strong id="stat-score-m" class="sr-only">0</strong>
       <strong id="stat-level-m" class="sr-only">1</strong>
       <strong id="stat-lines-m" class="sr-only">0</strong>
@@ -101,7 +100,7 @@
 
       <p class="gesture-hint" id="gesture-hint">Deslize pra mover · toque pra girar · puxe pra baixo</p>
 
-      <nav class="touch cyber-pad" aria-label="Controles de toque">
+      <nav class="touch cyber-pad" aria-label="Controles de toque" hidden>
         <div class="cyber-pad-inner">
           <div class="cyber-moves">
             <button type="button" id="pad-left" class="hex-pad" data-action="left" aria-label="Esquerda">◀</button>
@@ -113,7 +112,6 @@
           </button>
           <button type="button" id="pad-rot" class="circle-rot" data-action="rotR" aria-label="Girar">
             <span class="pad-icon" aria-hidden="true">↻</span>
-            <span class="pad-caption candy-only">GIRAR</span>
           </button>
         </div>
       </nav>
@@ -137,10 +135,29 @@
         <h2 id="overlay-title">TETROK</h2>
         <p id="overlay-text" hidden></p>
         <div id="overlay-score" class="overlay-score" hidden></div>
+        <p class="picker-label" id="theme-label-ui">Visual das peças</p>
+        <div id="theme-picker" class="theme-picker theme-picker-4" role="group" aria-labelledby="theme-label-ui">
+          <button type="button" class="theme-swatch is-on" data-theme="neon" title="Neon">
+            <span class="swatch swatch-neon"></span>
+            <span>Neon</span>
+          </button>
+          <button type="button" class="theme-swatch" data-theme="candy" title="Doce">
+            <span class="swatch swatch-candy"></span>
+            <span>Doce</span>
+          </button>
+          <button type="button" class="theme-swatch" data-theme="crt" title="CRT">
+            <span class="swatch swatch-crt"></span>
+            <span>CRT</span>
+          </button>
+          <button type="button" class="theme-swatch" data-theme="pixel" title="Pixel">
+            <span class="swatch swatch-pixel"></span>
+            <span>Pixel</span>
+          </button>
+        </div>
         <button type="button" id="btn-play" class="cta">Jogar</button>
       </div>
     </div>
 
-    <script type="module" src="js/main.js?v=32-locked"></script>
+    <script type="module" src="js/main.js?v=33-skins"></script>
   </body>
 </html>
