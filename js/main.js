@@ -100,6 +100,8 @@ const els = {
   levelRail: document.getElementById("stat-level-rail"),
   linesRail: document.getElementById("stat-lines-rail"),
   scoreFloat: document.getElementById("stat-score-float"),
+  levelFloat: document.getElementById("stat-level-float"),
+  linesFloat: document.getElementById("stat-lines-float"),
   board: document.getElementById("board"),
   hold: document.getElementById("hold"),
   next: document.getElementById("next"),
@@ -515,6 +517,8 @@ function syncHud() {
   set(els.scoreM, s); set(els.levelM, lv); set(els.linesM, ln);
   set(els.scoreRail, s); set(els.levelRail, lv); set(els.linesRail, ln);
   set(els.scoreFloat, s);
+  set(els.levelFloat, lv);
+  set(els.linesFloat, ln);
   const empty = !game.hold;
   if (els.holdSlot) els.holdSlot.classList.toggle("is-empty", empty);
   if (els.holdSlotFloat) els.holdSlotFloat.classList.toggle("is-empty", empty);
