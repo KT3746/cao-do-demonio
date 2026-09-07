@@ -1,9 +1,9 @@
 /** Paletas e estilos das 4 skins do TETROK */
-export const SKIN_IDS = ["neon", "candy", "crt", "pixel"];
+export const SKIN_IDS = ["neon", "magma", "crt", "pixel"];
 
 export const SKIN_META = {
   neon: { label: "Neon", themeColor: "#050814" },
-  candy: { label: "Doce", themeColor: "#fff1e0" },
+  magma: { label: "Magma", themeColor: "#0a0402" },
   crt: { label: "CRT", themeColor: "#0a0800" },
   pixel: { label: "Pixel", themeColor: "#0b1220" },
 };
@@ -19,14 +19,15 @@ export const SKIN_PALETTE = {
     gancho: { color: "#60a5fa", deep: "#1d4ed8" },
     cotovelo: { color: "#fb923c", deep: "#c2410c" },
   },
-  candy: {
-    viga: { color: "#7dd3fc", deep: "#38bdf8" },
-    quadro: { color: "#fde68a", deep: "#fbbf24" },
-    ancora: { color: "#d8b4fe", deep: "#c084fc" },
-    onda: { color: "#86efac", deep: "#4ade80" },
-    raio: { color: "#fda4af", deep: "#fb7185" },
-    gancho: { color: "#a5b4fc", deep: "#818cf8" },
-    cotovelo: { color: "#fdba74", deep: "#fb923c" },
+  magma: {
+    // lava: amarelo-branco quente → vermelho → carvão
+    viga: { color: "#ff6b2c", deep: "#7f1d1d" },
+    quadro: { color: "#ffd166", deep: "#b45309" },
+    ancora: { color: "#ff3d5a", deep: "#6b0f1a" },
+    onda: { color: "#ff9f1c", deep: "#9a3412" },
+    raio: { color: "#ffef9f", deep: "#c2410c" },
+    gancho: { color: "#ef4444", deep: "#450a0a" },
+    cotovelo: { color: "#fb923c", deep: "#7c2d12" },
   },
   crt: {
     // monocromático âmbar — variação por textura no draw
@@ -55,7 +56,7 @@ export function skinColors(theme, pieceId) {
 }
 
 export function skinStyle(theme) {
-  if (theme === "candy") return "soft";
+  if (theme === "magma") return "magma";
   if (theme === "crt") return "crt";
   if (theme === "pixel") return "pixel";
   return "neon";
