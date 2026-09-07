@@ -112,7 +112,8 @@ const els = {
   overlayText: document.getElementById("overlay-text"),
   overlayScore: document.getElementById("overlay-score"),
   btnPlay: document.getElementById("btn-play"),
-  btnSound: document.getElementById("btn-sound"),
+  btnHome: document.getElementById("btn-home"),
+  btnHomeOverlay: document.getElementById("btn-home-overlay"),
   btnPause: document.getElementById("btn-pause"),
   btnTheme: document.getElementById("btn-theme"),
   themeLabel: document.getElementById("theme-label"),
@@ -401,16 +402,32 @@ els.btnPlay.addEventListener("click", () => {
   }
 });
 
-els.btnSound.addEventListener("click", () => {
-  audio.unlock();
-  const muted = audio.toggleMute();
-  syncSoundButton(muted);
-});
-
 els.btnPause.addEventListener("click", () => {
   audio.unlock();
   handlePauseButton();
 });
+
+function goHome() {
+  audio.unlock();
+  if (tutorialOpen) return;
+  try { game.reset(); } catch (_) {}
+  try { audio.pause(); } catch (_) {}
+  els.btnPause.setAttribute("aria-pressed", "false");
+  const pl = els.btnPause.querySelector(".btn-label");
+  if (pl) pl.textContent = "Pausa";
+  showStart();
+  syncHud();
+  try { layout(); } catch (_) {}
+  try { renderer.syncMinis(); } catch (_) {}
+  try { renderer.draw(game); } catch (_) {}
+}
+
+if (els.btnHome) {
+  els.btnHome.addEventListener("click", goHome);
+}
+if (els.btnHomeOverlay) {
+  els.btnHomeOverlay.addEventListener("click", goHome);
+}
 
 els.btnHowToNext.addEventListener("click", () => {
   audio.unlock();
@@ -452,7 +469,6 @@ document.addEventListener("visibilitychange", () => {
   }, 450);
 });
 
-syncSoundButton(audio.muted);
 bootScreen();
 layout();
 syncHud();
@@ -466,6 +482,7 @@ function loop(now) {
     game.tick(dt);
     renderer.stepFx(dt);
     layoutIfNeeded();
+    try { renderer.syncMinis(); } catch (_) {}
     renderer.draw(game);
   } catch (err) {
     console.error(err);
@@ -500,12 +517,6 @@ function syncHud() {
   const empty = !game.hold;
   if (els.holdSlot) els.holdSlot.classList.toggle("is-empty", empty);
   if (els.holdSlotFloat) els.holdSlotFloat.classList.toggle("is-empty", empty);
-}
-
-function syncSoundButton(muted) {
-  els.btnSound.setAttribute("aria-pressed", muted ? "true" : "false");
-  (function(){const sl=els.btnSound.querySelector(".btn-label"); if(sl) sl.textContent=muted ? "Som off" : "Som";})();
-  els.btnSound.title = muted ? "Ativar som" : "Silenciar";
 }
 
 function bootScreen() {
@@ -567,6 +578,7 @@ function showStart() {
   els.overlayScore.hidden = true;
   if (els.themePicker) els.themePicker.hidden = false;
   if (els.layoutPicker) els.layoutPicker.hidden = false;
+  if (els.btnHomeOverlay) els.btnHomeOverlay.hidden = true;
 }
 
 function showOverlay(title, text, again, score) {
@@ -583,6 +595,9 @@ function showOverlay(title, text, again, score) {
   const themeLab = document.getElementById("theme-label-ui");
   if (themeLab) themeLab.hidden = !!again;
   els.btnPlay.textContent = again ? "Jogar de novo" : game.state === STATE.PAUSED ? "Continuar" : "Jogar";
+  if (els.btnHomeOverlay) {
+    els.btnHomeOverlay.hidden = !(again || game.state === STATE.PAUSED);
+  }
   if (typeof score === "number") {
     els.overlayScore.hidden = false;
     els.overlayScore.innerHTML = `<span>Pontos</span><strong>${score}</strong><span>Recorde</span><strong>${best}</strong>`;
