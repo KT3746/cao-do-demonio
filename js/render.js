@@ -596,19 +596,28 @@ function drawCell(ctx, x, y, cw, ch, color, deep, alpha = 1, pulse = 1, glow = f
   ctx.globalAlpha = alpha;
 
   if (style === "soft") {
-    const inset = Math.max(1.2, cw * 0.1);
-    const r = Math.max(4, cw * 0.34);
-    ctx.fillStyle = deep || color;
-    roundRect(ctx, px + inset * 0.2, py + inset * 0.35, cw - inset * 0.4, ch - inset * 0.4, r);
+    const inset = Math.max(1.2, cw * 0.08);
+    const r = Math.max(5, cw * 0.38);
+    ctx.shadowColor = "rgba(0,0,0,0.25)";
+    ctx.shadowBlur = cw * 0.12;
+    ctx.fillStyle = deep || shade(color, -0.15);
+    roundRect(ctx, px + inset * 0.15, py + inset * 0.35, cw - inset * 0.3, ch - inset * 0.35, r);
     ctx.fill();
-    const g = ctx.createLinearGradient(px, py, px, py + ch);
-    g.addColorStop(0, shade(color, 0.28 * pulse));
-    g.addColorStop(1, shade(color, -0.05));
+    ctx.shadowBlur = 0;
+    const g = ctx.createLinearGradient(px, py, px + cw * 0.2, py + ch);
+    g.addColorStop(0, shade(color, 0.42 * pulse));
+    g.addColorStop(0.45, color);
+    g.addColorStop(1, shade(color, -0.08));
     ctx.fillStyle = g;
-    roundRect(ctx, px + inset, py + inset, cw - inset * 2, ch - inset * 2, r * 0.85);
+    roundRect(ctx, px + inset, py + inset, cw - inset * 2, ch - inset * 2, r * 0.9);
     ctx.fill();
-    ctx.fillStyle = "rgba(255,255,255,0.55)";
-    roundRect(ctx, px + inset * 1.5, py + inset * 1.3, (cw - inset * 3) * 0.45, (ch - inset * 3) * 0.22, r * 0.4);
+    // brilho de bala / gelatina
+    ctx.fillStyle = "rgba(255,255,255,0.78)";
+    roundRect(ctx, px + inset * 1.6, py + inset * 1.4, (cw - inset * 3) * 0.38, (ch - inset * 3) * 0.2, r * 0.45);
+    ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,0.35)";
+    ctx.beginPath();
+    ctx.arc(px + cw * 0.32, py + ch * 0.3, cw * 0.1, 0, Math.PI * 2);
     ctx.fill();
   } else if (style === "crt") {
     const inset = Math.max(1, cw * 0.08);
@@ -650,32 +659,45 @@ function drawCell(ctx, x, y, cw, ch, color, deep, alpha = 1, pulse = 1, glow = f
     ctx.lineWidth = Math.max(1, cw * 0.06);
     ctx.strokeRect(px + inset * 0.5, py + inset * 0.5, cw - inset, ch - inset);
   } else {
-    // neon glass — outline glow, darker center
-    const inset = Math.max(1.2, cw * 0.1);
-    const r = Math.max(2, cw * 0.16);
-    if (glow) {
-      ctx.shadowColor = color;
-      ctx.shadowBlur = cw * 0.45;
-    }
+    // neon — contorno brilhante + miolo translúcido (igual ao print)
+    const inset = Math.max(1.0, cw * 0.08);
+    const r = Math.max(3, cw * 0.22);
+    // bloom externo (todas as peças, não só a ativa)
+    ctx.shadowColor = color;
+    ctx.shadowBlur = glow ? cw * 0.55 : cw * 0.32;
+    // miolo colorido semi-transparente
+    ctx.fillStyle = color;
+    ctx.globalAlpha = alpha * (glow ? 0.42 : 0.32);
+    roundRect(ctx, px + inset, py + inset, cw - inset * 2, ch - inset * 2, r);
+    ctx.fill();
+    ctx.globalAlpha = alpha;
+    // borda neon grossa
     ctx.strokeStyle = color;
-    ctx.lineWidth = Math.max(2, cw * 0.12);
+    ctx.lineWidth = Math.max(2.4, cw * 0.14);
     roundRect(ctx, px + inset, py + inset, cw - inset * 2, ch - inset * 2, r);
     ctx.stroke();
     ctx.shadowBlur = 0;
-    ctx.fillStyle = "rgba(0,0,0,0.55)";
-    roundRect(ctx, px + inset * 1.2, py + inset * 1.2, cw - inset * 2.4, ch - inset * 2.4, r * 0.7);
+    // centro mais escuro / vidro
+    ctx.fillStyle = "rgba(0,0,0,0.45)";
+    roundRect(ctx, px + inset * 1.35, py + inset * 1.35, cw - inset * 2.7, ch - inset * 2.7, r * 0.65);
     ctx.fill();
-    const g = ctx.createLinearGradient(px, py, px + cw, py + ch);
-    g.addColorStop(0, shade(color, 0.15 * pulse));
-    g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g;
+    // highlight interno
+    ctx.fillStyle = shade(color, 0.45 * pulse);
     ctx.globalAlpha = alpha * 0.55;
-    roundRect(ctx, px + inset * 1.2, py + inset * 1.2, cw - inset * 2.4, ch - inset * 2.4, r * 0.7);
+    roundRect(
+      ctx,
+      px + inset * 1.6,
+      py + inset * 1.5,
+      (cw - inset * 3.2) * 0.45,
+      (ch - inset * 3.2) * 0.28,
+      r * 0.35,
+    );
     ctx.fill();
     ctx.globalAlpha = alpha;
-    ctx.strokeStyle = shade(color, 0.4);
-    ctx.lineWidth = Math.max(1, cw * 0.05);
-    roundRect(ctx, px + inset * 0.7, py + inset * 0.7, cw - inset * 1.4, ch - inset * 1.4, r);
+    // anel interno claro
+    ctx.strokeStyle = shade(color, 0.55);
+    ctx.lineWidth = Math.max(1, cw * 0.045);
+    roundRect(ctx, px + inset * 0.85, py + inset * 0.85, cw - inset * 1.7, ch - inset * 1.7, r * 0.9);
     ctx.stroke();
   }
   ctx.restore();
