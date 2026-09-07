@@ -197,19 +197,19 @@ export class Input {
 
     if (absX > 10 || absY > 10) this.swipe.moved = true;
 
-    if (absX >= cellPx * 0.55 && absX > absY) {
+    if (absX >= cellPx * 0.42 && absX > absY * 0.85) {
       const dir = this.swipe.accX > 0 ? 1 : -1;
-      const steps = Math.max(1, Math.round(absX / cellPx));
+      const steps = Math.max(1, Math.round(absX / (cellPx * 0.92)));
       for (let i = 0; i < steps; i++) {
         if (this.game.move(dir)) this.audio.move();
       }
       this.swipe.accX = 0;
-      this.swipe.accY = 0;
-    } else if (this.swipe.accY >= cellPx * 0.55 && absY > absX) {
-      const steps = Math.max(1, Math.round(this.swipe.accY / (cellPx * 0.7)));
+      this.swipe.accY *= 0.25;
+    } else if (this.swipe.accY >= cellPx * 0.4 && absY > absX * 0.85) {
+      const steps = Math.max(1, Math.round(this.swipe.accY / (cellPx * 0.55)));
       for (let i = 0; i < steps; i++) this.game.softDrop();
-      this.swipe.accX = 0;
       this.swipe.accY = 0;
+      this.swipe.accX *= 0.25;
     }
   }
 
@@ -221,11 +221,12 @@ export class Input {
     const cellPx = Math.max(28, this.boardEl.clientWidth / 10);
     this.swipe = null;
 
-    if (!sx.moved && Math.hypot(dx, dy) < 14) {
-      this.game.rotate(1);
+    if (!sx.moved && Math.hypot(dx, dy) < 16) {
+      if (this.game.rotate(1)) this.audio.rotate();
       return;
     }
-    if (dy < -cellPx * 0.9 && Math.abs(dy) > Math.abs(dx)) {
+    // swipe pra cima = queda rápida
+    if (dy < -cellPx * 0.75 && Math.abs(dy) > Math.abs(dx) * 1.1) {
       this.game.hardDrop();
       this.audio.hardDrop();
     }
