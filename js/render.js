@@ -31,9 +31,22 @@ export class Renderer {
 
   syncMinis() {
     for (const miniCanvas of this.minis) {
-      const rect = miniCanvas.canvas.getBoundingClientRect();
-      if (rect.width < 8 || rect.height < 8) continue;
-      sizeCanvas(miniCanvas.canvas, miniCanvas.ctx, rect.width, rect.height, false);
+      const canvas = miniCanvas.canvas;
+      let rect = canvas.getBoundingClientRect();
+      let w = rect.width;
+      let h = rect.height;
+      // NEXT flutuante / strip: nunca deixar canvas zerado (pai display:none ou overflow)
+      const id = canvas.id || "";
+      const isNextPreview =
+        id === "next-float" || id === "next-strip" || id === "next-side" || id === "next-0";
+      if ((w < 8 || h < 8) && isNextPreview) {
+        w = Math.max(w, 56);
+        h = Math.max(h, 56);
+        canvas.style.width = `${w}px`;
+        canvas.style.height = `${h}px`;
+      }
+      if (w < 8 || h < 8) continue;
+      sizeCanvas(canvas, miniCanvas.ctx, w, h, false);
     }
   }
 
@@ -168,14 +181,20 @@ export class Renderer {
   draw(game) {
     this.drawBoard(game);
     const holdDim = !game.canHold && game.state === "playing";
+    const queue = game.queue || [];
     for (const mini of this.minis) {
-      let id = null;
-      if (mini.kind === "hold") id = game.hold;
-      else {
-        const idx = typeof mini.index === "number" ? mini.index : 0;
-        id = game.queue[idx] || null;
+      try {
+        if (!mini.ctx || !mini.canvas) continue;
+        let id = null;
+        if (mini.kind === "hold") id = game.hold;
+        else {
+          const idx = typeof mini.index === "number" ? mini.index : 0;
+          id = queue[idx] || null;
+        }
+        this.drawMini(mini.ctx, mini.canvas, id, mini.kind === "hold" && holdDim);
+      } catch (_) {
+        /* um mini quebrado não pode apagar o NEXT */
       }
-      this.drawMini(mini.ctx, mini.canvas, id, mini.kind === "hold" && holdDim);
     }
   }
 
@@ -493,6 +512,9 @@ export class Renderer {
   drawMini(ctx, canvas, pieceId, dimmed) {
     const w = canvas.width;
     const h = canvas.height;
+    if (!w || !h) return;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, w, h);
     const theme = this.theme;
     const bg = ctx.createLinearGradient(0, 0, 0, h);
@@ -510,17 +532,32 @@ export class Renderer {
       bg.addColorStop(1, "#0f172a");
     }
     ctx.fillStyle = bg;
-    roundRect(ctx, 0, 0, w, h, theme === "pixel" ? 4 : 14 * dprOf(canvas));
+    const rad = theme === "pixel" ? 4 : Math.max(6, Math.min(w, h) * 0.18);
+    roundRect(ctx, 0, 0, w, h, rad);
     ctx.fill();
-    ctx.strokeStyle = theme === "candy" ? "rgba(251, 146, 60, 0.35)" : theme === "crt" ? "rgba(255,176,0,0.45)" : theme === "pixel" ? "#3b82f6" : "rgba(160, 200, 255, 0.12)";
-    ctx.lineWidth = dprOf(canvas);
-    roundRect(ctx, 1, 1, w - 2, h - 2, theme === "pixel" ? 4 : 14 * dprOf(canvas));
+    ctx.strokeStyle =
+      theme === "candy"
+        ? "rgba(251, 146, 60, 0.45)"
+        : theme === "crt"
+          ? "rgba(255,176,0,0.55)"
+          : theme === "pixel"
+            ? "#3b82f6"
+            : "rgba(125, 211, 252, 0.35)";
+    ctx.lineWidth = Math.max(1, Math.min(w, h) * 0.04);
+    roundRect(ctx, 1, 1, w - 2, h - 2, rad);
     ctx.stroke();
 
-    if (!pieceId) return;
+    if (!pieceId) {
+      ctx.restore();
+      return;
+    }
     const def = PIECES[pieceId];
+    if (!def || !def.shapes || !def.shapes[0]) {
+      ctx.restore();
+      return;
+    }
     const cells = def.shapes[0];
-    let minX = 4, minY = 4, maxX = 0, maxY = 0;
+    let minX = 99, minY = 99, maxX = 0, maxY = 0;
     for (const [x, y] of cells) {
       minX = Math.min(minX, x);
       minY = Math.min(minY, y);
@@ -529,33 +566,75 @@ export class Renderer {
     }
     const bw = maxX - minX + 1;
     const bh = maxY - minY + 1;
-    const pad = w * 0.18;
-    const cell = Math.min((w - pad * 2) / bw, (h - pad * 2) / bh);
+    const pad = Math.min(w, h) * 0.14;
+    const cell = Math.max(2, Math.min((w - pad * 2) / bw, (h - pad * 2) / bh));
     const ox = (w - bw * cell) / 2;
     const oy = (h - bh * cell) / 2;
+    const pal = skinColors(this.theme, pieceId);
+    const color = pal.color || "#22d3ee";
+    const deep = pal.deep || shade(color, -0.25);
     ctx.globalAlpha = dimmed ? 0.4 : 1;
+
+    // Preview SEMPRE sólido (neon transparente some no canvas pequenino)
     for (const [x, y] of cells) {
-      {
-        const pal = skinColors(this.theme, pieceId);
-        drawCell(
-          ctx,
-          (x - minX) + ox / cell,
-          (y - minY) + oy / cell,
-          cell,
-          cell,
-          pal.color,
-          pal.deep,
-          1,
-          1,
-          false,
-          true,
-          skinStyle(this.theme),
-          !!pal.hatch,
-        );
+      const px = ox + (x - minX) * cell;
+      const py = oy + (y - minY) * cell;
+      const inset = Math.max(1, cell * 0.1);
+      if (theme === "crt") {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = Math.max(1.5, cell * 0.12);
+        ctx.shadowColor = color;
+        ctx.shadowBlur = cell * 0.25;
+        ctx.strokeRect(px + inset, py + inset, cell - inset * 2, cell - inset * 2);
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "rgba(255,176,0,0.22)";
+        ctx.fillRect(px + inset, py + inset, cell - inset * 2, cell - inset * 2);
+      } else if (theme === "pixel") {
+        ctx.fillStyle = color;
+        ctx.fillRect(px + inset, py + inset, cell - inset * 2, cell - inset * 2);
+        ctx.fillStyle = shade(color, 0.35);
+        ctx.fillRect(px + inset, py + inset, cell - inset * 2, Math.max(1, cell * 0.14));
+        ctx.fillStyle = deep;
+        ctx.fillRect(px + inset, py + cell - inset - Math.max(1, cell * 0.14), cell - inset * 2, Math.max(1, cell * 0.14));
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = Math.max(1, cell * 0.08);
+        ctx.strokeRect(px + inset * 0.5, py + inset * 0.5, cell - inset, cell - inset);
+      } else if (theme === "candy") {
+        const r = Math.max(3, cell * 0.32);
+        ctx.fillStyle = deep;
+        roundRect(ctx, px + inset * 0.2, py + inset * 0.4, cell - inset * 0.4, cell - inset * 0.4, r);
+        ctx.fill();
+        const g = ctx.createLinearGradient(px, py, px, py + cell);
+        g.addColorStop(0, shade(color, 0.35));
+        g.addColorStop(1, color);
+        ctx.fillStyle = g;
+        roundRect(ctx, px + inset, py + inset, cell - inset * 2, cell - inset * 2, r * 0.9);
+        ctx.fill();
+        ctx.fillStyle = "rgba(255,255,255,0.7)";
+        roundRect(ctx, px + inset * 1.4, py + inset * 1.2, (cell - inset * 2) * 0.4, cell * 0.16, r * 0.4);
+        ctx.fill();
+      } else {
+        // neon sólido + borda brilhante (legível no NEXT)
+        const r = Math.max(2, cell * 0.2);
+        ctx.shadowColor = color;
+        ctx.shadowBlur = cell * 0.45;
+        ctx.fillStyle = color;
+        roundRect(ctx, px + inset, py + inset, cell - inset * 2, cell - inset * 2, r);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "rgba(0,0,0,0.35)";
+        roundRect(ctx, px + inset * 1.4, py + inset * 1.4, cell - inset * 2.8, cell - inset * 2.8, r * 0.7);
+        ctx.fill();
+        ctx.strokeStyle = shade(color, 0.35);
+        ctx.lineWidth = Math.max(1.5, cell * 0.12);
+        roundRect(ctx, px + inset, py + inset, cell - inset * 2, cell - inset * 2, r);
+        ctx.stroke();
       }
     }
     ctx.globalAlpha = 1;
+    ctx.restore();
   }
+
 }
 
 function sizeCanvas(canvas, ctx, cssW, cssH, lockCss) {
