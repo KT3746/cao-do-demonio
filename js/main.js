@@ -59,7 +59,7 @@ const LAYOUT_KEY = "tetrok-layout";
 const HOWTO_MS = 1800;
 const THEMES = [
   { id: "neon", label: "Neon" },
-  { id: "candy", label: "Doce" },
+  { id: "magma", label: "Magma" },
   { id: "crt", label: "CRT" },
   { id: "pixel", label: "Pixel" },
 ];
@@ -165,7 +165,8 @@ renderer.minis.forEach((mini) => {
 function readTheme() {
   try {
     const v = localStorage.getItem(THEME_KEY);
-    if (v === "neon" || v === "candy" || v === "crt" || v === "pixel") return v;
+    if (v === "neon" || v === "magma" || v === "crt" || v === "pixel") return v;
+    if (v === "candy") return "magma"; // Doce removido
     if (v === "aurora" || v === "navy" || v === "crimson") return "neon";
   } catch {}
   return "neon";
@@ -181,7 +182,7 @@ function applyTheme(id) {
   const t = THEMES.find((x) => x.id === id) || THEMES[0];
   renderer.setTheme(t.id);
   document.body.classList.remove(
-    "theme-neon", "theme-candy", "theme-crt", "theme-pixel",
+    "theme-neon", "theme-magma", "theme-crt", "theme-pixel",
     "theme-aurora", "theme-navy", "theme-crimson", "skin-cyber",
   );
   document.body.classList.add(`theme-${t.id}`);
@@ -193,7 +194,7 @@ function applyTheme(id) {
   }
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) {
-    const colors = { neon: "#050814", candy: "#fff1e0", crt: "#0a0800", pixel: "#0b1220" };
+    const colors = { neon: "#050814", magma: "#0a0402", crt: "#0a0800", pixel: "#0b1220" };
     meta.setAttribute("content", colors[t.id] || "#050814");
   }
   currentTheme = t.id;
