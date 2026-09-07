@@ -51,7 +51,7 @@ export class Renderer {
   }
 
   setTheme(id) {
-    const ok = id === "neon" || id === "candy" || id === "crt" || id === "pixel";
+    const ok = id === "neon" || id === "magma" || id === "crt" || id === "pixel";
     this.theme = ok ? id : "neon";
   }
 
@@ -216,29 +216,41 @@ export class Renderer {
 
   paintWell(ctx, w, h, dpr, cw) {
     const theme = this.theme || "neon";
-    const radius = theme === "candy" ? cw * 0.28 : theme === "pixel" ? cw * 0.06 : cw * 0.14;
+    const radius = theme === "magma" ? cw * 0.16 : theme === "pixel" ? cw * 0.06 : cw * 0.14;
     roundRect(ctx, 0, 0, w, h, radius);
     ctx.save();
     roundRect(ctx, 0, 0, w, h, radius);
     ctx.clip();
 
-    if (theme === "candy") {
+    if (theme === "magma") {
       const base = ctx.createLinearGradient(0, 0, 0, h);
-      base.addColorStop(0, "#fff7ed");
-      base.addColorStop(0.5, "#ffedd5");
-      base.addColorStop(1, "#fed7aa");
+      base.addColorStop(0, "#1a0a06");
+      base.addColorStop(0.55, "#0c0503");
+      base.addColorStop(1, "#050201");
       ctx.fillStyle = base;
       ctx.fillRect(0, 0, w, h);
-      let g = ctx.createRadialGradient(w * 0.5, h * 0.15, 0, w * 0.5, h * 0.15, h * 0.55);
-      g.addColorStop(0, "rgba(253, 224, 71, 0.28)");
-      g.addColorStop(1, "rgba(253, 224, 71, 0)");
+      let g = ctx.createRadialGradient(w * 0.5, h * 1.05, 0, w * 0.5, h * 1.05, h * 0.7);
+      g.addColorStop(0, "rgba(234, 88, 12, 0.38)");
+      g.addColorStop(0.45, "rgba(127, 29, 29, 0.18)");
+      g.addColorStop(1, "rgba(0, 0, 0, 0)");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, w, h);
-      g = ctx.createRadialGradient(w * 0.85, h * 0.85, 0, w * 0.85, h * 0.85, w * 0.6);
-      g.addColorStop(0, "rgba(244, 114, 182, 0.16)");
-      g.addColorStop(1, "rgba(244, 114, 182, 0)");
+      g = ctx.createRadialGradient(w * 0.2, h * 0.1, 0, w * 0.2, h * 0.1, w * 0.55);
+      g.addColorStop(0, "rgba(251, 191, 36, 0.12)");
+      g.addColorStop(1, "rgba(251, 191, 36, 0)");
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, w, h);
+      // brasas
+      ctx.fillStyle = "rgba(255,120,40,0.55)";
+      for (let i = 0; i < 18; i++) {
+        const sx = ((i * 73) % 1000) / 1000 * w;
+        const sy = 0.55 * h + ((i * 41) % 1000) / 1000 * h * 0.42;
+        ctx.globalAlpha = 0.12 + (i % 4) * 0.05;
+        ctx.beginPath();
+        ctx.arc(sx, sy, (1.2 + (i % 3) * 0.6) * dpr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
     } else if (theme === "crt") {
       ctx.fillStyle = "#050300";
       ctx.fillRect(0, 0, w, h);
@@ -302,13 +314,13 @@ export class Renderer {
     }
     ctx.restore();
 
-    if (theme === "candy") {
-      ctx.strokeStyle = "rgba(251, 146, 60, 0.7)";
-      ctx.lineWidth = Math.max(3, dpr * 1.6);
+    if (theme === "magma") {
+      ctx.strokeStyle = "rgba(249, 115, 22, 0.75)";
+      ctx.lineWidth = Math.max(2.4, dpr * 1.4);
       roundRect(ctx, 2, 2, w - 4, h - 4, radius);
       ctx.stroke();
-      ctx.strokeStyle = "rgba(255, 255, 255, 0.65)";
-      ctx.lineWidth = Math.max(1.5, dpr * 0.8);
+      ctx.strokeStyle = "rgba(127, 29, 29, 0.65)";
+      ctx.lineWidth = Math.max(1.2, dpr * 0.7);
       roundRect(ctx, 6, 6, w - 12, h - 12, radius * 0.85);
       ctx.stroke();
     } else if (theme === "crt") {
@@ -335,11 +347,11 @@ export class Renderer {
   paintGrid(ctx, cw, ch, innerW, innerH, dpr) {
     const theme = this.theme || "neon";
     let even, odd, hLine, vLine;
-    if (theme === "candy") {
-      even = "rgba(251, 146, 60, 0.06)";
-      odd = "rgba(255, 255, 255, 0.35)";
-      hLine = "rgba(251, 146, 60, 0.18)";
-      vLine = "rgba(249, 115, 22, 0.16)";
+    if (theme === "magma") {
+      even = "rgba(251, 146, 60, 0.05)";
+      odd = "rgba(0, 0, 0, 0.22)";
+      hLine = "rgba(251, 146, 60, 0.14)";
+      vLine = "rgba(249, 115, 22, 0.12)";
     } else if (theme === "crt") {
       even = "rgba(255, 176, 0, 0.03)";
       odd = "rgba(0, 0, 0, 0.25)";
@@ -411,7 +423,7 @@ export class Renderer {
         if (clearing.has(y)) {
           const flash = style === "crt"
             ? { color: "#ffe08a", deep: "#ffb000" }
-            : style === "candy"
+            : style === "magma"
               ? { color: "#fff1f2", deep: "#fb7185" }
               : { color: "#fff7d6", deep: "#f4c95d" };
           drawCell(ctx, x, visY, cw, ch, flash.color, flash.deep, 1, pulse, false, false, style, false);
@@ -485,8 +497,8 @@ export class Renderer {
       ctx.font = `800 ${Math.round(ch * (this.toast === "TETROK!" ? 0.92 : 0.78))}px Sora, Manrope, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillStyle = this.theme === "candy" ? "#9a3412" : this.theme === "crt" ? "#ffb000" : "#fff6d2";
-      ctx.shadowColor = this.theme === "candy" ? "rgba(251, 146, 60, 0.85)" : this.theme === "crt" ? "rgba(255,176,0,0.9)" : "rgba(244, 201, 93, 0.95)";
+      ctx.fillStyle = this.theme === "magma" ? "#ffedd5" : this.theme === "crt" ? "#ffb000" : "#fff6d2";
+      ctx.shadowColor = this.theme === "magma" ? "rgba(249, 115, 22, 0.9)" : this.theme === "crt" ? "rgba(255,176,0,0.9)" : "rgba(244, 201, 93, 0.95)";
       ctx.shadowBlur = 28;
       ctx.fillText(this.toast, innerW / 2, innerH * 0.42);
       ctx.restore();
@@ -494,10 +506,10 @@ export class Renderer {
 
     ctx.restore();
 
-    if (this.theme === "candy") {
-      ctx.strokeStyle = "rgba(251, 146, 60, 0.45)";
-      ctx.lineWidth = Math.max(2.5, dpr * 1.4);
-      roundRect(ctx, 1, 1, w - 2, h - 2, cw * 0.28);
+    if (this.theme === "magma") {
+      ctx.strokeStyle = "rgba(249, 115, 22, 0.5)";
+      ctx.lineWidth = Math.max(2, dpr * 1.4);
+      roundRect(ctx, 1, 1, w - 2, h - 2, cw * 0.14);
       ctx.stroke();
     } else {
       ctx.strokeStyle = "rgba(150, 245, 225, 0.38)";
@@ -518,9 +530,9 @@ export class Renderer {
     ctx.clearRect(0, 0, w, h);
     const theme = this.theme;
     const bg = ctx.createLinearGradient(0, 0, 0, h);
-    if (theme === "candy") {
-      bg.addColorStop(0, "#fff7ed");
-      bg.addColorStop(1, "#ffedd5");
+    if (theme === "magma") {
+      bg.addColorStop(0, "#2a0c08");
+      bg.addColorStop(1, "#0a0402");
     } else if (theme === "crt") {
       bg.addColorStop(0, "#1a1200");
       bg.addColorStop(1, "#050300");
@@ -536,8 +548,8 @@ export class Renderer {
     roundRect(ctx, 0, 0, w, h, rad);
     ctx.fill();
     ctx.strokeStyle =
-      theme === "candy"
-        ? "rgba(251, 146, 60, 0.45)"
+      theme === "magma"
+        ? "rgba(249, 115, 22, 0.55)"
         : theme === "crt"
           ? "rgba(255,176,0,0.55)"
           : theme === "pixel"
@@ -599,19 +611,26 @@ export class Renderer {
         ctx.strokeStyle = "#000";
         ctx.lineWidth = Math.max(1, cell * 0.08);
         ctx.strokeRect(px + inset * 0.5, py + inset * 0.5, cell - inset, cell - inset);
-      } else if (theme === "candy") {
-        const r = Math.max(3, cell * 0.32);
+      } else if (theme === "magma") {
+        const r = Math.max(2, cell * 0.18);
+        // crosta escura
         ctx.fillStyle = deep;
-        roundRect(ctx, px + inset * 0.2, py + inset * 0.4, cell - inset * 0.4, cell - inset * 0.4, r);
+        roundRect(ctx, px + inset * 0.15, py + inset * 0.15, cell - inset * 0.3, cell - inset * 0.3, r);
         ctx.fill();
-        const g = ctx.createLinearGradient(px, py, px, py + cell);
+        // miolo lava
+        const g = ctx.createLinearGradient(px, py, px + cell, py + cell);
         g.addColorStop(0, shade(color, 0.35));
-        g.addColorStop(1, color);
+        g.addColorStop(0.45, color);
+        g.addColorStop(1, deep);
         ctx.fillStyle = g;
-        roundRect(ctx, px + inset, py + inset, cell - inset * 2, cell - inset * 2, r * 0.9);
+        ctx.shadowColor = color;
+        ctx.shadowBlur = cell * 0.4;
+        roundRect(ctx, px + inset, py + inset, cell - inset * 2, cell - inset * 2, r);
         ctx.fill();
-        ctx.fillStyle = "rgba(255,255,255,0.7)";
-        roundRect(ctx, px + inset * 1.4, py + inset * 1.2, (cell - inset * 2) * 0.4, cell * 0.16, r * 0.4);
+        ctx.shadowBlur = 0;
+        // brasa
+        ctx.fillStyle = "rgba(255, 240, 180, 0.7)";
+        roundRect(ctx, px + inset * 1.5, py + inset * 1.3, (cell - inset * 2) * 0.35, cell * 0.14, r * 0.4);
         ctx.fill();
       } else {
         // neon sólido + borda brilhante (legível no NEXT)
@@ -674,30 +693,32 @@ function drawCell(ctx, x, y, cw, ch, color, deep, alpha = 1, pulse = 1, glow = f
   ctx.save();
   ctx.globalAlpha = alpha;
 
-  if (style === "soft") {
-    const inset = Math.max(1.2, cw * 0.08);
-    const r = Math.max(5, cw * 0.38);
-    ctx.shadowColor = "rgba(0,0,0,0.25)";
-    ctx.shadowBlur = cw * 0.12;
-    ctx.fillStyle = deep || shade(color, -0.15);
-    roundRect(ctx, px + inset * 0.15, py + inset * 0.35, cw - inset * 0.3, ch - inset * 0.35, r);
+  if (style === "magma") {
+    const inset = Math.max(1.0, cw * 0.08);
+    const r = Math.max(3, cw * 0.2);
+    // crosta / sombra
+    ctx.fillStyle = deep || shade(color, -0.35);
+    roundRect(ctx, px + inset * 0.2, py + inset * 0.25, cw - inset * 0.4, ch - inset * 0.35, r);
+    ctx.fill();
+    // glow de brasa
+    ctx.shadowColor = color;
+    ctx.shadowBlur = glow ? cw * 0.55 : cw * 0.28;
+    const g = ctx.createLinearGradient(px, py, px + cw, py + ch);
+    g.addColorStop(0, shade(color, 0.4 * pulse));
+    g.addColorStop(0.4, color);
+    g.addColorStop(1, deep || shade(color, -0.25));
+    ctx.fillStyle = g;
+    roundRect(ctx, px + inset, py + inset, cw - inset * 2, ch - inset * 2, r);
     ctx.fill();
     ctx.shadowBlur = 0;
-    const g = ctx.createLinearGradient(px, py, px + cw * 0.2, py + ch);
-    g.addColorStop(0, shade(color, 0.42 * pulse));
-    g.addColorStop(0.45, color);
-    g.addColorStop(1, shade(color, -0.08));
-    ctx.fillStyle = g;
-    roundRect(ctx, px + inset, py + inset, cw - inset * 2, ch - inset * 2, r * 0.9);
+    // rachadura / highlight quente
+    ctx.fillStyle = "rgba(255, 236, 179, 0.55)";
+    roundRect(ctx, px + inset * 1.5, py + inset * 1.3, (cw - inset * 3) * 0.42, Math.max(1.5, ch * 0.12), r * 0.4);
     ctx.fill();
-    // brilho de bala / gelatina
-    ctx.fillStyle = "rgba(255,255,255,0.78)";
-    roundRect(ctx, px + inset * 1.6, py + inset * 1.4, (cw - inset * 3) * 0.38, (ch - inset * 3) * 0.2, r * 0.45);
-    ctx.fill();
-    ctx.fillStyle = "rgba(255,255,255,0.35)";
-    ctx.beginPath();
-    ctx.arc(px + cw * 0.32, py + ch * 0.3, cw * 0.1, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.strokeStyle = shade(color, -0.2);
+    ctx.lineWidth = Math.max(1, cw * 0.06);
+    roundRect(ctx, px + inset, py + inset, cw - inset * 2, ch - inset * 2, r);
+    ctx.stroke();
   } else if (style === "crt") {
     const inset = Math.max(1, cw * 0.08);
     ctx.shadowColor = color;
