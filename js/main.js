@@ -60,6 +60,8 @@ const HOWTO_MS = 1800;
 const THEMES = [
   { id: "neon", label: "Neon" },
   { id: "candy", label: "Doce" },
+  { id: "crt", label: "CRT" },
+  { id: "pixel", label: "Pixel" },
 ];
 const LAYOUTS = [
   { id: "full", label: "Tela cheia" },
@@ -160,8 +162,11 @@ renderer.minis.forEach((mini) => {
 
 
 function readTheme() {
-  // Configuração única: Neon
-  try { localStorage.setItem(THEME_KEY, "neon"); } catch {}
+  try {
+    const v = localStorage.getItem(THEME_KEY);
+    if (v === "neon" || v === "candy" || v === "crt" || v === "pixel") return v;
+    if (v === "aurora" || v === "navy" || v === "crimson") return "neon";
+  } catch {}
   return "neon";
 }
 
@@ -174,7 +179,10 @@ function writeTheme(id) {
 function applyTheme(id) {
   const t = THEMES.find((x) => x.id === id) || THEMES[0];
   renderer.setTheme(t.id);
-  document.body.classList.remove("theme-neon", "theme-candy", "theme-aurora", "theme-navy", "theme-crimson", "skin-cyber");
+  document.body.classList.remove(
+    "theme-neon", "theme-candy", "theme-crt", "theme-pixel",
+    "theme-aurora", "theme-navy", "theme-crimson", "skin-cyber",
+  );
   document.body.classList.add(`theme-${t.id}`);
   if (els.themeLabel) els.themeLabel.textContent = t.label;
   if (els.themePicker) {
@@ -184,7 +192,8 @@ function applyTheme(id) {
   }
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) {
-    meta.setAttribute("content", t.id === "candy" ? "#fff1e0" : "#050814");
+    const colors = { neon: "#050814", candy: "#fff1e0", crt: "#0a0800", pixel: "#0b1220" };
+    meta.setAttribute("content", colors[t.id] || "#050814");
   }
   currentTheme = t.id;
 }
@@ -234,8 +243,15 @@ function onPickTheme(id) {
 }
 
 if (els.btnTheme) {
-  // tema único — botão some (CSS) e não cicla mais
-  els.btnTheme.hidden = true;
+  els.btnTheme.hidden = false;
+  const go = (ev) => {
+    ev.preventDefault();
+    audio.unlock();
+    cycleTheme();
+    try { renderer.draw(game); } catch {}
+  };
+  els.btnTheme.addEventListener("pointerup", go);
+  els.btnTheme.addEventListener("click", go);
 }
 if (els.themePicker) {
   const pick = (ev) => {
