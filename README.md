@@ -2,7 +2,7 @@
 
 Jogo de puzzle com peças que caem. É **original**: nomes, cores, textos e sons próprios, em português do Brasil. Dá para jogar no celular (toque) e no computador (teclado), no mesmo endereço.
 
-**Jogar online:** [https://kt3746.github.io/tetrok/](https://kt3746.github.io/tetrok/)
+**Jogar online:** [https://kt3746.github.io/grokbot-tetrok/](https://kt3746.github.io/grokbot-tetrok/)
 
 > Se o link ainda não abrir, veja [Publicar no GitHub Pages](#publicar-no-github-pages) no final deste arquivo.
 
@@ -88,7 +88,7 @@ O fluxo em `.github/workflows/pages.yml` publica a pasta do site sempre que algu
 1. Abra o repositório → **Settings** → **Pages**.
 2. Em **Build and deployment → Source**, escolha **GitHub Actions**.
 3. O fluxo em `.github/workflows/pages.yml` publica sozinho a cada push na `main`.
-4. O endereço esperado é: `https://kt3746.github.io/tetrok/`
+4. O endereço esperado é: `https://kt3746.github.io/grokbot-tetrok/`
 
 Cada publicação troca o parâmetro `?v=` dos arquivos (hash do commit), para o navegador não ficar com uma versão velha.
 
