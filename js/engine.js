@@ -110,6 +110,8 @@ export class Game {
     this.lines = 0;
     this.level = 1;
     this.combo = 0;
+    this.lastDifficult = false;
+    this.b2b = 0;
     this.state = STATE.READY;
     this.active = null;
     this.lockMs = 0;
@@ -187,6 +189,7 @@ export class Game {
       hold: this.hold,
       queue: this.queue.slice(),
       combo: this.combo,
+      b2b: this.b2b,
       lastClearLabel: this.lastClearLabel,
       canHold: this.canHold,
     };
@@ -329,16 +332,51 @@ export class Game {
     this.combo += 1;
     const base = LINE_POINTS[Math.min(n, 4)] * this.level;
     const comboBonus = this.combo > 1 ? 50 * (this.combo - 1) * this.level : 0;
-    this.score += base + comboBonus;
+    const difficult = n >= 4;
+    let b2bBonus = 0;
+    let b2b = false;
+    if (difficult && this.lastDifficult) {
+      b2b = true;
+      this.b2b += 1;
+      b2bBonus = Math.floor(base * 0.5);
+    } else if (difficult) {
+      this.b2b = 0;
+    } else {
+      this.b2b = 0;
+    }
+    this.lastDifficult = difficult;
+
+    // Limpeza total: só restam as linhas que vão sumir
+    let perfect = true;
+    const clearing = new Set(rows);
+    for (let y = 0; y < this.board.length; y++) {
+      if (clearing.has(y)) continue;
+      for (let x = 0; x < this.board[y].length; x++) {
+        if (this.board[y][x]) { perfect = false; break; }
+      }
+      if (!perfect) break;
+    }
+    const perfectBonus = perfect ? 1200 * this.level : 0;
+
+    const gained = base + comboBonus + b2bBonus + perfectBonus;
+    this.score += gained;
     this.lines += n;
     const prevLevel = this.level;
     this.level = 1 + Math.floor(this.lines / LINES_PER_LEVEL);
-    this.lastClearLabel = lineLabel(n);
+
+    let label = lineLabel(n);
+    if (b2b) label = `B2B ${label}`;
+    if (perfect) label = perfect && n >= 4 ? `LIMPEZA · ${label}` : `LIMPEZA TOTAL!`;
+    this.lastClearLabel = label;
+
     this.hooks.onLineClear?.({
       rows,
       count: n,
-      label: this.lastClearLabel,
+      label,
       combo: this.combo,
+      b2b,
+      perfect,
+      gained,
       snapshot: this.snapshot(),
     });
     this.hooks.onScore?.(this.snapshot());
