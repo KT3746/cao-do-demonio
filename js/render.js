@@ -16,12 +16,14 @@ export class Renderer {
     this.particles = [];
     this.beams = [];
     this.rings = [];
+    this.scorePops = [];
     this.flash = 0;
     this.flashColor = "120, 220, 255";
     this.shake = 0;
     this.toast = "";
     this.toastMs = 0;
     this.levelFlash = 0;
+    this.spawnFlash = 0;
     this.theme = "neon";
   }
 
@@ -161,9 +163,28 @@ export class Renderer {
     }
   }
 
-    showToast(text) {
+  showToast(text) {
     this.toast = text;
-    this.toastMs = text === "TETROK!" ? 1400 : 1100;
+    const big = /TETROK|LIMPEZA|B2B/i.test(text || "");
+    this.toastMs = big ? 1600 : 1150;
+  }
+
+  spawnScorePop(points, label) {
+    if (!points) return;
+    const m = this.metrics();
+    this.scorePops.push({
+      text: `+${points}`,
+      sub: label || "",
+      x: m.inset + (COLS * m.cw) / 2,
+      y: m.inset + m.ch * 6,
+      life: 1100,
+      max: 1100,
+      vy: -42 * m.dpr,
+    });
+  }
+
+  onSpawnFlash() {
+    this.spawnFlash = 0.35;
   }
 
   pulseLevel() {
@@ -176,6 +197,7 @@ export class Renderer {
     this.shake = Math.max(0, this.shake - t / 50);
     this.toastMs = Math.max(0, this.toastMs - t);
     this.levelFlash = Math.max(0, this.levelFlash - t / 700);
+    this.spawnFlash = Math.max(0, this.spawnFlash - t / 420);
     const next = [];
     for (const p of this.particles) {
       p.life -= t;
@@ -199,6 +221,13 @@ export class Renderer {
       if (r.life > 0) nextRings.push(r);
     }
     this.rings = nextRings;
+    const nextPops = [];
+    for (const s of this.scorePops) {
+      s.life -= t;
+      s.y += (s.vy * t) / 1000;
+      if (s.life > 0) nextPops.push(s);
+    }
+    this.scorePops = nextPops;
   }
 
   draw(game) {
@@ -524,17 +553,55 @@ export class Renderer {
     }
 
     if (this.toastMs > 0 && this.toast) {
-      const alpha = Math.min(1, this.toastMs / 240);
+      const alpha = Math.min(1, this.toastMs / 280);
+      const big = /TETROK|LIMPEZA|B2B/i.test(this.toast);
       ctx.save();
       ctx.globalAlpha = alpha;
-      ctx.font = `800 ${Math.round(ch * (this.toast === "TETROK!" ? 0.92 : 0.78))}px Sora, Manrope, sans-serif`;
+      ctx.font = `800 ${Math.round(ch * (big ? 0.88 : 0.72))}px Sora, Manrope, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillStyle = this.theme === "magma" ? "#ffedd5" : this.theme === "crt" ? "#ffb000" : "#fff6d2";
-      ctx.shadowColor = this.theme === "magma" ? "rgba(249, 115, 22, 0.9)" : this.theme === "crt" ? "rgba(255,176,0,0.9)" : "rgba(244, 201, 93, 0.95)";
-      ctx.shadowBlur = 28;
-      ctx.fillText(this.toast, innerW / 2, innerH * 0.42);
+      ctx.fillStyle = this.theme === "magma" ? "#ffedd5" : this.theme === "crt" ? "#ffb000" : this.theme === "pixel" ? "#e2e8f0" : "#fff6d2";
+      ctx.shadowColor = this.theme === "magma" ? "rgba(249, 115, 22, 0.95)" : this.theme === "crt" ? "rgba(255,176,0,0.95)" : "rgba(103, 232, 249, 0.9)";
+      ctx.shadowBlur = 32;
+      ctx.fillText(this.toast, innerW / 2, innerH * 0.4);
       ctx.restore();
+    }
+
+    for (const s of this.scorePops) {
+      const a = Math.min(1, s.life / 280) * Math.min(1, (s.max - s.life) / 120 + 0.2);
+      ctx.save();
+      ctx.globalAlpha = a;
+      ctx.font = `800 ${Math.round(ch * 0.55)}px Sora, Manrope, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = this.theme === "magma" ? "#fdba74" : this.theme === "crt" ? "#ffc933" : "#67e8f9";
+      ctx.shadowColor = ctx.fillStyle;
+      ctx.shadowBlur = 16;
+      ctx.fillText(s.text, s.x - inset, s.y - inset);
+      if (s.sub) {
+        ctx.font = `700 ${Math.round(ch * 0.28)}px Manrope, sans-serif`;
+        ctx.fillStyle = "rgba(248,250,252,0.85)";
+        ctx.shadowBlur = 0;
+        ctx.fillText(s.sub, s.x - inset, s.y - inset + ch * 0.4);
+      }
+      ctx.restore();
+    }
+
+    // vinheta cinematográfica
+    const vig = ctx.createRadialGradient(innerW / 2, innerH / 2, innerH * 0.25, innerW / 2, innerH / 2, innerH * 0.72);
+    vig.addColorStop(0, "rgba(0,0,0,0)");
+    vig.addColorStop(1, "rgba(0,0,0,0.28)");
+    ctx.fillStyle = vig;
+    ctx.fillRect(0, 0, innerW, innerH);
+
+    if (this.spawnFlash > 0) {
+      ctx.fillStyle = `rgba(255,255,255,${this.spawnFlash * 0.18})`;
+      ctx.fillRect(0, 0, innerW, innerH);
+    }
+
+    if (this.levelFlash > 0) {
+      ctx.fillStyle = `rgba(125, 211, 252, ${this.levelFlash * 0.12})`;
+      ctx.fillRect(0, 0, innerW, innerH);
     }
 
     ctx.restore();
