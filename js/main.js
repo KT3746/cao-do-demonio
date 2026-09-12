@@ -102,6 +102,8 @@ const els = {
   scoreFloat: document.getElementById("stat-score-float"),
   levelFloat: document.getElementById("stat-level-float"),
   linesFloat: document.getElementById("stat-lines-float"),
+  comboFloat: document.getElementById("stat-combo-float"),
+  comboWrap: document.getElementById("combo-float"),
   board: document.getElementById("board"),
   hold: document.getElementById("hold"),
   next: document.getElementById("next"),
@@ -334,17 +336,22 @@ const game = new Game({
     audio.hold();
     syncHud();
   },
-  onLineClear: ({ count, label, rows, combo }) => {
+  onLineClear: ({ count, label, rows, combo, b2b, perfect, gained }) => {
     audio.lineClear(count);
     renderer.spawnClear(rows, game.board, count);
-    const tip =
-      combo > 1
-        ? `${label}  ·  Combo x${combo}!`
-        : label;
+    let tip = label;
+    if (combo > 1) tip = `${label}  ·  Combo x${combo}`;
+    if (b2b) tip = tip.includes("B2B") ? tip : `B2B · ${tip}`;
     renderer.showToast(tip);
+    renderer.spawnScorePop(gained || 0, perfect ? "Limpeza" : b2b ? "Back-to-back" : combo > 1 ? `Combo x${combo}` : "");
     if (navigator.vibrate) {
       try {
-        navigator.vibrate(count >= 4 ? [24, 40, 24, 40, 36] : count >= 2 ? [16, 20, 16] : 14);
+        navigator.vibrate(
+          perfect ? [20, 30, 20, 30, 40]
+            : count >= 4 ? [24, 40, 24, 40, 36]
+            : count >= 2 ? [16, 20, 16]
+            : 14
+        );
       } catch {
         /* ignore */
       }
@@ -367,16 +374,18 @@ const game = new Game({
     }
     const roast =
       snap.score < 500
-        ? "Quase! A pilha te ganhou dessa vez."
+        ? "Quase. A pilha fechou em cima de você."
         : snap.score < 2000
-          ? "Boa luta! Dá pra estourar esse recorde."
-          : "Monstro! Agora tenta bater isso.";
+          ? "Ritmo bom. Agora busca limpeza e combo."
+          : snap.score < 5000
+            ? "Pressão alta. Você joga limpo."
+            : "Élite. Isso aqui já é vitrine.";
     showOverlay("Game over!", roast, true, snap.score);
     (function(){const pl=els.btnPause.querySelector(".btn-label"); if(pl) pl.textContent="Pausa";})();
     els.btnPause.setAttribute("aria-pressed", "false");
     syncHud();
   },
-  onSpawn: syncHud,
+  onSpawn: () => { renderer.onSpawnFlash(); syncHud(); },
 });
 
 const buttons = [
@@ -519,6 +528,11 @@ function syncHud() {
   set(els.scoreFloat, s);
   set(els.levelFloat, lv);
   set(els.linesFloat, ln);
+  if (els.comboFloat) {
+    const c = game.combo || 0;
+    els.comboFloat.textContent = c > 1 ? `x${c}` : "";
+    if (els.comboWrap) els.comboWrap.hidden = c <= 1;
+  }
   const empty = !game.hold;
   if (els.holdSlot) els.holdSlot.classList.toggle("is-empty", empty);
   if (els.holdSlotFloat) els.holdSlotFloat.classList.toggle("is-empty", empty);
